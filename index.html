@@ -152,14 +152,14 @@
             if (moonAltStartTwilight <= 0 && moonAltEndDay <= 0) {
                 let duskDarkTimes = {
                     start: twilightStart.date,
-                    end: dtStart.plus({days: 1}).minus({seconds: 1}).toJSDate()
+                    end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
                 };
                 darkObj[currentDate].push(duskDarkTimes);
             } else if (moonSet && moonAltEndDay <= 0) {
                 if (moonSet.date.valueOf() > twilightStart.date.valueOf()) {
                     let duskDarkTimes = {
                         start: moonSet.date,
-                        end: dtStart.plus({days: 1}).minus({seconds: 1}).toJSDate()
+                        end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
                     };
                     darkObj[currentDate].push(duskDarkTimes);
                 }
