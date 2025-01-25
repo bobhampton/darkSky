@@ -104,8 +104,8 @@
             } else if (moonRise && moonAltStartDay <= 0) {
                 if (moonRise.date.valueOf() < twilightEnd.date.valueOf()) {
                     let dawnDarkTimes = {
-                        start: twilightStart.date,
-                        end: moonRise.date
+                        start: dtStart.toJSDate(),
+                        end: moonRise.date,
                     };
                     darkObj[currentDate].push(dawnDarkTimes);
                 }
