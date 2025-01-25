@@ -29,9 +29,16 @@
                 <td><input type="text" id="EditLongitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
             </tr>
             <tr>
+                <td>Time Zone:</td>
+                <td>
+                    <input type="text" id="timezoneInput" placeholder="Type to filter time zones">
+                    <select id="timezoneSelect" size="10" style="width: 100%;"></select>
+                </td>
+            </tr>
+            <!-- <tr>
                 <td>Elevation (m):</td>
                 <td><input type="text" id="EditElevation" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
+            </tr> -->
         </table>
         <button type="submit">Submit</button>
     </form>
@@ -48,7 +55,8 @@
     </table>
 
     <p>
-        This is a sample page for the open-source
+        This page uses the Astronomy Engine to calculate the times of astronomical twilight
+        when the Sun is below -18 degrees of elevation and there is no moon present in the sky.
         <a href="https://github.com/cosinekitty/astronomy/">Astronomy Engine</a>.
         All of the source code and documentation is available there.
         Also, try using your browser's View Source command to look at how this page works.
@@ -59,8 +67,34 @@
 <script src="astronomy.browser.js"></script>
 <script type="module">
     import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/luxon.js';
-    //import * as Astronomy from 'https://cdn.jsdelivr.net/npm/astronomy-engine@1.0.0/astronomy.browser.min.js';
 
+    const timezones = Intl.supportedValuesOf('timeZone');
+    const timezoneSelect = document.getElementById('timezoneSelect');
+    const timezoneInput = document.getElementById('timezoneInput');
+
+    function populateTimezones() {
+        timezones.forEach(tz => {
+            const option = document.createElement('option');
+            option.value = tz;
+            option.textContent = tz;
+            timezoneSelect.appendChild(option);
+        });
+    }
+
+    function filterTimezones() {
+        const filter = timezoneInput.value.toLowerCase();
+        const options = timezoneSelect.options;
+        for (let i = 0; i < options.length; i++) {
+            const option = options[i];
+            if (option.value.toLowerCase().includes(filter)) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        }
+    }
+
+    timezoneInput.addEventListener('input', filterTimezones);
 
     function calculateMoonAltitude(observer, date) {
         const moonPosition = Astronomy.Equator('Moon', date, observer, true, true);
@@ -74,6 +108,7 @@
         while (dtStart <= dtEnd) {
             const twilightStart = Astronomy.SearchAltitude('Sun', observer, -1, dtStart.toJSDate(), 1, -18);
             const twilightEnd = Astronomy.SearchAltitude('Sun', observer, +1, dtStart.toJSDate(), 1, -18);
+            
             const moonRise = Astronomy.SearchRiseSet('Moon', observer, +1, dtStart.toJSDate(), 1);
             const moonSet = Astronomy.SearchRiseSet('Moon', observer, -1, dtStart.toJSDate(), 1);
 
@@ -179,6 +214,7 @@
         const text_elevation = document.getElementById('EditElevation').value;
         const text_dateStart = document.getElementById('EditDateStart').value;
         const text_dateEnd = document.getElementById('EditDateEnd').value;
+        const text_timezone = document.getElementById('timezoneSelect').value;
 
         if (!IsValidNumber(text_latitude) || !IsValidNumber(text_longitude) || !IsValidNumber(text_elevation)) {
             document.getElementById('CalcTable').style.display = 'none';
@@ -188,7 +224,8 @@
             const latitude = parseFloat(text_latitude);
             const longitude = parseFloat(text_longitude);
             const elevation = parseFloat(text_elevation);
-            const zone = 'America/Denver'; // Change this to the desired time zone
+            //const zone = 'America/Denver';
+            const zone = text_timezone;
 
             const dtStart = DateTime.fromISO(text_dateStart, { zone });
             const dtEnd = DateTime.fromISO(text_dateEnd, { zone });
@@ -201,6 +238,7 @@
     }
 
     window.onload = function() {
+        populateTimezones();
         document.getElementById('observerForm').addEventListener('submit', UpdateScreen);
     };
 </script>
