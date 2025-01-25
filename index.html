@@ -38,9 +38,9 @@
 </head>
 <body>
     <div class="form-container">
-        <label>Latitude: <input type="text" id="EditLatitude" placeholder="e.g., 40.7128"></label>
-        <label>Longitude: <input type="text" id="EditLongitude" placeholder="e.g., -74.0060"></label>
-        <label>Elevation (meters): <input type="text" id="EditElevation" placeholder="e.g., 10"></label><br>
+        <label>Latitude: <input type="text" id="EditLatitude" value="40.772"></label>
+        <label>Longitude: <input type="text" id="EditLongitude" value="-112.1012"></label>
+        <label>Elevation (meters): <input type="text" id="EditElevation" value="0"></label><br>
         <label>Start Date: <input type="date" id="EditDateStart"></label>
         <label>End Date: <input type="date" id="EditDateEnd"></label>
         <button onclick="UpdateScreen()">Calculate</button>
@@ -111,6 +111,12 @@
                 // Display results in the calendar
                 DisplayDarkTimesInCalendar(darkTimes);
             }
+        }
+
+        function calculateMoonAltitude(observer, date) {
+            const moonPosition = Astronomy.Equator('Moon', date, observer, true, true);
+            const moonHorizon = Astronomy.Horizon(date, observer, moonPosition.ra, moonPosition.dec, 'normal');
+            return moonHorizon.altitude;
         }
 
         // Calculate dark sky times
