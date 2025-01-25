@@ -22,11 +22,11 @@
             </tr>
             <tr>
                 <td>Latitude:</td>
-                <td><input type="text" id="EditLatitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+                <td><input type="text" id="EditLatitude" value="40.772" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
             </tr>
             <tr>
                 <td>Longitude:</td>
-                <td><input type="text" id="EditLongitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+                <td><input type="text" id="EditLongitude" value="-112.1012" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
             </tr>
             <tr>
                 <td>Time Zone:</td>
@@ -35,10 +35,10 @@
                     <select id="timezoneSelect" size="10" style="width: 100%;"></select>
                 </td>
             </tr>
-            <!-- <tr>
+            <tr>
                 <td>Elevation (m):</td>
-                <td><input type="text" id="EditElevation" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr> -->
+                <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+            </tr>
         </table>
         <button type="submit">Submit</button>
     </form>
@@ -211,11 +211,10 @@
 
         const text_latitude = document.getElementById('EditLatitude').value;
         const text_longitude = document.getElementById('EditLongitude').value;
-        //const text_elevation = document.getElementById('EditElevation').value;
+        const text_elevation = document.getElementById('EditElevation').value;
         const text_dateStart = document.getElementById('EditDateStart').value;
         const text_dateEnd = document.getElementById('EditDateEnd').value;
         const text_timezone = document.getElementById('timezoneSelect').value;
-        const text_elevation = 0
 
         console.log('Selected Time Zone:', text_timezone);
 
