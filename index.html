@@ -115,29 +115,76 @@
 
         // Calculate dark sky times
         function getTimes(dtStart, dtEnd, observer) {
-            const results = {};
-            const current = dtStart;
+            let darkObj = {};
 
-            while (current <= dtEnd) {
-                const dateString = current.toISODate();
+            while (dtStart <= dtEnd) {
+                const twilightStart = Astronomy.SearchAltitude('Sun', observer, -1, dtStart.toJSDate(), 1, -18);
+                const twilightEnd = Astronomy.SearchAltitude('Sun', observer, +1, dtStart.toJSDate(), 1, -18);
+                
+                const moonRise = Astronomy.SearchRiseSet('Moon', observer, +1, dtStart.toJSDate(), 1);
+                const moonSet = Astronomy.SearchRiseSet('Moon', observer, -1, dtStart.toJSDate(), 1);
 
-                const astroTwilightStart = Astronomy.SearchAltitude(
-                    observer, 'Sun', -18, current.toJSDate(), -1
-                );
-                const astroTwilightEnd = Astronomy.SearchAltitude(
-                    observer, 'Sun', -18, current.toJSDate(), +1
-                );
-                const moonSet = Astronomy.SearchRiseSet('Moon', observer, +1, current.toJSDate());
-                const moonRise = Astronomy.SearchRiseSet('Moon', observer, -1, current.toJSDate());
+                let moonAltStartDay = calculateMoonAltitude(observer, dtStart.toJSDate());
+                let moonAltEndDay = calculateMoonAltitude(observer, dtStart.plus({days: 1}).toJSDate());
+                let moonAltEndTwilight = calculateMoonAltitude(observer, twilightEnd.date);
+                let moonAltStartTwilight = calculateMoonAltitude(observer, twilightStart.date);
 
-                results[dateString] = [
-                    { start: moonSet.time.date, end: astroTwilightEnd.time.date },
-                    { start: astroTwilightStart.time.date, end: moonRise.time.date }
-                ];
-                current.plus({ days: 1 });
+                const currentDate = dtStart.toISODate();
+                if (!darkObj[currentDate]) {
+                    darkObj[currentDate] = [];
+                }
+
+                if (moonAltStartDay <= 0 && moonAltEndTwilight <= 0) {
+                    let dawnDarkTimes = {
+                        start: dtStart.toJSDate(),
+                        end: twilightEnd.date
+                    };
+                    darkObj[currentDate].push(dawnDarkTimes);
+                } else if (moonSet && moonAltStartDay >= 0) {
+                    if (moonSet.date.valueOf() < twilightEnd.date.valueOf()) {
+                        let dawnDarkTimes = {
+                            start: moonSet.date,
+                            end: twilightEnd.date
+                        };
+                        darkObj[currentDate].push(dawnDarkTimes);
+                    }
+                } else if (moonRise && moonAltStartDay <= 0) {
+                    if (moonRise.date.valueOf() < twilightEnd.date.valueOf()) {
+                        let dawnDarkTimes = {
+                            start: dtStart.toJSDate(),
+                            end: moonRise.date,
+                        };
+                        darkObj[currentDate].push(dawnDarkTimes);
+                    }
+                }
+
+                if (moonAltStartTwilight <= 0 && moonAltEndDay <= 0) {
+                    let duskDarkTimes = {
+                        start: twilightStart.date,
+                        end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
+                    };
+                    darkObj[currentDate].push(duskDarkTimes);
+                } else if (moonSet && moonAltEndDay <= 0) {
+                    if (moonSet.date.valueOf() > twilightStart.date.valueOf()) {
+                        let duskDarkTimes = {
+                            start: moonSet.date,
+                            end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
+                        };
+                        darkObj[currentDate].push(duskDarkTimes);
+                    }
+                } else if (moonRise && moonAltEndDay >= 0) {
+                    if (moonRise.date.valueOf() > twilightStart.date.valueOf()) {
+                        let duskDarkTimes = {
+                            start: twilightStart.date,
+                            end: moonRise.date
+                        };
+                        darkObj[currentDate].push(duskDarkTimes);
+                    }
+                }
+
+                dtStart = dtStart.plus({days: 1});
             }
-
-            return results;
+            return darkObj;
         }
     </script>
 </body>
