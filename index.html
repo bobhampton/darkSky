@@ -3,59 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Sky Times</title>
-    <link rel="stylesheet" href="style.css"/>
+    <title>Dark Sky Calculator</title>
+    <link href='https://fullcalendar.io/releases/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
 </head>
-<body id="main_content_wrap" class="inner">
-    <h1>Dark Sky Times</h1>
-
-    <h2>Observer</h2>
-    <form id="observerForm" method="POST">
-        <table cellpadding="5" cellspacing="0" border="1">
-            <tr>
-                <td>Date Start:</td>
-                <td><input type="date" id="EditDateStart" required></td>
-            </tr>
-            <tr>
-                <td>Date End:</td>
-                <td><input type="date" id="EditDateEnd" required></td>
-            </tr>
-            <tr>
-                <td>Latitude:</td>
-                <td><input type="text" id="EditLatitude" value="40.772" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
-            <tr>
-                <td>Longitude:</td>
-                <td><input type="text" id="EditLongitude" value="-112.1012" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
-            <tr>
-                <td>Time Zone:</td>
-                <td>
-                    <input type="text" id="timezoneInput" placeholder="Type to filter time zones">
-                    <select id="timezoneSelect" size="10" style="width: 100%;"></select>
-                </td>
-            </tr>
-            <tr>
-                <td>Elevation (m):</td>
-                <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
-            <tr>
-                <td colspan="2" style="font-size: smaller; color: gray;">Leave Elevation value as default (0) unless you know what you're doing</td>
-            </tr>
-        </table>
-        <button type="submit">Submit</button>
+<body>
+    <h1>Dark Sky Calculator</h1>
+    <form id="darkSkyForm">
+        <label for="EditLatitude">Latitude:</label>
+        <input type="text" id="EditLatitude" name="EditLatitude"><br><br>
+        <label for="EditLongitude">Longitude:</label>
+        <input type="text" id="EditLongitude" name="EditLongitude"><br><br>
+        <label for="EditElevation">Elevation:</label>
+        <input type="text" id="EditElevation" name="EditElevation"><br><br>
+        <label for="EditDateStart">Start Date:</label>
+        <input type="date" id="EditDateStart" name="EditDateStart"><br><br>
+        <label for="EditDateEnd">End Date:</label>
+        <input type="date" id="EditDateEnd" name="EditDateEnd"><br><br>
+        <label for="timezoneSelect">Time Zone:</label>
+        <input type="text" id="timezoneInput" placeholder="Filter timezones">
+        <select id="timezoneSelect"></select><br><br>
+        <button type="submit">Calculate</button>
     </form>
 
-    <h2>Dark Times</h2>
-    <table cellpadding="5" cellspacing="0" id="CalcTable" border="1">
-        <tr>
-            <td class="NumHeader">Date</td>
-            <td class="NumHeader">Start</td>
-            <td class="NumHeader">End</td>
-        </tr>
-        <tbody id="DarkTimesBody">
-        </tbody>
-    </table>
+    <div id='calendar'></div>
 
     <p>
         This page uses the Astronomy Engine to calculate the times of astronomical twilight
@@ -65,196 +55,180 @@
         Also, try using your browser's View Source command to look at how this page works.
     </p>
 
-</body>
+    <script src="astronomy.browser.js"></script>
+    <script src='https://fullcalendar.io/releases/fullcalendar/3.10.2/lib/moment.min.js'></script>
+    <script src='https://fullcalendar.io/releases/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+    <script type="module">
+        import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/luxon.js';
 
-<script src="astronomy.browser.js"></script>
-<script type="module">
-    import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/luxon.js';
+        const timezones = Intl.supportedValuesOf('timeZone');
+        const timezoneSelect = document.getElementById('timezoneSelect');
+        const timezoneInput = document.getElementById('timezoneInput');
 
-    const timezones = Intl.supportedValuesOf('timeZone');
-    const timezoneSelect = document.getElementById('timezoneSelect');
-    const timezoneInput = document.getElementById('timezoneInput');
+        function populateTimezones() {
+            timezones.forEach(tz => {
+                const option = document.createElement('option');
+                option.value = tz;
+                option.textContent = tz;
+                timezoneSelect.appendChild(option);
+            });
+        }
 
-    function populateTimezones() {
-        timezones.forEach(tz => {
-            const option = document.createElement('option');
-            option.value = tz;
-            option.textContent = tz;
-            timezoneSelect.appendChild(option);
-        });
-    }
-
-    function filterTimezones() {
-        const filter = timezoneInput.value.toLowerCase();
-        const options = timezoneSelect.options;
-        for (let i = 0; i < options.length; i++) {
-            const option = options[i];
-            if (option.value.toLowerCase().includes(filter)) {
-                option.style.display = '';
-            } else {
-                option.style.display = 'none';
+        function filterTimezones() {
+            const filter = timezoneInput.value.toLowerCase();
+            const options = timezoneSelect.options;
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                if (option.value.toLowerCase().includes(filter)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
             }
         }
-    }
 
-    timezoneInput.addEventListener('input', filterTimezones);
+        function calculateMoonAltitude(observer, date) {
+            // Placeholder function for calculating moon altitude
+            return 0;
+        }
 
-    function calculateMoonAltitude(observer, date) {
-        const moonPosition = Astronomy.Equator('Moon', date, observer, true, true);
-        const moonHorizon = Astronomy.Horizon(date, observer, moonPosition.ra, moonPosition.dec, 'normal');
-        return moonHorizon.altitude;
-    }
+        function getTimes(dtStart, dtEnd, observer) {
+            const darkObj = {};
+            while (dtStart <= dtEnd) {
+                const twilightEnd = Astronomy.SearchAltitude('Sun', observer, +1, dtStart.toJSDate(), 1, -18);
+                const moonRise = Astronomy.SearchRiseSet('Moon', observer, +1, dtStart.toJSDate(), 1);
+                const moonSet = Astronomy.SearchRiseSet('Moon', observer, -1, dtStart.toJSDate(), 1);
 
-    function getTimes(dtStart, dtEnd, observer) {
-        let darkObj = {};
+                let moonAltStartDay = calculateMoonAltitude(observer, dtStart.toJSDate());
+                let moonAltEndDay = calculateMoonAltitude(observer, dtStart.plus({days: 1}).toJSDate());
+                let moonAltEndTwilight = calculateMoonAltitude(observer, twilightEnd.date);
+                let moonAltStartTwilight = calculateMoonAltitude(observer, twilightStart.date);
 
-        while (dtStart <= dtEnd) {
-            const twilightStart = Astronomy.SearchAltitude('Sun', observer, -1, dtStart.toJSDate(), 1, -18);
-            const twilightEnd = Astronomy.SearchAltitude('Sun', observer, +1, dtStart.toJSDate(), 1, -18);
-            
-            const moonRise = Astronomy.SearchRiseSet('Moon', observer, +1, dtStart.toJSDate(), 1);
-            const moonSet = Astronomy.SearchRiseSet('Moon', observer, -1, dtStart.toJSDate(), 1);
+                const currentDate = dtStart.toISODate();
+                if (!darkObj[currentDate]) {
+                    darkObj[currentDate] = [];
+                }
 
-            let moonAltStartDay = calculateMoonAltitude(observer, dtStart.toJSDate());
-            let moonAltEndDay = calculateMoonAltitude(observer, dtStart.plus({days: 1}).toJSDate());
-            let moonAltEndTwilight = calculateMoonAltitude(observer, twilightEnd.date);
-            let moonAltStartTwilight = calculateMoonAltitude(observer, twilightStart.date);
-
-            const currentDate = dtStart.toISODate();
-            if (!darkObj[currentDate]) {
-                darkObj[currentDate] = [];
-            }
-
-            if (moonAltStartDay <= 0 && moonAltEndTwilight <= 0) {
-                let dawnDarkTimes = {
-                    start: dtStart.toJSDate(),
-                    end: twilightEnd.date
-                };
-                darkObj[currentDate].push(dawnDarkTimes);
-            } else if (moonSet && moonAltStartDay >= 0) {
-                if (moonSet.date.valueOf() < twilightEnd.date.valueOf()) {
+                if (moonAltStartDay <= 0 && moonAltEndTwilight <= 0) {
                     let dawnDarkTimes = {
-                        start: moonSet.date,
+                        start: dtStart.toJSDate(),
                         end: twilightEnd.date
                     };
                     darkObj[currentDate].push(dawnDarkTimes);
+                } else if (moonSet && moonAltStartDay >= 0) {
+                    if (moonSet.date.valueOf() < twilightEnd.date.valueOf()) {
+                        let dawnDarkTimes = {
+                            start: moonSet.date,
+                            end: twilightEnd.date
+                        };
+                        darkObj[currentDate].push(dawnDarkTimes);
+                    }
+                } else if (moonRise && moonAltStartDay <= 0) {
+                    if (moonRise.date.valueOf() < twilightEnd.date.valueOf()) {
+                        let dawnDarkTimes = {
+                            start: dtStart.toJSDate(),
+                            end: moonRise.date,
+                        };
+                        darkObj[currentDate].push(dawnDarkTimes);
+                    }
                 }
-            } else if (moonRise && moonAltStartDay <= 0) {
-                if (moonRise.date.valueOf() < twilightEnd.date.valueOf()) {
-                    let dawnDarkTimes = {
-                        start: dtStart.toJSDate(),
-                        end: moonRise.date,
-                    };
-                    darkObj[currentDate].push(dawnDarkTimes);
-                }
-            }
 
-            if (moonAltStartTwilight <= 0 && moonAltEndDay <= 0) {
-                let duskDarkTimes = {
-                    start: twilightStart.date,
-                    end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
-                };
-                darkObj[currentDate].push(duskDarkTimes);
-            } else if (moonSet && moonAltEndDay <= 0) {
-                if (moonSet.date.valueOf() > twilightStart.date.valueOf()) {
+                if (moonAltStartTwilight <= 0 && moonAltEndDay <= 0) {
                     let duskDarkTimes = {
-                        start: moonSet.date,
+                        start: twilightStart.date,
                         end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
                     };
                     darkObj[currentDate].push(duskDarkTimes);
+                } else if (moonSet && moonAltEndDay <= 0) {
+                    if (moonSet.date.valueOf() > twilightStart.date.valueOf()) {
+                        let duskDarkTimes = {
+                            start: moonSet.date,
+                            end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
+                        };
+                        darkObj[currentDate].push(duskDarkTimes);
+                    }
+                } else if (moonRise && moonAltEndDay >= 0) {
+                    if (moonRise.date.valueOf() > twilightStart.date.valueOf()) {
+                        let duskDarkTimes = {
+                            start: twilightStart.date,
+                            end: moonRise.date
+                        };
+                        darkObj[currentDate].push(duskDarkTimes);
+                    }
                 }
-            } else if (moonRise && moonAltEndDay >= 0) {
-                if (moonRise.date.valueOf() > twilightStart.date.valueOf()) {
-                    let duskDarkTimes = {
-                        start: twilightStart.date,
-                        end: moonRise.date
-                    };
-                    darkObj[currentDate].push(duskDarkTimes);
-                }
+
+                dtStart = dtStart.plus({days: 1});
+            }
+            return darkObj;
+        }
+
+        function DisplayDarkTimes(darkTimes, zone) {
+            const events = [];
+
+            for (const date in darkTimes) {
+                darkTimes[date].forEach(time => {
+                    events.push({
+                        title: 'Dark Time',
+                        start: DateTime.fromJSDate(new Date(time.start)).setZone(zone).toISO(),
+                        end: DateTime.fromJSDate(new Date(time.end)).setZone(zone).toISO(),
+                        color: '#000000', // Dark color for dark times
+                        textColor: '#FFFFFF' // White text for contrast
+                    });
+                });
             }
 
-            dtStart = dtStart.plus({days: 1});
-        }
-        return darkObj;
-    }
-
-    function IsValidNumber(s) {
-        return typeof s === 'string' && /^[\-\+]?\d+(\.\d*)?$/.test(s);
-    }
-
-    function FormatDate(date) {
-        return DateTime.fromJSDate(date).toISO();
-    }
-
-    function DisplayDarkTimes(darkTimes, zone) {
-        const tbody = document.getElementById('DarkTimesBody');
-        tbody.innerHTML = '';
-
-        for (const date in darkTimes) {
-            darkTimes[date].forEach(time => {
-                const row = document.createElement('tr');
-                const dateCell = document.createElement('td');
-                const startCell = document.createElement('td');
-                const endCell = document.createElement('td');
-
-                dateCell.innerText = date;
-                startCell.innerText = DateTime.fromJSDate(new Date(time.start)).setZone(zone).toISO();
-                endCell.innerText = DateTime.fromJSDate(new Date(time.end)).setZone(zone).toISO();
-
-                row.appendChild(dateCell);
-                row.appendChild(startCell);
-                row.appendChild(endCell);
-                tbody.appendChild(row);
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                defaultView: 'month',
+                events: events
             });
         }
-    }
 
-    function UpdateScreen(event) {
-        event.preventDefault();
-
-        const text_latitude = document.getElementById('EditLatitude').value;
-        const text_longitude = document.getElementById('EditLongitude').value;
-        const text_elevation = document.getElementById('EditElevation').value;
-        const text_dateStart = document.getElementById('EditDateStart').value;
-        const text_dateEnd = document.getElementById('EditDateEnd').value;
-        let text_timezone = document.getElementById('timezoneSelect').value;
-
-        console.log('Selected Time Zone:', text_timezone);
-
-        // Set to UTC if no timezone is selected
-        if (!text_timezone) {
-            text_timezone = 'UTC';
+        function IsValidNumber(s) {
+            return !isNaN(s) && s.trim() !== '';
         }
 
-        if (!IsValidNumber(text_latitude) || !IsValidNumber(text_longitude) || !IsValidNumber(text_elevation)) {
-            document.getElementById('CalcTable').style.display = 'none';
-        } else {
-            document.getElementById('CalcTable').style.display = '';
+        function UpdateScreen(event) {
+            event.preventDefault();
 
-            const latitude = parseFloat(text_latitude);
-            const longitude = parseFloat(text_longitude);
-            const elevation = parseFloat(text_elevation);
-            //const zone = 'America/Denver';
-            const zone = text_timezone;
+            const text_latitude = document.getElementById('EditLatitude').value;
+            const text_longitude = document.getElementById('EditLongitude').value;
+            const text_elevation = document.getElementById('EditElevation').value;
+            const text_dateStart = document.getElementById('EditDateStart').value;
+            const text_dateEnd = document.getElementById('EditDateEnd').value;
+            let text_timezone = document.getElementById('timezoneSelect').value;
 
-            console.log('Zone:', zone);
+            console.log('Selected Time Zone:', text_timezone);
 
-            const dtStart = DateTime.fromISO(text_dateStart, { zone });
-            const dtEnd = DateTime.fromISO(text_dateEnd, { zone });
+            // Set to UTC if no timezone is selected
+            if (!text_timezone) {
+                text_timezone = 'UTC';
+            }
 
-            console.log('Start Date:', dtStart.toString());
-            console.log('End Date:', dtEnd.toString());
+            if (!IsValidNumber(text_latitude) || !IsValidNumber(text_longitude) || !IsValidNumber(text_elevation)) {
+                document.getElementById('CalcTable').style.display = 'none';
+            } else {
+                document.getElementById('CalcTable').style.display = '';
 
-            const observer = new Astronomy.Observer(latitude, longitude, 0);
-            const darkTimes = getTimes(dtStart, dtEnd, observer);
+                const latitude = parseFloat(text_latitude);
+                const longitude = parseFloat(text_longitude);
+                const elevation = parseFloat(text_elevation);
+                const dtStart = DateTime.fromISO(text_dateStart);
+                const dtEnd = DateTime.fromISO(text_dateEnd);
+                const observer = { latitude, longitude, elevation };
 
-            DisplayDarkTimes(darkTimes, zone);
+                const darkTimes = getTimes(dtStart, dtEnd, observer);
+                DisplayDarkTimes(darkTimes, text_timezone);
+            }
         }
-    }
 
-    window.onload = function() {
+        document.getElementById('darkSkyForm').addEventListener('submit', UpdateScreen);
+        timezoneInput.addEventListener('input', filterTimezones);
         populateTimezones();
-        document.getElementById('observerForm').addEventListener('submit', UpdateScreen);
-    };
-</script>
+    </script>
+</body>
 </html>
