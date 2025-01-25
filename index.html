@@ -9,28 +9,31 @@
     <h1>Dark Sky Times</h1>
 
     <h2>Observer</h2>
-    <table cellpadding="5" cellspacing="0" border="1">
-        <tr>
-            <td>Date Start:</td>
-            <td><input type="date" id="EditDateStart"></td>
-        </tr>
-        <tr>
-            <td>Date End:</td>
-            <td><input type="date" id="EditDateEnd"></td>
-        </tr>
-        <tr>
-            <td>Latitude:</td>
-            <td><input type="text" id="EditLatitude" pattern="[\-\+]?\d+(\.\d*)?" size="10"></td>
-        </tr>
-        <tr>
-            <td>Longitude:</td>
-            <td><input type="text" id="EditLongitude" pattern="[\-\+]?\d+(\.\d*)?" size="10"></td>
-        </tr>
-        <tr>
-            <td>Elevation (m):</td>
-            <td><input type="text" id="EditElevation" pattern="[\-\+]?\d+(\.\d*)?" size="10"></td>
-        </tr>
-    </table>
+    <form id="observerForm">
+        <table cellpadding="5" cellspacing="0" border="1">
+            <tr>
+                <td>Date Start:</td>
+                <td><input type="date" id="EditDateStart" required></td>
+            </tr>
+            <tr>
+                <td>Date End:</td>
+                <td><input type="date" id="EditDateEnd" required></td>
+            </tr>
+            <tr>
+                <td>Latitude:</td>
+                <td><input type="text" id="EditLatitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+            </tr>
+            <tr>
+                <td>Longitude:</td>
+                <td><input type="text" id="EditLongitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+            </tr>
+            <tr>
+                <td>Elevation (m):</td>
+                <td><input type="text" id="EditElevation" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+            </tr>
+        </table>
+        <button type="submit">Submit</button>
+    </form>
 
     <h2>Dark Times</h2>
     <table cellpadding="5" cellspacing="0" id="CalcTable" border="1">
@@ -44,7 +47,7 @@
     </table>
 
     <p>
-        This page was created using the
+        This is a sample page for the open-source
         <a href="https://github.com/cosinekitty/astronomy/">Astronomy Engine</a>.
         All of the source code and documentation is available there.
         Also, try using your browser's View Source command to look at how this page works.
@@ -166,7 +169,9 @@
         }
     }
 
-    function UpdateScreen() {
+    function UpdateScreen(event) {
+        event.preventDefault();
+
         const text_latitude = document.getElementById('EditLatitude').value;
         const text_longitude = document.getElementById('EditLongitude').value;
         const text_elevation = document.getElementById('EditElevation').value;
@@ -194,12 +199,7 @@
     }
 
     window.onload = function() {
-        document.getElementById('EditLatitude').addEventListener('input', UpdateScreen);
-        document.getElementById('EditLongitude').addEventListener('input', UpdateScreen);
-        document.getElementById('EditElevation').addEventListener('input', UpdateScreen);
-        document.getElementById('EditDateStart').addEventListener('input', UpdateScreen);
-        document.getElementById('EditDateEnd').addEventListener('input', UpdateScreen);
-        UpdateScreen();
+        document.getElementById('observerForm').addEventListener('submit', UpdateScreen);
     };
 </script>
 </html>
