@@ -210,9 +210,8 @@
             }
 
             if (!IsValidNumber(text_latitude) || !IsValidNumber(text_longitude) || !IsValidNumber(text_elevation)) {
-                document.getElementById('CalcTable').style.display = 'none';
+                alert('Please enter valid numbers for latitude, longitude, and elevation.');
             } else {
-                document.getElementById('CalcTable').style.display = '';
 
                 const latitude = parseFloat(text_latitude);
                 const longitude = parseFloat(text_longitude);
