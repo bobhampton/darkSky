@@ -57,8 +57,9 @@
 
 <script src="astronomy.browser.js"></script>
 <script type="module">
-    import { DateTime } from 'luxon';
-    import * as Astronomy from 'astronomy-engine';
+    import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/luxon.js';
+    import * as Astronomy from 'https://cdn.jsdelivr.net/npm/astronomy-engine@1.0.0/astronomy.browser.min.js';
+
 
     function calculateMoonAltitude(observer, date) {
         const moonPosition = Astronomy.Equator('Moon', date, observer, true, true);
