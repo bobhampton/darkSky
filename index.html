@@ -39,6 +39,9 @@
                 <td>Elevation (m):</td>
                 <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
             </tr>
+            <tr>
+                <td colspan="2" style="font-size: smaller; color: gray;">Leave it as default unless you know what you're doing</td>
+            </tr>
         </table>
         <button type="submit">Submit</button>
     </form>
@@ -217,6 +220,11 @@
         const text_timezone = document.getElementById('timezoneSelect').value;
 
         console.log('Selected Time Zone:', text_timezone);
+
+        // Set to UTC if no timezone is selected
+        if (!text_timezone) {
+            text_timezone = 'UTC';
+        }
 
         if (!IsValidNumber(text_latitude) || !IsValidNumber(text_longitude) || !IsValidNumber(text_elevation)) {
             document.getElementById('CalcTable').style.display = 'none';
