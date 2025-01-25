@@ -211,7 +211,7 @@
 
         const text_latitude = document.getElementById('EditLatitude').value;
         const text_longitude = document.getElementById('EditLongitude').value;
-        const text_elevation = document.getElementById('EditElevation').value;
+        //const text_elevation = document.getElementById('EditElevation').value;
         const text_dateStart = document.getElementById('EditDateStart').value;
         const text_dateEnd = document.getElementById('EditDateEnd').value;
         const text_timezone = document.getElementById('timezoneSelect').value;
@@ -230,7 +230,7 @@
             const dtStart = DateTime.fromISO(text_dateStart, { zone });
             const dtEnd = DateTime.fromISO(text_dateEnd, { zone });
 
-            const observer = new Astronomy.Observer(latitude, longitude, elevation);
+            const observer = new Astronomy.Observer(latitude, longitude, 0);
             const darkTimes = getTimes(dtStart, dtEnd, observer);
 
             DisplayDarkTimes(darkTimes, zone);
