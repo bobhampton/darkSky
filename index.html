@@ -217,6 +217,8 @@
         const text_timezone = document.getElementById('timezoneSelect').value;
         const text_elevation = 0
 
+        console.log('Selected Time Zone:', text_timezone);
+
         if (!IsValidNumber(text_latitude) || !IsValidNumber(text_longitude) || !IsValidNumber(text_elevation)) {
             document.getElementById('CalcTable').style.display = 'none';
         } else {
@@ -228,8 +230,13 @@
             //const zone = 'America/Denver';
             const zone = text_timezone;
 
+            console.log('Zone:', zone);
+
             const dtStart = DateTime.fromISO(text_dateStart, { zone });
             const dtEnd = DateTime.fromISO(text_dateEnd, { zone });
+
+            console.log('Start Date:', dtStart.toString());
+            console.log('End Date:', dtEnd.toString());
 
             const observer = new Astronomy.Observer(latitude, longitude, 0);
             const darkTimes = getTimes(dtStart, dtEnd, observer);
