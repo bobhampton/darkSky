@@ -98,14 +98,24 @@ footer {
 #calcTable {
     width: 100%;
     border-collapse: collapse; /* Ensures borders don't double up */
-  }
+}
 
-  #calcTable th, #calcTable td {
+#calcTable th, #calcTable td {
     border: 1px solid black; /* Adds border to each cell */
     padding: 8px;            /* Adds spacing inside cells */
     text-align: center;      /* Centers the text */
-  }
+}
 
-  #calcTable th {
-    background-color: #f2f2f2; /* Optional: Add background color to headers */
-  }
+#calcTable th {
+  background-color: #f2f2f2; /* Optional: Add background color to headers */
+}
+
+#submit-button {
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
