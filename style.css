@@ -119,3 +119,6 @@ footer {
     cursor: pointer;
 }
 
+#TimeZoneDisplay {
+    color: rgb(223, 21, 21)
+}
