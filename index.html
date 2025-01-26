@@ -49,8 +49,10 @@
     <table cellpadding="5" cellspacing="0" id="CalcTable" border="1">
         <tr>
             <td class="NumHeader">Date</td>
-            <td class="NumHeader">Start</td>
-            <td class="NumHeader">End</td>
+            <td class="NumHeader">Dawn Start</td>
+            <td class="NumHeader">Dawn End</td>
+            <td class="NumHeader">Dusk Start</td>
+            <td class="NumHeader">Dusk End</td>
         </tr>
         <tbody id="DarkTimesBody">
         </tbody>
@@ -116,14 +118,16 @@
             if (moonAltStartDay <= 0 && moonAltEndTwilight <= 0) {
                 let dawnDarkTimes = {
                     start: dtStart.toJSDate(),
-                    end: twilightEnd.date
+                    end: twilightEnd.date,
+                    type: 'dawn'
                 };
                 darkObj[currentDate].push(dawnDarkTimes);
             } else if (moonSet && moonAltStartDay >= 0) {
                 if (moonSet.date.valueOf() < twilightEnd.date.valueOf()) {
                     let dawnDarkTimes = {
                         start: moonSet.date,
-                        end: twilightEnd.date
+                        end: twilightEnd.date,
+                        type: 'dawn'
                     };
                     darkObj[currentDate].push(dawnDarkTimes);
                 }
@@ -132,6 +136,7 @@
                     let dawnDarkTimes = {
                         start: dtStart.toJSDate(),
                         end: moonRise.date,
+                        type: 'dawn'
                     };
                     darkObj[currentDate].push(dawnDarkTimes);
                 }
@@ -140,14 +145,16 @@
             if (moonAltStartTwilight <= 0 && moonAltEndDay <= 0) {
                 let duskDarkTimes = {
                     start: twilightStart.date,
-                    end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
+                    end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate(),
+                    type: 'dusk'
                 };
                 darkObj[currentDate].push(duskDarkTimes);
             } else if (moonSet && moonAltEndDay <= 0) {
                 if (moonSet.date.valueOf() > twilightStart.date.valueOf()) {
                     let duskDarkTimes = {
                         start: moonSet.date,
-                        end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate()
+                        end: dtStart.plus({days: 1}).minus({milliseconds: 1}).toJSDate(),
+                        type: 'dusk'
                     };
                     darkObj[currentDate].push(duskDarkTimes);
                 }
@@ -155,7 +162,8 @@
                 if (moonRise.date.valueOf() > twilightStart.date.valueOf()) {
                     let duskDarkTimes = {
                         start: twilightStart.date,
-                        end: moonRise.date
+                        end: moonRise.date,
+                        type: 'dusk'
                     };
                     darkObj[currentDate].push(duskDarkTimes);
                 }
@@ -179,21 +187,34 @@
         tbody.innerHTML = '';
 
         for (const date in darkTimes) {
-            darkTimes[date].forEach(time => {
-                const row = document.createElement('tr');
-                const dateCell = document.createElement('td');
-                const startCell = document.createElement('td');
-                const endCell = document.createElement('td');
+            const row = document.createElement('tr');
+            const dateCell = document.createElement('td');
+            const dawnStartCell = document.createElement('td');
+            const dawnEndCell = document.createElement('td');
+            const duskStartCell = document.createElement('td');
+            const duskEndCell = document.createElement('td');
 
-                dateCell.innerText = date;
-                startCell.innerText = DateTime.fromJSDate(new Date(time.start)).setZone(zone).toISO();
-                endCell.innerText = DateTime.fromJSDate(new Date(time.end)).setZone(zone).toISO();
+            dateCell.innerText = date;
 
-                row.appendChild(dateCell);
-                row.appendChild(startCell);
-                row.appendChild(endCell);
-                tbody.appendChild(row);
-            });
+            const dawnTimes = darkTimes[date].filter(time => time.type === 'dawn');
+            const duskTimes = darkTimes[date].filter(time => time.type === 'dusk');
+
+            if (dawnTimes.length > 0) {
+                dawnStartCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].start)).setZone(zone).toISO();
+                dawnEndCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].end)).setZone(zone).toISO();
+            }
+
+            if (duskTimes.length > 0) {
+                duskStartCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].start)).setZone(zone).toISO();
+                duskEndCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].end)).setZone(zone).toISO();
+            }
+
+            row.appendChild(dateCell);
+            row.appendChild(dawnStartCell);
+            row.appendChild(dawnEndCell);
+            row.appendChild(duskStartCell);
+            row.appendChild(duskEndCell);
+            tbody.appendChild(row);
         }
     }
 
