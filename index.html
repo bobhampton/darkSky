@@ -49,10 +49,11 @@
     <table cellpadding="5" cellspacing="0" id="CalcTable" border="1">
         <tr>
             <td class="NumHeader">Date</td>
-            <td class="NumHeader">Dawn Start</td>
-            <td class="NumHeader">Dawn End</td>
-            <td class="NumHeader">Dusk Start</td>
-            <td class="NumHeader">Dusk End</td>
+            <td class="NumHeader">Dark Time Start (Dawn)</td>
+            <td class="NumHeader">Dark Time End (Dawn)</td>
+            <td class="NumHeader">Dark Time Start (Dusk)</td>
+            <td class="NumHeader">Dark Time End (Dusk)</td>
+            <td class="NumHeader">Continues to Next Day</td>
         </tr>
         <tbody id="DarkTimesBody">
         </tbody>
@@ -186,13 +187,17 @@
         const tbody = document.getElementById('DarkTimesBody');
         tbody.innerHTML = '';
 
-        for (const date in darkTimes) {
+        const dates = Object.keys(darkTimes).sort();
+
+        for (let i = 0; i < dates.length; i++) {
+            const date = dates[i];
             const row = document.createElement('tr');
             const dateCell = document.createElement('td');
             const dawnStartCell = document.createElement('td');
             const dawnEndCell = document.createElement('td');
             const duskStartCell = document.createElement('td');
             const duskEndCell = document.createElement('td');
+            const continuesCell = document.createElement('td');
 
             dateCell.innerText = date;
 
@@ -209,11 +214,30 @@
                 duskEndCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].end)).setZone(zone).toISO();
             }
 
+            if (i < dates.length - 1) {
+                const nextDate = dates[i + 1];
+                const nextDawnTimes = darkTimes[nextDate].filter(time => time.type === 'dawn');
+                if (duskTimes.length > 0 && nextDawnTimes.length > 0) {
+                    const duskEnd = DateTime.fromJSDate(new Date(duskTimes[0].end)).setZone(zone);
+                    const nextDawnStart = DateTime.fromJSDate(new Date(nextDawnTimes[0].start)).setZone(zone);
+                    if (duskEnd.toISOTime() === '23:59:59.999' && nextDawnStart.toISOTime() === '00:00:00.000') {
+                        continuesCell.innerText = 'Yes';
+                    } else {
+                        continuesCell.innerText = 'No';
+                    }
+                } else {
+                    continuesCell.innerText = 'No';
+                }
+            } else {
+                continuesCell.innerText = 'No';
+            }
+
             row.appendChild(dateCell);
             row.appendChild(dawnStartCell);
             row.appendChild(dawnEndCell);
             row.appendChild(duskStartCell);
             row.appendChild(duskEndCell);
+            row.appendChild(continuesCell);
             tbody.appendChild(row);
         }
     }
