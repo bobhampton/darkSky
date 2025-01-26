@@ -4,73 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Sky Times</title>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body id="main_content_wrap" class="inner">
-    <h1>Dark Sky Times</h1>
-    <h3>Calculate the times when the Sun is below -18 degrees of elevation and there is no moon present in the sky.</h3>
-    <p>Please note that the time zone will default to UTC if not selected.</p>
-    <form id="observerForm" method="POST">
-        <table cellpadding="5" cellspacing="0" border="1">
-            <tr>
-                <td>Date Start:</td>
-                <td><input type="date" id="EditDateStart" required></td>
-            </tr>
-            <tr>
-                <td>Date End:</td>
-                <td><input type="date" id="EditDateEnd" required></td>
-            </tr>
-            <tr>
-                <td>Latitude:</td>
-                <td><input type="text" id="EditLatitude" value="40.772" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
-            <tr>
-                <td>Longitude:</td>
-                <td><input type="text" id="EditLongitude" value="-112.1012" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
-            <tr>
-                <td>Time Zone:</td>
-                <td>
-                    <select id="timezoneSelect" size="10" style="width: 100%;"></select>
-                </td>
-            </tr>
-            <tr>
-                <td>Elevation (m):</td>
-                <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-            </tr>
-            <tr>
-                <td colspan="2" style="font-size: smaller; color: gray;">Leave Elevation value as default (0) unless you know what you're doing.</td>
-            </tr>
-        </table>
-        <button type="submit">Submit</button>
-    </form>
-
-    <h2>Dark Times</h2>
-    <p>
-        The times are in the selected time zone. Please note that if the "Dark Time End (Dusk)" is 23:59:59, 
-        and the next day's "Dark Time Start (Dawn)" is 00:00:00, then the dark time window extends into the next day.
-    <p>
-    <h4 id="TimeZoneDisplay"></h4>
-    <table cellpadding="5" cellspacing="0" id="CalcTable" border="1">
-        <tr>
-            <td class="NumHeader">Date</td>
-            <td class="NumHeader">Dark Time Start (Dawn)</td>
-            <td class="NumHeader">Dark Time End (Dawn)</td>
-            <td class="NumHeader">Dark Time Start (Dusk)</td>
-            <td class="NumHeader">Dark Time End (Dusk)</td>
-        </tr>
-        <tbody id="DarkTimesBody">
-        </tbody>
-    </table>
-
-    <p>
-        This page uses the Astronomy Engine to calculate the times of astronomical twilight
-        when the Sun is below -18 degrees of elevation and there is no moon present in the sky.
-        <a href="https://github.com/cosinekitty/astronomy/">Astronomy Engine</a>.
-        All of the source code and documentation is available there.
-        Also, try using your browser's View Source command to look at how this page works.
-    </p>
-
+    <header>
+        <h1>Dark Sky Times</h1>
+        <h3>Calculate the times when the Sun is below -18 degrees of elevation and there is no moon present in the sky.</h3>
+        <p>Please note that the time zone will default to UTC if not selected.</p>
+    </header>
+    <main>
+        <form id="observerForm" method="POST">
+            <table>
+                <tr>
+                    <td>Date Start:</td>
+                    <td><input type="date" id="EditDateStart" required></td>
+                </tr>
+                <tr>
+                    <td>Date End:</td>
+                    <td><input type="date" id="EditDateEnd" required></td>
+                </tr>
+                <tr>
+                    <td>Latitude:</td>
+                    <td><input type="text" id="EditLatitude" value="40.772" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+                </tr>
+                <tr>
+                    <td>Longitude:</td>
+                    <td><input type="text" id="EditLongitude" value="-112.1012" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+                </tr>
+                <tr>
+                    <td>Time Zone:</td>
+                    <td>
+                        <select id="timezoneSelect" size="10"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Elevation (m):</td>
+                    <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="small-text">Leave Elevation value as default (0) unless you know what you're doing.</td>
+                </tr>
+            </table>
+            <button type="submit">Submit</button>
+        </form>
+        <section>
+            <h2>Dark Times</h2>
+            <p>
+                The times are in the selected time zone. Please note that if the "Dark Time End (Dusk)" is 23:59:59,
+                and the next day's "Dark Time Start (Dawn)" is 00:00:00, then the dark time window extends into the next day.
+            </p>
+            <h4 id="TimeZoneDisplay"></h4>
+            <table id="CalcTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Dark Time Start (Dawn)</th>
+                        <th>Dark Time End (Dawn)</th>
+                        <th>Dark Time Start (Dusk)</th>
+                        <th>Dark Time End (Dusk)</th>
+                    </tr>
+                </thead>
+                <tbody id="DarkTimesBody"></tbody>
+            </table>
+            <p>
+                This page uses the Astronomy Engine to calculate the times of astronomical twilight when the Sun is below -18 degrees of elevation and there is no moon present in the sky. 
+                <a href="https://github.com/cosinekitty/astronomy/">Astronomy Engine</a>.
+            </p>
+        </section>
+    </main>
+    <footer>
+        <p>All source code and documentation are available. Use your browser's "View Source" command to inspect this page.</p>
+    </footer>
+    <script src="astronomy.browser.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 
 <script src="astronomy.browser.js"></script>
