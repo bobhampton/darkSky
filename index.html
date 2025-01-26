@@ -8,8 +8,10 @@
 </head>
 <body id="main_content_wrap" class="inner">
     <h1>Dark Sky Times</h1>
+    <h3>Calculate the times when the Sun is below -18 degrees of elevation and there is no moon present in the sky.</h3>
 
-    <h2>Observer</h2>
+    <h2>Create an Observer</h2>
+    <p>Please note that the time zone will default to UTC if not selected.</p>
     <form id="observerForm" method="POST">
         <table cellpadding="5" cellspacing="0" border="1">
             <tr>
@@ -35,9 +37,6 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="font-size: smaller; color: gray;">Time zone defaults to UTC when no time zone is selected.</td>
-            </tr>
-            <tr>
                 <td>Elevation (m):</td>
                 <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
             </tr>
@@ -49,9 +48,9 @@
     </form>
 
     <h2>Dark Times</h2>
-    <h3>Times when the Sun is below -18 degrees of elevation and there is no moon present in the sky.</h3>
     <p>
-        The times are in the selected time zone. Please note that if the "Dark Time End (Dusk)" is 23:59:59, then the dark time most likely extends into the next day.
+        The times are in the selected time zone. Please note that if the "Dark Time End (Dusk)" is 23:59:59, 
+        and the next day's "Dark Time Start (Dawn)" is 00:00:00, then the dark time window extends into the next day.
     <p>
     <h4 id="TimeZoneDisplay"></h4>
     <table cellpadding="5" cellspacing="0" id="CalcTable" border="1">
@@ -195,7 +194,7 @@
         tbody.innerHTML = '';
 
         const timeZoneDisplay = document.getElementById('TimeZoneDisplay');
-        timeZoneDisplay.innerText = `Times are in the ${zone} time zone`;
+        timeZoneDisplay.innerText = `Times are in the selected time zone: ${zone}`;
 
         for (const date in darkTimes) {
             const row = document.createElement('tr');
