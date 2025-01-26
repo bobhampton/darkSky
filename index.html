@@ -211,13 +211,13 @@
             const duskTimes = darkTimes[date].filter(time => time.type === 'dusk');
 
             if (dawnTimes.length > 0) {
-                dawnStartCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].start)).setZone(zone).toISO().toFormat('HH:mm:ss');;
-                dawnEndCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].end)).setZone(zone).toISO().toFormat('HH:mm:ss');;
-            }
+            dawnStartCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].start)).setZone(zone).toFormat('HH:mm:ss');
+            dawnEndCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].end)).setZone(zone).toFormat('HH:mm:ss');
+        }
 
             if (duskTimes.length > 0) {
-                duskStartCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].start)).setZone(zone).toISO().toFormat('HH:mm:ss');;
-                duskEndCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].end)).setZone(zone).toISO().toFormat('HH:mm:ss');;
+                duskStartCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].start)).setZone(zone).toFormat('HH:mm:ss');
+                duskEndCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].end)).setZone(zone).toFormat('HH:mm:ss');
             }
 
             row.appendChild(dateCell);
