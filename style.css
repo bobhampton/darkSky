@@ -110,11 +110,13 @@ footer {
   background-color: #f2f2f2; /* Optional: Add background color to headers */
 }
 
-#calcTable input {
-    width: 90%;        /* Ensures input fits within the cell */
-    box-sizing: border-box; /* Includes padding and border in the width calculation */
-    padding: 4px;      /* Adds internal spacing within the input field */
-  }
+#EditDateStart {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 
 #submit-button {
     background-color: #0077b6;
