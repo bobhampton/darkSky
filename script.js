@@ -197,36 +197,3 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/lux
             DisplayDarkTimes(darkTimes, zone);
         }
     }
-
-    document.getElementById('download-csv-button').addEventListener('click', () => {
-        const darkTimes = getTimes(dtStart, dtEnd, observer); // Ensure you have the darkTimes data available
-        downloadCSV(darkTimes);
-    });
-
-    function convertToCSV(darkTimes) {
-        const headers = ['Date', 'Dark Time Start (Dawn)', 'Dark Time End (Dawn)', 'Dark Time Start (Dusk)', 'Dark Time End (Dusk)'];
-        const rows = darkTimes.map(time => [
-            time.date,
-            time.darkTimeStartDawn,
-            time.darkTimeEndDawn,
-            time.darkTimeStartDusk,
-            time.darkTimeEndDusk
-        ]);
-    
-        let csvContent = 'data:text/csv;charset=utf-8,' + headers.join(',') + '\n';
-        rows.forEach(row => {
-            csvContent += row.join(',') + '\n';
-        });
-    
-        return encodeURI(csvContent);
-    }
-
-    function downloadCSV(darkTimes) {
-        const csvContent = convertToCSV(darkTimes);
-        const link = document.createElement('a');
-        link.setAttribute('href', csvContent);
-        link.setAttribute('download', 'dark_times.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
