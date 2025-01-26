@@ -213,12 +213,18 @@
             if (dawnTimes.length > 0) {
             dawnStartCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].start)).setZone(zone).toFormat('HH:mm:ss');
             dawnEndCell.innerText = DateTime.fromJSDate(new Date(dawnTimes[0].end)).setZone(zone).toFormat('HH:mm:ss');
-        }
+            }
 
             if (duskTimes.length > 0) {
                 duskStartCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].start)).setZone(zone).toFormat('HH:mm:ss');
                 duskEndCell.innerText = DateTime.fromJSDate(new Date(duskTimes[0].end)).setZone(zone).toFormat('HH:mm:ss');
             }
+
+            dateCell.classList.add('center-text');
+        dawnStartCell.classList.add('center-text');
+        dawnEndCell.classList.add('center-text');
+        duskStartCell.classList.add('center-text');
+        duskEndCell.classList.add('center-text');
 
             row.appendChild(dateCell);
             row.appendChild(dawnStartCell);
