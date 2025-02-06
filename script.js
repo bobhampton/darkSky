@@ -50,6 +50,9 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/lux
             const latitude = parseFloat(document.getElementById('EditLatitude').value);
             const longitude = parseFloat(document.getElementById('EditLongitude').value);
     
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+
             if (isNaN(latitude) || latitude < -90 || latitude > 90) {
                 alert('Latitude must be a number between -90 and 90.');
                 event.preventDefault();
