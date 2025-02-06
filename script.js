@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document
     .getElementById('observerForm')
     .addEventListener('submit', function (event) {
-      const latitude = parseFloat(document.getElementById('EditLatitude').value)
-      const longitude = parseFloat(
+      let latitude = parseFloat(document.getElementById('EditLatitude').value)
+      let longitude = parseFloat(
         document.getElementById('EditLongitude').value
       )
 
