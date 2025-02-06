@@ -138,7 +138,7 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/lux
         return typeof s === 'string' && /^[\-\+]?\d+(\.\d*)?$/.test(s);
     }
 
-    function FormatDate(date) {
+    function FormatDate(date, zone) {
         return DateTime.fromJSDate(new Date(date)).setZone(zone).toFormat('HH:mm:ss');
     }
 
