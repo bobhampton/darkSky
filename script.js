@@ -3,6 +3,24 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/lux
     const timezones = Intl.supportedValuesOf('timeZone');
     const timezoneSelect = document.getElementById('timezoneSelect');
 
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve saved values from localStorage
+        document.getElementById('EditDateStart').value = localStorage.getItem('EditDateStart') || '';
+        document.getElementById('EditDateEnd').value = localStorage.getItem('EditDateEnd') || '';
+        document.getElementById('EditLatitude').value = localStorage.getItem('EditLatitude') || '';
+        document.getElementById('EditLongitude').value = localStorage.getItem('EditLongitude') || '';
+        document.getElementById('EditElevation').value = localStorage.getItem('EditElevation') || '0';
+    
+        // Save values to localStorage on form submit
+        document.getElementById('observerForm').addEventListener('submit', function() {
+            localStorage.setItem('EditDateStart', document.getElementById('EditDateStart').value);
+            localStorage.setItem('EditDateEnd', document.getElementById('EditDateEnd').value);
+            localStorage.setItem('EditLatitude', document.getElementById('EditLatitude').value);
+            localStorage.setItem('EditLongitude', document.getElementById('EditLongitude').value);
+            localStorage.setItem('EditElevation', document.getElementById('EditElevation').value);
+        });
+    });
+
     function populateTimezones() {
         timezones.forEach(tz => {
             const option = document.createElement('option');
