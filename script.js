@@ -4,19 +4,61 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2.0.0/build/es6/lux
     const timezoneSelect = document.getElementById('timezoneSelect');
 
     // Get/save the last entered values from local storage
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('EditDateStart').value = localStorage.getItem('EditDateStart') || '';
-        document.getElementById('EditDateEnd').value = localStorage.getItem('EditDateEnd') || '';
-        document.getElementById('EditLatitude').value = localStorage.getItem('EditLatitude') || '';
-        document.getElementById('EditLongitude').value = localStorage.getItem('EditLongitude') || '';
-        document.getElementById('EditElevation').value = localStorage.getItem('EditElevation') || '0';
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     document.getElementById('EditDateStart').value = localStorage.getItem('EditDateStart') || '';
+    //     document.getElementById('EditDateEnd').value = localStorage.getItem('EditDateEnd') || '';
+    //     document.getElementById('EditLatitude').value = localStorage.getItem('EditLatitude') || '';
+    //     document.getElementById('EditLongitude').value = localStorage.getItem('EditLongitude') || '';
+    //     document.getElementById('EditElevation').value = localStorage.getItem('EditElevation') || '0';
     
-        document.getElementById('observerForm').addEventListener('submit', function() {
-            localStorage.setItem('EditDateStart', document.getElementById('EditDateStart').value);
-            localStorage.setItem('EditDateEnd', document.getElementById('EditDateEnd').value);
-            localStorage.setItem('EditLatitude', document.getElementById('EditLatitude').value);
-            localStorage.setItem('EditLongitude', document.getElementById('EditLongitude').value);
-            localStorage.setItem('EditElevation', document.getElementById('EditElevation').value);
+    //     document.getElementById('observerForm').addEventListener('submit', function() {
+    //         localStorage.setItem('EditDateStart', document.getElementById('EditDateStart').value);
+    //         localStorage.setItem('EditDateEnd', document.getElementById('EditDateEnd').value);
+    //         localStorage.setItem('EditLatitude', document.getElementById('EditLatitude').value);
+    //         localStorage.setItem('EditLongitude', document.getElementById('EditLongitude').value);
+    //         localStorage.setItem('EditElevation', document.getElementById('EditElevation').value);
+    //     });
+    // });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const fields = ['EditDateStart', 'EditDateEnd', 'EditLatitude', 'EditLongitude', 'EditElevation'];
+    
+        fields.forEach(field => {
+            const inputElement = document.getElementById(field);
+            const dataListElement = document.getElementById(field + 'List');
+            const storedValues = JSON.parse(localStorage.getItem(field) || '[]');
+    
+            // Populate datalist with stored values
+            storedValues.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                dataListElement.appendChild(option);
+            });
+    
+            // Save new values to localStorage on form submit
+            document.getElementById('observerForm').addEventListener('submit', function(event) {
+                const newValue = inputElement.value;
+                if (newValue && !storedValues.includes(newValue)) {
+                    storedValues.push(newValue);
+                    localStorage.setItem(field, JSON.stringify(storedValues));
+                }
+            });
+        });
+    
+        // Add validation for latitude and longitude
+        document.getElementById('observerForm').addEventListener('submit', function(event) {
+            const latitude = parseFloat(document.getElementById('EditLatitude').value);
+            const longitude = parseFloat(document.getElementById('EditLongitude').value);
+    
+            if (isNaN(latitude) || latitude < -90 || latitude > 90) {
+                alert('Latitude must be a number between -90 and 90.');
+                event.preventDefault();
+            }
+    
+            if (isNaN(longitude) || longitude < -180 || longitude > 180) {
+                alert('Longitude must be a number between -180 and 180.');
+                event.preventDefault();
+            }
         });
     });
 
