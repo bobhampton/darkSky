@@ -50,13 +50,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('EditLongitude').value
       )
 
+      // Ensure latitude and longitude are strings
+      latitude = latitude ? latitude.toString() : '';
+      longitude = longitude ? longitude.toString() : '';
+
       // Remove non-numeric characters except for digits, decimal point, and minus sign
       latitude = latitude.replace(/[^0-9.-]/g, '');
       longitude = longitude.replace(/[^0-9.-]/g, '');
 
       latitude = parseFloat(latitude);
       longitude = parseFloat(longitude);
-      
+
       console.log('Latitude:', latitude)
       console.log('Longitude:', longitude)
 
