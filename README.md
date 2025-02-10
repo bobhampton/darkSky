@@ -1,6 +1,6 @@
 # darkSky
 
-The darkSky repository allows users to easily determine the times when the sky is the darkest (i.e. the times when the Sun is -18 degrees below the horizon and there is no moon present in the sky for a desired location and date range.
+The darkSky repository allows users to easily determine the times when the sky is the darkest (i.e. the times when the Sun is -18 degrees below the horizon and there is no moon present in the sky) for a desired location and date range.
 
 ## Description
 
