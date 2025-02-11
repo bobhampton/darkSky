@@ -15,3 +15,7 @@ darkSky simplifies the process of identifying these critical time windows, empow
 ## Cite This Work:
 If you use darkSky in your research, please cite it using the DOI provided by Zenodo.
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14847872.svg)](https://doi.org/10.5281/zenodo.14847872)
+
+## Acknowledgements
+This project would not have been possible without:
+- This project uses [Astronomy Engine](https://github.com/cosinekitty/astronomy), a suite of open source libraries for calculating positions of the Sun, Moon, and planets, and for predicting interesting events like oppositions, conjunctions, rise and set times, lunar phases, eclipses, transits, and more..
