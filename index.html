@@ -3,89 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Sky Times</title>
-    <link rel="stylesheet" href="style.css">
+    <title>darkSky</title>
+    <link rel="stylesheet" type="text/css" href="../public/css/styles.css">
 </head>
-<body id="main_content_wrap" class="inner">
-    <header>
-        <h1>Dark Sky Times</h1>
-        <h3>Calculate the times when the Sun is at least -18 degrees below the horizon and there is no moon present in the sky.</h3>
-        <p>
-            Please note: 
-            <ol>It is important to select the time zone that you want the results to be displayed in.</ol>
-            <ol>If you do not select a time zone, it will default to UTC.</ol>
-            <ol>When a time zone is selected, daylight saving time rules will automatically be applied to the results.</ol>
+
+<body>
+    <div id="main_content_wrap" class="inner">
+  <header>
+    <div class="header-container">
+      <h1>Dark Sky Times</h1>
+      <div class="star-toggle-wrapper">
+        <label class="star-toggle-label">
+          ✨ Stars
+          <label class="switch">
+            <input type="checkbox" id="starfieldToggle" />
+            <span class="slider round"></span>
+          </label>
+        </label>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div>
+      <h2 id="h2-description">Calculate the times when the Sun is -18&deg; below
+        the horizon and there is no moon present in the sky</h2>
+      <p>
+        Please note:
+        <br />
+        - When a time zone is selected, daylight saving time rules are
+        automatically applied to the results.
+        <br />
+        - If calculations are taking a long time, disable the starfield
+        background using the '✨ Stars' toggle above.
+      </p>
+    </div>
+    <form id="observerForm">
+      <h2>Observation Criteria</h2>
+      <div class="form-group">
+        <label for="EditDateStart">
+          <span
+            class="info-icon"
+            data-tooltip="Select the start date of the time period for which you want to calculate dark sky times."
+          >ℹ️</span>
+          Date Start:
+        </label>
+        <input type="date" id="EditDateStart" required />
+      </div>
+      <div class="form-group">
+        <label for="EditDateEnd">
+          <span
+            class="info-icon"
+            data-tooltip="Select the end date of the time period for which you want to calculate dark sky times."
+          >ℹ️</span>
+          Date End:
+        </label>
+        <input type="date" id="EditDateEnd" required />
+      </div>
+      <div class="form-group">
+        <label for="EditLatitude">
+          <span
+            class="info-icon"
+            data-tooltip="Enter the latitude for the location where the dark sky time is to be observed (e.g., 40.7720)."
+          >ℹ️</span>
+          Latitude:
+        </label>
+        <input
+          type="text"
+          id="EditLatitude"
+          placeholder="e.g., 40.7720"
+          pattern="[\-\+]?\d+(\.\d*)?"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="EditLongitude">
+          <span
+            class="info-icon"
+            data-tooltip="Enter the longitude for the location where the dark sky time is to be observed (e.g., -112.1012)."
+          >ℹ️</span>
+          Longitude:
+        </label>
+        <input
+          type="text"
+          id="EditLongitude"
+          placeholder="e.g., -112.1012"
+          pattern="[\-\+]?\d+(\.\d*)?"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="EditElevation">
+          <span
+            class="info-icon"
+            data-tooltip="Enter the elevation in meters for the location where the dark sky time is to be observed. Default is 0."
+          >ℹ️</span>
+          Elevation (m):
+        </label>
+        <input
+          type="text"
+          id="EditElevation"
+          value="0"
+          pattern="[\-\+]?\d+(\.\d*)?"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="timezoneSearch">
+          <span
+            class="info-icon"
+            data-tooltip="Type to filter the list of available time zones. Note that if no time zone is found, it will default to UTC."
+          >ℹ️</span>
+          Time Zone Filter:
+        </label>
+        <input
+          type="text"
+          id="timezoneSearch"
+          placeholder="Type to filter time zones"
+        />
+      </div>
+      <div class="form-group">
+        <label for="timezoneSelect">
+          <span
+            class="info-icon"
+            data-tooltip="Select the time zone that you want the calculated times to be displayed in. Typically this will be the same time zone as the latitude and longitude entered above."
+          >ℹ️</span>
+          Time Zone:
+          <br />
+          <span class="sub-header" id="sub-header-date">(Defaults to UTC if not
+            selected)</span>
+          <br />
+          <br />
+          <label id="defaultTimezoneLabel">
+            <input type="checkbox" id="saveDefaultTimezone" />
+            Set as default time zone?
+            <span
+              class="info-icon"
+              data-tooltip="Enable this to automatically select this time zone the next time you visit this page."
+            >ℹ️</span>
+          </label>
+        </label>
+        <div style="display: flex; flex-direction: column;">
+          <select id="timezoneSelect" size="12"></select>
+        </div>
+      </div>
+      <div class="button-wrapper">
+        <button id="submit-button" type="submit">Submit</button>
+      </div>
+      <div class="button-wrapper">
+        <button id="clearFormBtn" type="button" class="secondary-button">🗑️
+          Clear Form</button>
+      </div>
+    </form>
+    <div class="click-row-hint">
+      <span class="tooltip-hint-static" id="click-any-row">📣 Click on any row</span>
+      in the table below to reveal more data:
+      <ul class="hint-list">
+        <li><strong>Astronomical twilight</strong> start and end times</li>
+        <li><strong>Moonrise</strong> and <strong>moonset</strong> times</li>
+        <li><strong>Altitude of the moon</strong> at key moments</li>
+      </ul>
+    </div>
+    <div class="animated-separator-container">
+      <div class="animated-separator" id="scroll-target-separator"></div>
+    </div>
+    <section>
+      <h2>Calculated Dark Sky Times</h2>
+      <div class="animated-separator-container">
+        <div class="animated-separator" id="scroll-target-separator"></div>
+      </div>
+      <div class="export-container">
+        <p>Want to Excel at capturing the darkest hours?
+          <br />
+          <br />
+          Export a CSV file with all the data, or just export the dark sky
+          times.
+          <br />
         </p>
-    </header>
-    <main>
-        <form id="observerForm" method="POST">
-            <table>
-                <tr>
-                    <td>Date Start:</td>
-                    <td><input type="date" id="EditDateStart" required></td>
-                </tr>
-                <tr>
-                    <td>Date End:</td>
-                    <td><input type="date" id="EditDateEnd" required></td>
-                </tr>
-                <tr>
-                    <td>Latitude:</td>
-                    <td><input type="text" id="EditLatitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-                </tr>
-                <tr>
-                    <td>Longitude:</td>
-                    <td><input type="text" id="EditLongitude" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-                </tr>
-                <tr>
-                    <td>(display results in) Time Zone:</td>
-                    <td>
-                        <select id="timezoneSelect" size="10"></select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Elevation (m): <br>
-                        The observer's elevation above mean sea level, espressed in meters.<br> 
-                        Set to 0 if you don't know.</td>
-                    <td><input type="text" id="EditElevation" value="0" pattern="[\-\+]?\d+(\.\d*)?" size="10" required></td>
-                </tr>
-            </table>
-            <button id="submit-button" type="submit">Submit</button>
-        </form>
-        <section>
-            <h2>Dark Times</h2>
-            <p>
-                The times are in the selected time zone. Please note that if the "Dark Time End (Dusk)" is 23:59:59,
-                and the next day's "Dark Time Start (Dawn)" is 00:00:00, then the dark time window extends into the next day.
-            </p>
-            <h2 id="TimeZoneDisplay"></h2>
-            <table id="CalcTable">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Dark Time Start (Dawn)</th>
-                        <th>Dark Time End (Dawn)</th>
-                        <th>Dark Time Start (Dusk)</th>
-                        <th>Dark Time End (Dusk)</th>
-                    </tr>
-                </thead>
-                <tbody id="DarkTimesBody"></tbody>
-            </table>
-        </section>
-    </main>
-    <footer>
-        <p>
-            All source code and documentation is available <a href="https://github.com/BobbyBoy101/darkSky">here</a>, or you can use your browser's "View Source" command to inspect this page.
-        </p>
-        <p>
-            This page uses <a href="https://github.com/cosinekitty/astronomy/">Astronomy Engine</a> to generate these times.
-        </p>
-        <p>
-            &copy; 2025 darkSky Project. Licensed under the MIT License. 
-            <br>
-            Cite this work: <a href="https://doi.org/10.5281/zenodo.14847872" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.14847872</a>
-          </p>
-    </footer>
-<script src="astronomy.browser.js"></script>
-<script type="module" src="script.js"></script>
+        <div class="export-controls">
+          <label class="export-checkbox">
+            <input type="checkbox" id="exportMinimalCheckbox" />
+            Only include dark sky windows
+          </label>
+          <br />
+          <button id="exportCSVBtn" type="button">📤 Export as CSV</button>
+
+        </div>
+      </div>
+      <div class="table-hint">
+        <strong>📌 Tip:</strong>
+        Hover your cursor over a cell and if that dark time window extends into
+        the next day or is a continuation from the previous day, a note will be
+        displayed.
+      </div>
+      <h2 id="TimeZoneDisplay"></h2>
+      <div class="table-wrapper">
+        <table id="CalcTable">
+          <thead>
+            <tr>
+              <th>
+                Date<br />
+                <span
+                  class="sub-header"
+                  id="sub-header-date"
+                >(YYYY-MM-DD)</span>
+              </th>
+              <th>
+                Dark Time Start<br />
+                <span class="sub-header" id="sub-header-dawn-start">( AM )</span>
+              </th>
+              <th>
+                Dark Time End<br />
+                <span class="sub-header" id="sub-header-dawn-end">( AM )</span>
+              </th>
+              <th>
+                Dark Time Start<br />
+                <span class="sub-header" id="sub-header-dusk-start">( PM )</span>
+              </th>
+              <th>
+                Dark Time End<br />
+                <span class="sub-header" id="sub-header-dusk-end">( PM )</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="DarkTimesBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>
+      All source code and documentation is available
+      <a href="https://github.com/BobbyBoy101/darkSky">here</a>, or you can use
+      your browser's "View Source" command to inspect this page.
+    </p>
+    <p>
+      This page uses
+      <a href="https://github.com/cosinekitty/astronomy/">Astronomy Engine</a>
+      to generate these times.
+    </p>
+    <p>
+      Cite this work:
+      <a
+        href="https://doi.org/10.5281/zenodo.14847872"
+        target="_blank"
+        rel="noopener noreferrer"
+      >https://doi.org/10.5281/zenodo.14847872</a>
+    </p>
+    <p>
+      &copy; 2025 darkSky Project. Licensed under the MIT License.
+    </p>
+  </footer>
+</div>
+<canvas id="starfield"></canvas>
+    <script src=public/js/astronomy.browser.js></script>
+    <script type="module" src=public/js/main.js></script>
 </body>
 </html>
