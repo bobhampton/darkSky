@@ -671,3 +671,17 @@
   input:checked+.slider:before {
     transform: translateX(22px);
   }
+
+  /* Input field fix for chrome */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Inverts the color for better visibility */
+  }
+  
+  input[type="date"],
+  input[type="text"] {
+    color: #FFFFFF; /* Text color */
+    background-color: #333333; /* Background color */
+    border: 1px solid #FFFFFF; /* Border color */
+    padding: 5px; /* Padding inside the input */
+    border-radius: 5px; /* Rounded corners */
+  }
