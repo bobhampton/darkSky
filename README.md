@@ -8,9 +8,12 @@ Hosted on GitHub Pages [here](https://bobhampton.github.io/darkSky/), the darkSk
 
 darkSky simplifies the process of identifying these critical time windows, empowering researchers, citizen scientists, and environmental advocates to contribute to global efforts in understanding and mitigating the effects of artificial light on our night skies.
 
-***Soon to come***
-- Ability to download a .csv file of the generated times.
-- Display all data used to calculate darkSky times (astronomical twilight start/end, moon rise/set).
+### Features
+- **CSV Export**: Users can now download a `.csv` file containing the calculated dark sky times, including optional metadata such as astronomical twilight start/end, moonrise/set times, and moon altitude at key moments.
+- **Detailed Data Display**: All data used to calculate dark sky times can be displayed by clicking on a dark time row in the generated chart, including:
+  - Astronomical twilight start and end times.
+  - Moonrise and moonset times.
+  - Altitude of the moon at key moments.
 
 ## Cite This Work:
 If you use darkSky in your research, please cite it using the DOI provided by Zenodo.
