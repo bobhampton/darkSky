@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>darkSky</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="./public/css/styles.css">
 </head>
-
 <body>
     <div id="main_content_wrap" class="inner">
   <header>
@@ -27,15 +26,6 @@
     <div>
       <h2 id="h2-description">Calculate the times when the Sun is -18&deg; below
         the horizon and there is no moon present in the sky</h2>
-      <p>
-        Please note:
-        <br />
-        - When a time zone is selected, daylight saving time rules are
-        automatically applied to the results.
-        <br />
-        - If calculations are taking a long time, disable the starfield
-        background using the '✨ Stars' toggle above.
-      </p>
     </div>
     <form id="observerForm">
       <h2>Observation Criteria</h2>
@@ -162,40 +152,28 @@
       <div class="animated-separator-container">
         <div class="animated-separator" id="scroll-target-separator"></div>
       </div>
-      <div class="click-row-hint">
-        <span class="tooltip-hint-static" id="click-any-row">📣 Click on any row</span>
-        in the table below to reveal more data:
-        <ul class="hint-list">
-          <li><strong>Astronomical twilight</strong> start and end times</li>
-          <li><strong>Moonrise</strong> and <strong>moonset</strong> times</li>
-          <li><strong>Altitude of the moon</strong> at key moments</li>
-        </ul>
-      </div>
-      <div class="export-container">
-        <p>Want to Excel at capturing the darkest hours?
-          <br />
-          <br />
-          Export a CSV file with all the data, or just export the dark sky
-          times.
-          <br />
-        </p>
-        <div class="export-controls">
-          <label class="export-checkbox">
-            <input type="checkbox" id="exportMinimalCheckbox" />
-            Only include dark sky windows
-          </label>
-          <br />
-          <button id="exportCSVBtn" type="button">📤 Export as CSV</button>
-
-        </div>
-      </div>
+      <h2 id="TimeZoneDisplay"></h2>
+      <p>
+        Please note:
+        <br />
+        - When a time zone is selected, daylight saving time rules are
+        automatically applied to the results.
+      </p>
       <div class="table-hint">
         <strong>📌 Tip:</strong>
         Hover your cursor over a cell and if that dark time window extends into
         the next day or is a continuation from the previous day, a note will be
         displayed.
       </div>
-      <h2 id="TimeZoneDisplay"></h2>
+      <div class="export-container">
+        <div class="export-controls">
+          <button id="exportCSVBtn" type="button">📤 Export as CSV</button>
+          <label class="export-checkbox">
+            <input type="checkbox" id="exportMinimalCheckbox" />
+            Only include dark sky windows
+          </label>
+        </div>
+      </div>
       <div class="table-wrapper">
         <table id="CalcTable">
           <thead>
@@ -208,20 +186,16 @@
                 >(YYYY-MM-DD)</span>
               </th>
               <th>
-                Dark Time Start<br />
-                <span class="sub-header" id="sub-header-dawn-start">( AM )</span>
+                Dark Time Start<br />               
+              </th>
+              <th>
+                Dark Time End<br />               
+              </th>
+              <th>
+                Dark Time Start<br />               
               </th>
               <th>
                 Dark Time End<br />
-                <span class="sub-header" id="sub-header-dawn-end">( AM )</span>
-              </th>
-              <th>
-                Dark Time Start<br />
-                <span class="sub-header" id="sub-header-dusk-start">( PM )</span>
-              </th>
-              <th>
-                Dark Time End<br />
-                <span class="sub-header" id="sub-header-dusk-end">( PM )</span>
               </th>
             </tr>
           </thead>
@@ -255,7 +229,14 @@
   </footer>
 </div>
 <canvas id="starfield"></canvas>
-    <script src=astronomy.browser.js></script>
-    <script type="module" src=main.js></script>
+<script src="./public/js/astronomy.browser.js"></script>
+<script src="./public/js/main.js" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<div id="chartModal" class="chart-modal">
+  <div class="chart-modal-content">
+    <span id="chartModalClose">&times;</span>
+    <canvas id="fullscreenChartCanvas" width="1000" height="500"></canvas>
+  </div>
+</div>
 </body>
 </html>
