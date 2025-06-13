@@ -213,16 +213,18 @@ export function DisplayDarkTimes(darkTimes, zone) {
     duskStartCell.classList.add('center-text');
     duskEndCell.classList.add('center-text');
 
+    const metaOnly = darkTimes[date].find(t => t.type === 'metaOnly');
+
     row.dataset.meta = JSON.stringify({
       dawn: {
-        start: dawnTimes[0]?.start || fullDark?.start || null,
-        end: dawnTimes[0]?.end || fullDark?.end || null,
-        ...(dawnTimes[0]?.meta || fullDark?.meta || {})
+        start: dawnTimes[0]?.start || null,
+        end: dawnTimes[0]?.end || null,
+        ...(dawnTimes[0]?.meta || metaOnly?.meta || {})
       },
       dusk: {
-        start: duskTimes[0]?.start || fullDark?.start || null,
-        end: duskTimes[0]?.end || fullDark?.end || null,
-        ...(duskTimes[0]?.meta || fullDark?.meta || {})
+        start: duskTimes[0]?.start || null,
+        end: duskTimes[0]?.end || null,
+        ...(duskTimes[0]?.meta || metaOnly?.meta || {})
       }
     });
 

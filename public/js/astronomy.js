@@ -207,6 +207,12 @@ export function getTimes(dtStart, dtEnd, observer) {
       }
     }
 
+    // Save fallback metadata for the day, even if no dark times found
+    darkObj[currentDate].push({
+      type: 'metaOnly',
+      meta
+    });
+
     dtStart = dtStart.plus({ days: 1 });
   }
 
