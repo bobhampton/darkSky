@@ -673,68 +673,123 @@ input:checked+.slider:before {
   transform: translateX(22px);
 }
 
-  /* Input field fix for chrome */
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1); /* Inverts the color for better visibility */
-  }
-  
-  input[type="date"],
-  input[type="text"] {
-    color: #FFFFFF; /* Text color */
-    background-color: #333333; /* Background color */
-    border: 1px solid #FFFFFF; /* Border color */
-    padding: 5px; /* Padding inside the input */
-    border-radius: 5px; /* Rounded corners */
+/* Input field fix for chrome */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Inverts the color for better visibility */
+}
+
+input[type="date"],
+input[type="text"] {
+  color: #FFFFFF; /* Text color */
+  background-color: #333333; /* Background color */
+  border: 1px solid #FFFFFF; /* Border color */
+  padding: 5px; /* Padding inside the input */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.sun-moon-altitude-wrapper {
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  margin-top: 1em;
+}
+.sun-moon-altitude-chart {
+  color: white;
+  background-color: white;
+  display: block;
+  max-width: 100%;
+}
+
+.chart-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-modal-content {
+  background: white;
+  padding: 1em;
+  border-radius: 6px;
+  position: relative;
+  max-width: 95%;
+  max-height: 90%;
+  box-shadow: 0 0 12px rgba(255,255,255,0.2);
+}
+
+.chart-modal-content canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#chartModalClose {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Optimizations for smaller screens (mobile) */
+@media screen and (max-width: 768px) {
+  body, main, form {
+    padding: 1rem;
   }
 
-  .sun-moon-altitude-wrapper {
-    padding-top: 10px;
-    border-top: 1px solid #ccc;
-    margin-top: 1em;
+  h1 {
+    font-size: 2rem;
   }
-  .sun-moon-altitude-chart {
-    color: white;
-    background-color: white;
-    display: block;
-    max-width: 100%;
+
+  h2, #h2-description {
+    font-size: 1.2rem;
   }
-  
-  .chart-modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0,0,0,0.85);
-    justify-content: center;
-    align-items: center;
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .chart-modal-content {
-    background: white;
-    padding: 1em;
-    border-radius: 6px;
-    position: relative;
-    max-width: 95%;
-    max-height: 90%;
-    box-shadow: 0 0 12px rgba(255,255,255,0.2);
+
+  .form-group label {
+    text-align: left;
+    width: 100%;
+    padding-right: 0;
+    margin-bottom: 0.5rem;
   }
-  
-  .chart-modal-content canvas {
-    display: block;
-    max-width: 100%;
+
+  .export-controls {
+    flex-direction: column;
+  }
+
+  #timezoneSelect {
     height: auto;
+    max-height: 200px;
   }
-  
-  #chartModalClose {
-    position: absolute;
-    top: 5px;
-    right: 12px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
+
+  .table-wrapper {
+    overflow-x: auto;
   }
+
+  table {
+    font-size: 0.85rem;
+    min-width: 100%;
+  }
+
+  .details-flex-wrapper {
+    flex-direction: column;
+  }
+
+  .details-block {
+    border-right: none;
+    padding-right: 0;
+  }
+}
+
   
