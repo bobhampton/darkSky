@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Tooltip } from './Tooltip';
-import { convert24To12Hour, convert12To24Hour, formatTime12Hour } from '@/utils/dateUtils';
+import { convert24To12Hour, convert12To24Hour } from '@/utils/dateUtils';
 import { validateTimeRange } from '@/utils/validation';
 import type { TimeRangeFilter } from '@/types';
 

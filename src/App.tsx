@@ -7,7 +7,7 @@ import { HomePage, GettingStartedPage, PartnersPage, ErrorPage, NotFoundRedirect
  */
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/darkSky">
       <ErrorBoundaryWrapper>
         <ScrollToTopOnNav />
         {/* Animated starfield background */}
