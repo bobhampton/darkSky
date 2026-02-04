@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darkSky - Dark Sky Time Calculator</title>
+    <script>
+      // GitHub Pages SPA redirect handler
+      // Checks if this is a redirect from 404.html and restores the URL
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.pathname) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/darkSky/assets/index-D8WYxvEq.js"></script>
+    <link rel="modulepreload" crossorigin href="/darkSky/assets/charts-DJKP9HcX.js">
+    <link rel="modulepreload" crossorigin href="/darkSky/assets/astronomy-CWZ___A_.js">
+    <link rel="modulepreload" crossorigin href="/darkSky/assets/luxon-BDx6lZXm.js">
+    <link rel="stylesheet" crossorigin href="/darkSky/assets/index-CXnVsQL0.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
