@@ -12,7 +12,12 @@
         var redirect = sessionStorage.redirect;
         delete sessionStorage.redirect;
         if (redirect && redirect !== location.pathname) {
-          history.replaceState(null, null, redirect);
+          // Remove the base path from redirect since React Router handles it
+          var basePath = '/darkSky';
+          if (redirect.startsWith(basePath)) {
+            redirect = redirect.substring(basePath.length) || '/';
+          }
+          history.replaceState(null, null, basePath + redirect);
         }
       })();
     </script>
