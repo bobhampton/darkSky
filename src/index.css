@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background: #000000;
+    color: #e0f2fe;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+  }
+  
+  /* Smooth color transitions */
+  * {
+    transition: colors 200ms;
+  }
+  
+  /* Date picker styling */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1);
+    cursor: pointer;
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: brightness(0) invert(1) opacity(0.8);
+  }
+}

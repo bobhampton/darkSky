@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // GitHub Pages SPA redirect solution
+    // This script takes the current URL and redirects to index.html
+    // with the path preserved as a query parameter that the app can use
+    sessionStorage.redirect = location.pathname + location.search + location.hash;
+  </script>
+  <meta http-equiv="refresh" content="0;URL='/'">
+</head>
+<body>
+  Redirecting to app...
+</body>
+</html>

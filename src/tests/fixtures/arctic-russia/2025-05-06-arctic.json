@@ -1,0 +1,18 @@
+{
+  "description": "Arctic Russia (76.5°N, 69.2285°E) - 3 moon crossings (1 rise, 2 sets)",
+  "location": {
+    "latitude": 76.5,
+    "longitude": 69.2285,
+    "elevation": 0,
+    "timezone": "UTC"
+  },
+  "date": "2025-05-06",
+  "expected": {
+    "moonRises": 1,
+    "moonSets": 2,
+    "totalMoonCrossings": 3,
+    "astronomicalNightStarts": 0,
+    "astronomicalNightEnds": 0
+  },
+  "notes": "Polar region edge case with 3 total moon crossings. USNO API confirms: Set 01:09, Rise 05:08, Set 23:32. Sun continuously above twilight limit (no astronomical night)."
+}

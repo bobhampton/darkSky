@@ -1,0 +1,16 @@
+{
+  "description": "Midnight sun at 86°N - Sun stays above -18° all day (no astronomical twilight)",
+  "location": {
+    "latitude": 86,
+    "longitude": 0,
+    "elevation": 0,
+    "timezone": "UTC"
+  },
+  "date": "2025-06-21",
+  "expected": {
+    "astronomicalNightStarts": 0,
+    "astronomicalNightEnds": 0,
+    "sunContinuouslyAboveTwilight": true,
+    "notes": "Summer midnight sun - sun remains above -18° for the entire day. No astronomical darkness occurs."
+  }
+}
