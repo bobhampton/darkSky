@@ -1,0 +1,18 @@
+{
+  "description": "Arctic Russia (76.5°N, 69.2285°E) - Near 3 sun crossings of -18 degrees",
+  "location": {
+    "latitude": 76.5,
+    "longitude": 69.2285,
+    "elevation": 0,
+    "timezone": "UTC"
+  },
+  "date": "2025-11-04",
+  "expected": {
+    "moonRises": 1,
+    "moonSets": 1,
+    "astronomicalNightStarts": 1,
+    "astronomicalNightEnds": 1,
+    "minTotalSunCrossings": 2
+  },
+  "notes": "Polar region edge case where sun comes very close to crossing -18 degrees three times. This date is close to the transition period where multiple crossings could occur."
+}

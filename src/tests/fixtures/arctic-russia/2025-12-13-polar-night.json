@@ -1,0 +1,16 @@
+{
+  "description": "Polar night at 86°N - Sun stays below -18° all day (perpetual astronomical darkness)",
+  "location": {
+    "latitude": 86,
+    "longitude": 0,
+    "elevation": 0,
+    "timezone": "UTC"
+  },
+  "date": "2025-12-13",
+  "expected": {
+    "astronomicalNightStarts": 0,
+    "astronomicalNightEnds": 0,
+    "sunContinuouslyBelowTwilight": true,
+    "notes": "Winter polar night - sun remains below -18° for the entire day. No twilight transitions occur."
+  }
+}

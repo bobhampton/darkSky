@@ -1,0 +1,21 @@
+# Netlify/Cloudflare Pages cache headers for production optimization
+
+# Cache static assets for 1 year
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache HTML with revalidation
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Cache Service Worker with short TTL
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Security headers
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()

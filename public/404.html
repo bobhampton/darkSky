@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z8KZLD7W83"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Z8KZLD7W83');
+  </script>
+  <script>
+    // GitHub Pages SPA redirect solution
+    // This script takes the current URL and redirects to index.html
+    // with the path preserved as a query parameter that the app can use
+    sessionStorage.redirect = location.pathname + location.search + location.hash;
+  </script>
+  <meta http-equiv="refresh" content="0;URL='/darkSky/'">
+</head>
+<body>
+  Redirecting to app...
+</body>
+</html>

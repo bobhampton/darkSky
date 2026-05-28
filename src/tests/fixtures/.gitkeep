@@ -1,0 +1,4 @@
+# Fixtures Directory
+
+This directory stores API responses for validation testing.
+Fixtures allow tests to run offline and provide deterministic results.

@@ -1,0 +1,1 @@
+{"root":["./src/tests/astronomy.test.ts","./src/tests/astronomy.validation.test.ts","./src/tests/dateutils.test.ts","./src/tests/setup.ts","./src/tests/validation.test.ts","./src/tests/helpers/apihelpers.ts"],"version":"5.9.3"}
