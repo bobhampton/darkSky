@@ -5,6 +5,7 @@ import { FilterControlsPanel } from './DarkTimesTable/FilterControlsPanel';
 import { AstronomicalEventsDisplay } from './DarkTimesTable/AstronomicalEventsDisplay';
 import { WindowRow } from './DarkTimesTable/WindowRow';
 import { TypeBadge } from './DarkTimesTable/TypeBadge';
+import { DarkTimesCard } from './DarkTimesTable/DarkTimesCard';
 import type { DarkTimesData, DarkTimeWindow, DarkTimeMetadata, TimeRangeFilter } from '@/types';
 
 interface DarkTimesTableProps {
@@ -123,7 +124,7 @@ export function DarkTimesTable({
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div>
       {/* Active Filters Summary */}
       <FilterSummaryBar
         minDurationHours={minDurationHours}
@@ -156,120 +157,144 @@ export function DarkTimesTable({
 
       {/* Results Table or Empty State */}
       {hasFilteredResults ? (
-        <table className="w-full text-sm text-left text-gray-300" role="table" aria-label="Dark times results by date">
-          <caption className="sr-only">
-            Dark times results showing dates, dark windows, astronomical events, and chart options
-          </caption>
-          <thead className="text-xs text-gray-400 uppercase bg-gray-700">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Date
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Dark Windows
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Astronomical Events
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Type
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Duration
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {dates.map((date) => {
-              const allWindows = darkTimesData[date];
-              const windows = getActualDarkWindows(allWindows);
-              const metadata = getMetadata(allWindows);
-              const isCollapsed = collapsedRows.has(date);
-              const isAstroExpanded = expandedAstro.has(date);
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto">
+            <table className="w-full text-sm text-left text-gray-300" role="table" aria-label="Dark times results by date">
+              <caption className="sr-only">
+                Dark times results showing dates, dark windows, astronomical events, and chart options
+              </caption>
+              <thead className="text-xs text-gray-400 uppercase bg-gray-700">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    Date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Dark Windows
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Astronomical Events
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Type
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Duration
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dates.map((date) => {
+                  const allWindows = darkTimesData[date];
+                  const windows = getActualDarkWindows(allWindows);
+                  const metadata = getMetadata(allWindows);
+                  const isCollapsed = collapsedRows.has(date);
+                  const isAstroExpanded = expandedAstro.has(date);
 
-              return (
-                <tr key={date} className="border-b border-gray-700 hover:bg-gray-800/50">
-                  <td className="px-6 py-4 font-medium text-white whitespace-nowrap">{date}</td>
-                  <td className="px-6 py-4">
-                    {windows.length === 0 ? (
-                      <span className="text-gray-500">No dark time</span>
-                    ) : (
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span>
-                            {windows.length} window{windows.length !== 1 ? 's' : ''}
-                          </span>
-                          {windows.length > 1 && (
-                            <button
-                              onClick={() => toggleRow(date)}
-                              className="text-blue-400 hover:text-blue-300 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400 rounded px-1"
-                              aria-expanded={!isCollapsed}
-                              aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} dark windows for ${date}`}
-                            >
-                              {isCollapsed ? '▶ Expand' : '▼ Collapse'}
-                            </button>
-                          )}
-                        </div>
-                        {!isCollapsed && (
-                          <div className="mt-2 space-y-2">
+                  return (
+                    <tr key={date} className="border-b border-gray-700 hover:bg-gray-800/50">
+                      <td className="px-6 py-4 font-medium text-white whitespace-nowrap">{date}</td>
+                      <td className="px-6 py-4">
+                        {windows.length === 0 ? (
+                          <span className="text-gray-500">No dark time</span>
+                        ) : (
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span>
+                                {windows.length} window{windows.length !== 1 ? 's' : ''}
+                              </span>
+                              {windows.length > 1 && (
+                                <button
+                                  onClick={() => toggleRow(date)}
+                                  className="text-blue-400 hover:text-blue-300 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400 rounded px-1"
+                                  aria-expanded={!isCollapsed}
+                                  aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} dark windows for ${date}`}
+                                >
+                                  {isCollapsed ? '▶ Expand' : '▼ Collapse'}
+                                </button>
+                              )}
+                            </div>
+                            {!isCollapsed && (
+                              <div className="mt-2 space-y-2">
+                                {windows.map((window, idx) => (
+                                  <WindowRow key={idx} window={window} timezone={timezone} />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => toggleAstro(date)}
+                          className="text-blue-400 hover:text-blue-300 text-xs flex items-center gap-1 focus:outline-none focus:ring-1 focus:ring-blue-400 rounded px-1"
+                          aria-expanded={isAstroExpanded}
+                          aria-label={`${isAstroExpanded ? 'Hide' : 'Show'} astronomical events for ${date}`}
+                        >
+                          {isAstroExpanded ? '▼ Hide' : '▶ Show'}
+                        </button>
+                        {isAstroExpanded && metadata && <AstronomicalEventsDisplay metadata={metadata} timezone={timezone} />}
+                      </td>
+                      <td className="px-6 py-4">
+                        {windows.length > 0 && (
+                          <div className="space-y-2">
                             {windows.map((window, idx) => (
-                              <WindowRow key={idx} window={window} timezone={timezone} />
+                              <div key={idx}>
+                                <TypeBadge type={window.type} />
+                              </div>
                             ))}
                           </div>
                         )}
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() => toggleAstro(date)}
-                      className="text-blue-400 hover:text-blue-300 text-xs flex items-center gap-1 focus:outline-none focus:ring-1 focus:ring-blue-400 rounded px-1"
-                      aria-expanded={isAstroExpanded}
-                      aria-label={`${isAstroExpanded ? 'Hide' : 'Show'} astronomical events for ${date}`}
-                    >
-                      {isAstroExpanded ? '▼ Hide' : '▶ Show'}
-                    </button>
-                    {isAstroExpanded && metadata && <AstronomicalEventsDisplay metadata={metadata} timezone={timezone} />}
-                  </td>
-                  <td className="px-6 py-4">
-                    {windows.length > 0 && (
-                      <div className="space-y-2">
-                        {windows.map((window, idx) => (
-                          <div key={idx}>
-                            <TypeBadge type={window.type} />
+                      </td>
+                      <td className="px-6 py-4">
+                        {windows.length > 0 && (
+                          <div className="space-y-1">
+                            {windows.map((window, idx) => (
+                              <div key={idx}>{calculateDuration(window.start, window.end)}</div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    {windows.length > 0 && (
-                      <div className="space-y-1">
-                        {windows.map((window, idx) => (
-                          <div key={idx}>{calculateDuration(window.start, window.end)}</div>
-                        ))}
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    {onShowChart && (
-                      <button
-                        onClick={() => onShowChart(date)}
-                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        aria-label={`View altitude chart for ${date}`}
-                      >
-                        View Chart
-                      </button>
-                    )}
-                  </td>
-                </tr>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        {onShowChart && (
+                          <button
+                            onClick={() => onShowChart(date)}
+                            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            aria-label={`View altitude chart for ${date}`}
+                          >
+                            View Chart
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4 mt-4">
+            {dates.map((date) => {
+              const allWindows = darkTimesData[date];
+              const metadata = getMetadata(allWindows);
+              
+              return (
+                <DarkTimesCard
+                  key={date}
+                  date={date}
+                  windows={allWindows}
+                  metadata={metadata}
+                  timezone={timezone}
+                  onShowChart={onShowChart}
+                />
               );
             })}
-          </tbody>
-        </table>
+          </div>
+        </>
       ) : (
         <div className="mt-6 p-8 bg-gray-800/50 border-2 border-dashed border-gray-600 rounded-lg text-center">
           <div className="flex flex-col items-center gap-4">
