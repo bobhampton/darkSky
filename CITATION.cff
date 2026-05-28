@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "darkSky: Dark Sky Time Calculator"
+version: 2.0.0
+date-released: 2026-05-28
+url: "https://darkskycalculator.com"
+repository-code: "https://github.com/bobhampton/darkSky"
+license: MIT
+authors:
+  - family-names: "Hampton"
+    given-names: "Bob"
+    alias: "bobhampton"
+keywords:
+  - astronomy
+  - dark sky
+  - astronomical twilight
+  - moon phases
+  - astronomy calculator
+abstract: >-
+  A web-based calculator that determines optimal dark sky observing times
+  by computing when the Sun is at least 18 degrees below the horizon and
+  there is no moon present in the sky. Built with React 19, TypeScript,
+  and astronomy-engine for precise astronomical calculations.
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14847872
+    description: "Zenodo DOI for all versions"
