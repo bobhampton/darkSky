@@ -12,7 +12,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-40 bg-gray-800 border-b border-gray-700 shadow-lg">
+    <nav className="sticky top-0 z-40 bg-gray-800 border-b border-gray-700 shadow-lg" role="navigation" aria-label="Main navigation">
       {/* Gradient top border */}
       <div className="h-1 bg-gradient-to-r from-transparent via-purple-500/40 via-cyan-500/40 via-fuchsia-500/40 to-transparent"></div>
       <div className="px-4">
@@ -21,6 +21,7 @@ export function Navbar() {
           <Link
             to="/"
             className="text-xl font-bold text-blue-400 hover:text-blue-300 transition-colors"
+            aria-label="Dark Sky Times - Home"
           >
             Dark Sky Times
           </Link>
@@ -29,7 +30,7 @@ export function Navbar() {
           <div className="h-8 w-px bg-gray-600"></div>
 
           {/* Navigation Links */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6" role="menubar">
             <Link
               to="/"
               className={`text-sm transition-colors pb-1 border-b-2 ${
@@ -37,6 +38,8 @@ export function Navbar() {
                   ? 'text-purple-400 border-purple-500 font-semibold'
                   : 'text-gray-300 hover:text-white border-transparent'
               }`}
+              role="menuitem"
+              aria-current={isActive('/') ? 'page' : undefined}
             >
               Home
             </Link>
@@ -47,6 +50,8 @@ export function Navbar() {
                   ? 'text-purple-400 border-purple-500 font-semibold'
                   : 'text-gray-300 hover:text-white border-transparent'
               }`}
+              role="menuitem"
+              aria-current={isActive('/getting-started') ? 'page' : undefined}
             >
               Getting Started
             </Link>

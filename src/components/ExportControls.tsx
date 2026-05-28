@@ -45,7 +45,9 @@ export function ExportControls({ darkTimesData, timezone, formData, filterInfo, 
         onClick={() => handleExport(true)}
         disabled={disabled}
         className="px-6 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 
-                   disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors"
+                   disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors
+                   focus:outline-none focus:ring-2 focus:ring-blue-400"
+        aria-label="Export simple CSV with basic dark times data"
       >
         Export Simple CSV
       </button>
@@ -53,7 +55,9 @@ export function ExportControls({ darkTimesData, timezone, formData, filterInfo, 
         onClick={() => handleExport(false)}
         disabled={disabled}
         className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 
-                   disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors"
+                   disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors
+                   focus:outline-none focus:ring-2 focus:ring-green-400"
+        aria-label="Export detailed CSV with comprehensive astronomical data"
       >
         Export Detailed CSV
       </button>

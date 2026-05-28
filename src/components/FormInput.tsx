@@ -38,18 +38,23 @@ export function FormInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={`w-full px-4 py-2 bg-gray-700/50 border ${
-          error ? 'border-red-500' : 'border-gray-600'
+          error ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/50' : 'border-gray-600'
         } rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors ${
           type === 'date' ? '[color-scheme:dark]' : ''
         }`}
         placeholder={placeholder}
+        aria-invalid={error ? 'true' : 'false'}
+        aria-describedby={error ? `${id}-error` : undefined}
         style={type === 'date' ? {
           WebkitAppearance: 'none',
           MozAppearance: 'textfield',
         } as React.CSSProperties : undefined}
       />
       {error && (
-        <p className="mt-1 text-sm text-red-500">{error}</p>
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-400 flex items-start gap-1.5" role="alert">
+          <span className="text-red-400 mt-0.5">⚠</span>
+          <span>{error}</span>
+        </p>
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 import type { ObserverFormData, ValidationError } from '@/types';
 import { isValidNumber } from './dateUtils';
+import { MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE, MAX_LONGITUDE, MIN_ELEVATION } from './constants';
 
 /**
  * Validates latitude value
@@ -22,10 +23,10 @@ export function validateLatitude(lat: string): ValidationError | null {
   }
 
   const num = parseFloat(lat);
-  if (isNaN(num) || num < -90 || num > 90) {
+  if (isNaN(num) || num < MIN_LATITUDE || num > MAX_LATITUDE) {
     return {
       field: 'latitude',
-      message: 'Latitude must be between -90 and 90',
+      message: `Latitude must be between ${MIN_LATITUDE} and ${MAX_LATITUDE}`,
     };
   }
 
@@ -53,10 +54,10 @@ export function validateLongitude(lon: string): ValidationError | null {
   }
 
   const num = parseFloat(lon);
-  if (isNaN(num) || num < -180 || num > 180) {
+  if (isNaN(num) || num < MIN_LONGITUDE || num > MAX_LONGITUDE) {
     return {
       field: 'longitude',
-      message: 'Longitude must be between -180 and 180',
+      message: `Longitude must be between ${MIN_LONGITUDE} and ${MAX_LONGITUDE}`,
     };
   }
 
@@ -84,7 +85,7 @@ export function validateElevation(elev: string): ValidationError | null {
   }
 
   const num = parseFloat(elev);
-  if (isNaN(num) || num < 0) {
+  if (isNaN(num) || num < MIN_ELEVATION) {
     return {
       field: 'elevation',
       message: 'Elevation cannot be negative',

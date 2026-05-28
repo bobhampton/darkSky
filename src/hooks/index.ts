@@ -7,3 +7,4 @@ export { useLocalStorage } from './useLocalStorage';
 export { useTimezones } from './useTimezones';
 export { useAstronomy } from './useAstronomy';
 export { useScrollPosition } from './useScrollPosition';
+export { useChartData } from './useChartData';

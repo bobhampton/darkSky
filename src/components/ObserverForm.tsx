@@ -57,6 +57,23 @@ export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white/2 backdrop-blur-[2px] border-2 border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.15)] rounded-lg p-6">
+      {/* Validation Error Summary */}
+      {errors.length > 0 && (
+        <div className="mb-6 bg-red-900/30 border border-red-600 rounded-lg p-4" role="alert">
+          <div className="flex items-start gap-2">
+            <span className="text-red-400 text-lg mt-0.5">⚠</span>
+            <div>
+              <h3 className="text-red-400 font-semibold mb-1">Please fix the following errors:</h3>
+              <ul className="list-disc list-inside text-sm text-red-300 space-y-1">
+                {errors.map((err, idx) => (
+                  <li key={idx}>{err.message}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Latitude */}
         <FormInput

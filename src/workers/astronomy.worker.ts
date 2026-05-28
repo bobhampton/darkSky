@@ -7,6 +7,13 @@ import { Observer } from 'astronomy-engine';
 import { DateTime } from 'luxon';
 import { getTimes } from '../utils/astronomy';
 import { getValidTimezone } from '../utils/timezones';
+import {
+  MIN_LATITUDE,
+  MAX_LATITUDE,
+  MIN_LONGITUDE,
+  MAX_LONGITUDE,
+  MAX_DATE_RANGE_DAYS,
+} from '../utils/constants';
 import type {
   WorkerCalculateMessage,
   WorkerProgressMessage,
@@ -24,6 +31,17 @@ self.addEventListener('message', (event: MessageEvent<WorkerCalculateMessage>) =
   }
 
   try {
+    // Validate input parameters
+    if (!params.latitude || isNaN(params.latitude) || params.latitude < MIN_LATITUDE || params.latitude > MAX_LATITUDE) {
+      throw new Error(`Invalid latitude: must be between ${MIN_LATITUDE} and ${MAX_LATITUDE} degrees`);
+    }
+    if (!params.longitude || isNaN(params.longitude) || params.longitude < MIN_LONGITUDE || params.longitude > MAX_LONGITUDE) {
+      throw new Error(`Invalid longitude: must be between ${MIN_LONGITUDE} and ${MAX_LONGITUDE} degrees`);
+    }
+    if (params.elevation === undefined || isNaN(params.elevation)) {
+      throw new Error('Invalid elevation: must be a number');
+    }
+
     // Create observer object
     const observer = new Observer(
       params.latitude,
@@ -38,8 +56,24 @@ self.addEventListener('message', (event: MessageEvent<WorkerCalculateMessage>) =
     const start = DateTime.fromISO(params.dateStart, { zone: validTimezone });
     const end = DateTime.fromISO(params.dateEnd, { zone: validTimezone });
 
+    // Validate dates
+    if (!start.isValid) {
+      throw new Error('Invalid start date: ' + start.invalidReason);
+    }
+    if (!end.isValid) {
+      throw new Error('Invalid end date: ' + end.invalidReason);
+    }
+    if (end < start) {
+      throw new Error('End date must be after start date');
+    }
+
     // Calculate total days for progress reporting
     const totalDays = Math.ceil(end.diff(start, 'days').days) + 1;
+
+    // Check for reasonable date range (e.g., max 2 years)
+    if (totalDays > MAX_DATE_RANGE_DAYS) {
+      throw new Error(`Date range too large: maximum 2 years (${MAX_DATE_RANGE_DAYS} days)`);
+    }
 
     // Modified getTimes to support progress reporting
     const data = getTimesWithProgress(start, end, observer, totalDays);
