@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: 'node', // Use node environment for utility function tests
-    setupFiles: [],
+    environment: 'jsdom', // Use jsdom for React component tests
+    setupFiles: ['./src/tests/setup.ts'],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',

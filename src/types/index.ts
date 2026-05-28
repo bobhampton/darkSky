@@ -16,8 +16,6 @@ export type {
 export type {
   ObserverFormData,
   ValidationError,
-  FormFieldName,
-  FormInputProps,
   TimeRangeFilter,
 } from './observer.types';
 
@@ -25,8 +23,6 @@ export type {
 export type {
   AltitudeChartData,
   ChartModalProps,
-  AltitudeChartProps,
-  AltitudeDataset,
   DarkPeriod,
 } from './chart.types';
 

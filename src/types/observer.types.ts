@@ -42,32 +42,3 @@ export interface ValidationError {
   /** Human-readable error message */
   message: string;
 }
-
-/**
- * Form field names for type-safe reference
- */
-export type FormFieldName = keyof ObserverFormData;
-
-/**
- * Form input props for reusable input components
- */
-export interface FormInputProps {
-  /** Field label */
-  label: string;
-  /** Current value */
-  value: string;
-  /** Change handler */
-  onChange: (value: string) => void;
-  /** Input type */
-  type?: 'text' | 'date' | 'number';
-  /** Placeholder text */
-  placeholder?: string;
-  /** Tooltip help text */
-  tooltip?: string;
-  /** Whether field is required */
-  required?: boolean;
-  /** Validation pattern */
-  pattern?: string;
-  /** Error message if validation fails */
-  error?: string;
-}

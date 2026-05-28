@@ -1,5 +1,5 @@
 /**
- * API Validation Tests
+ * Phase 2: API Validation Tests
  * These tests validate our calculations against trusted external APIs
  * Run with: npm run test:validation
  *

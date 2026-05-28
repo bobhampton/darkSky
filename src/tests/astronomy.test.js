@@ -1,5 +1,5 @@
 /**
- * Core Unit Tests for Astronomy Calculations
+ * Phase 1: Core Unit Tests for Astronomy Calculations
  * These tests run offline without API calls for fast, reliable testing
  * Run with: npm test
  */

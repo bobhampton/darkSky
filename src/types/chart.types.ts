@@ -10,20 +10,6 @@ export interface AltitudeChartData {
   darkPeriods: DarkPeriod[];
 }
 
-export interface AltitudeDataset {
-  label: string;
-  data: number[];
-  borderColor: string;
-  /** Fill color */
-  backgroundColor: string;
-  /** Whether to fill under the line */
-  fill: boolean;
-  /** Line width */
-  borderWidth: number;
-  /** Point radius (0 for no points) */
-  pointRadius: number;
-}
-
 /**
  * Time period where the sky is truly dark
  */
@@ -41,13 +27,5 @@ export interface ChartModalProps {
   date: string;
   observerConfig: ObserverConfig;
   onClose: () => void;
-}
-
-/**
- * Props for altitude chart component
- */
-export interface AltitudeChartProps {
-  data: AltitudeChartData;
-  title: string;
 }
 
