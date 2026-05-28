@@ -19,7 +19,28 @@ Hosted on GitHub Pages, the darkSky project allows users to effortlessly determi
 
 darkSky simplifies the process of identifying these critical time windows, empowering researchers, citizen scientists, and environmental advocates to contribute to global efforts in understanding and mitigating the effects of artificial light on our night skies.
 
-![GeneratedTable](https://github.com/user-attachments/assets/b5780cdd-61cb-4046-9a23-d6a0f390502f)
+### Observer Configuration
+
+![Observer Configuration Form](./public/screenshots/observerConfiguration.png)
+*Enter your location details, timezone, and date range to begin calculations*
+
+### Dark Times Results
+
+![Dark Times Results Table](./public/screenshots/darkTimesResults.png)
+*Interactive table showing all dark time windows with expandable astronomical event details for each date*
+
+### Altitude Chart Visualization
+
+![Altitude Chart](./public/screenshots/altitudeChart.png)
+*Interactive charts display Sun and Moon altitude throughout the day, helping visualize astronomical events*
+
+### CSV Export Options
+
+![Simple CSV Export](./public/screenshots/simpleCSV.png)
+*Export simplified data with just dark time windows and durations*
+
+![Detailed CSV Export](./public/screenshots/detailedCSV.png)
+*Export comprehensive data including all astronomical event metadata*
 
 ## Features
 
@@ -33,22 +54,60 @@ darkSky simplifies the process of identifying these critical time windows, empow
 - **Window Type Classification**: Identifies full dark periods, dusk windows, and dawn windows
 - **Timezone Support**: Accurate calculations for any timezone worldwide
 - **Date Range Flexibility**: Calculate dark times for any date range
-
-Output table showing all data used to calculate the dark sky times for that day
-![ExtraInfoDisplay1](https://github.com/user-attachments/assets/eceb9d92-cdd8-4415-bb79-b75e58460538)
-
-Even if that day does not have any dark sky times, you can still display the chart for that day
-![ExtraInfoDisplay2](https://github.com/user-attachments/assets/43ae0c5d-a8ec-45a2-9207-30b4d91b96a6)
+- **Modern UI**: Built with React 19 and Tailwind CSS for a responsive, accessible experience
+- **Lazy Loading**: Optimized performance with code splitting and on-demand chart loading
+- **Accessibility**: WCAG compliant with keyboard navigation and screen reader support
 
 ## Technology Stack
 
-This project has been migrated to a modern stack:
-- **React 19** with TypeScript for type-safe component architecture
-- **Vite** for fast development and optimized production builds
+This project is built with modern web technologies:
+
+### Core Framework
+- **React 19** with TypeScript for type-safe, maintainable component architecture
+- **Vite 7** for lightning-fast development and optimized production builds
+- **React Router** for client-side routing with code splitting
+
+### Styling & UI
 - **Tailwind CSS** for responsive, dark-themed styling
 - **Chart.js** for interactive altitude visualizations
+- **Lazy loading** for optimal performance (charts load on-demand)
+
+### Astronomical Calculations
 - **Astronomy Engine** for precise astronomical calculations
 - **Luxon** for timezone-aware date/time handling
+
+### Testing & Quality
+- **Vitest** with React Testing Library (279 passing tests)
+- **TypeScript strict mode** for compile-time safety
+- **ESLint** for code quality
+
+## Development
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/bobhampton/darkSky.git
+cd darkSky
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
+
+The development server will start at `http://localhost:5173`
 
 ## Cite This Work
 
