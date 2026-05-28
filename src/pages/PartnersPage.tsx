@@ -1,4 +1,5 @@
 import { ExternalLink, Award } from 'lucide-react';
+import { ASTRONOMICAL_TWILIGHT_THRESHOLD } from '@/utils/constants';
 
 /**
  * Partners page component
@@ -121,7 +122,7 @@ export function PartnersPage() {
                 <ExternalLink className="w-4 h-4" />
               </a>
               <p className="text-gray-400 text-sm mt-1 ml-6">
-                Comprehensive explanation of astronomical twilight and the -18° threshold used in this calculator
+                Comprehensive explanation of astronomical twilight and the {ASTRONOMICAL_TWILIGHT_THRESHOLD}° threshold used in this calculator
               </p>
             </li>
             <li>

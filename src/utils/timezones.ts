@@ -28,7 +28,20 @@ export function filterTimezones(searchTerm: string): string[] {
  */
 export function getDefaultTimezone(): string {
   try {
-    return localStorage.getItem('DefaultTimeZone') || DEFAULT_TIMEZONE;
+    const storedTimezone = localStorage.getItem('DefaultTimeZone');
+    
+    // Validate stored timezone before returning it
+    if (storedTimezone && isValidTimezone(storedTimezone)) {
+      return storedTimezone;
+    }
+    
+    // If invalid or missing, remove corrupted data and return default
+    if (storedTimezone) {
+      console.warn(`Invalid timezone "${storedTimezone}" in localStorage, clearing`);
+      localStorage.removeItem('DefaultTimeZone');
+    }
+    
+    return DEFAULT_TIMEZONE;
   } catch (error) {
     console.warn('Error reading default timezone from localStorage:', error);
     return DEFAULT_TIMEZONE;
@@ -41,9 +54,19 @@ export function getDefaultTimezone(): string {
  */
 export function saveDefaultTimezone(timezone: string): void {
   try {
+    // Validate timezone before saving
+    if (!isValidTimezone(timezone)) {
+      console.warn(`Cannot save invalid timezone "${timezone}" to localStorage`);
+      return;
+    }
     localStorage.setItem('DefaultTimeZone', timezone);
   } catch (error) {
-    console.warn('Error saving default timezone to localStorage:', error);
+    // Check for quota exceeded error
+    if (error instanceof Error && error.name === 'QuotaExceededError') {
+      console.error('localStorage quota exceeded, cannot save default timezone');
+    } else {
+      console.warn('Error saving default timezone to localStorage:', error);
+    }
   }
 }
 

@@ -6,5 +6,6 @@
 export { HomePage } from './HomePage';
 export { GettingStartedPage } from './GettingStartedPage';
 export { PartnersPage } from './PartnersPage';
+export { PrivacyPage } from './PrivacyPage';
 export { ErrorPage } from './ErrorPage';
 export { NotFoundRedirect } from './NotFoundRedirect';

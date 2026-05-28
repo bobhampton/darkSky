@@ -2,6 +2,13 @@ import { Link } from 'react-router-dom';
 import { Home, MapPin, Download, LineChart, Info } from 'lucide-react';
 import { TypeBadge } from '@/components';
 import { useState, useEffect } from 'react';
+import {
+  ASTRONOMICAL_TWILIGHT_THRESHOLD,
+  MIN_LATITUDE,
+  MAX_LATITUDE,
+  MIN_LONGITUDE,
+  MAX_LONGITUDE,
+} from '@/utils/constants';
 
 /**
  * Getting Started page - Comprehensive guide for using Dark Sky Calculator
@@ -160,7 +167,7 @@ export function GettingStartedPage() {
             <li>Night sky quality assessments</li>
           </ul>
           <p className="text-gray-300">
-            The calculator determines when the Sun is at least <strong className="text-blue-400">-18° below the horizon</strong> (astronomical 
+            The calculator determines when the Sun is at least <strong className="text-blue-400">{ASTRONOMICAL_TWILIGHT_THRESHOLD}° below the horizon</strong> (astronomical 
             twilight) and when the Moon is absent from the sky, providing you with precise dark time windows.
           </p>
         </Section>
@@ -177,8 +184,8 @@ export function GettingStartedPage() {
                 Input your observation site coordinates:
               </p>
               <ul className="list-disc list-inside text-gray-300 space-y-1 ml-4">
-                <li><strong>Latitude</strong>: -90 to 90 degrees (North is positive, South is negative)</li>
-                <li><strong>Longitude</strong>: -180 to 180 degrees (East is positive, West is negative)</li>
+                <li><strong>Latitude</strong>: {MIN_LATITUDE} to {MAX_LATITUDE} degrees (North is positive, South is negative)</li>
+                <li><strong>Longitude</strong>: {MIN_LONGITUDE} to {MAX_LONGITUDE} degrees (East is positive, West is negative)</li>
                 <li><strong>Elevation</strong>: Height above sea level in meters</li>
               </ul>
               <p className="text-gray-400 text-sm mt-2 italic">
@@ -268,7 +275,7 @@ export function GettingStartedPage() {
             <ResultDetail title="Astronomical Events">
               Click <strong className="text-blue-400">"Show"</strong> to expand and see detailed information:
               <ul className="list-disc list-inside text-gray-300 space-y-1 mt-2 ml-4">
-                <li><strong>Astronomical Night Start/End:</strong> When the Sun reaches -18° below the horizon</li>
+                <li><strong>Astronomical Night Start/End:</strong> When the Sun reaches {ASTRONOMICAL_TWILIGHT_THRESHOLD}° below the horizon</li>
                 <li><strong>Moon Rise/Set:</strong> When the Moon crosses the horizon</li>
                 <li>Special conditions (e.g., "Moon continuously below horizon")</li>
               </ul>
@@ -319,7 +326,7 @@ export function GettingStartedPage() {
                 <li>All simple CSV columns</li>
                 <li>Moon rise and moon set times</li>
                 <li>Moon altitude at start and end of day (00:00:00, 23:59:59)</li>
-                <li>Astronomical twilight start and end times (Sun at -18°)</li>
+                <li>Astronomical twilight start and end times (Sun at {ASTRONOMICAL_TWILIGHT_THRESHOLD}°)</li>
                 <li>Moon altitude at astronomical twilight boundaries</li>
               </ul>
               <p className="text-gray-400 text-sm mt-2">
@@ -371,8 +378,8 @@ export function GettingStartedPage() {
         {/* Technical Details */}
         <Section id="technical-details" title="Technical Details">
           <div className="space-y-4">
-            <TechnicalDetail title="What is Astronomical Twilight (-18°)?">
-              Astronomical twilight ends when the Sun's center is 18 degrees below the horizon. At this point, the Sun no 
+            <TechnicalDetail title={`What is Astronomical Twilight (${ASTRONOMICAL_TWILIGHT_THRESHOLD}°)?`}>
+              Astronomical twilight ends when the Sun's center is {Math.abs(ASTRONOMICAL_TWILIGHT_THRESHOLD)} degrees below the horizon. At this point, the Sun no 
               longer illuminates the sky, and the faintest stars become visible. This is the standard used by astronomers 
               worldwide for defining true darkness.
             </TechnicalDetail>

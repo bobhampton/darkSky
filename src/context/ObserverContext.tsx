@@ -28,14 +28,57 @@ interface ObserverProviderProps {
 }
 
 /**
+ * Validates that observer data has the correct structure
+ * @param data - Data to validate
+ * @returns true if valid, false otherwise
+ */
+function isValidObserverData(data: unknown): data is ObserverFormData {
+  if (!data || typeof data !== 'object') {
+    return false;
+  }
+  
+  const obj = data as Record<string, unknown>;
+  
+  // Check required string fields
+  const requiredStringFields = ['latitude', 'longitude', 'elevation', 'dateStart', 'dateEnd', 'timezone'];
+  for (const field of requiredStringFields) {
+    if (typeof obj[field] !== 'string') {
+      return false;
+    }
+  }
+  
+  // Check boolean field
+  if (typeof obj.saveDefaultTimezone !== 'boolean') {
+    return false;
+  }
+  
+  // Optional: Validate timeRangeFilter if present
+  if (obj.timeRangeFilter !== undefined) {
+    const filter = obj.timeRangeFilter as Record<string, unknown>;
+    if (
+      typeof filter.startTime !== 'string' ||
+      typeof filter.endTime !== 'string' ||
+      typeof filter.enabled !== 'boolean'
+    ) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+/**
  * Provider component for observer data
  * Manages observer form state with localStorage persistence
  */
 export function ObserverProvider({ children }: ObserverProviderProps) {
-  const [observerData, setObserverData, resetStorage] = useLocalStorage<ObserverFormData>(
+  const [storedData, setObserverData, resetStorage] = useLocalStorage<ObserverFormData>(
     'darksky-observer-data',
     defaultObserverData
   );
+  
+  // Validate stored data and fallback to default if invalid
+  const observerData = isValidObserverData(storedData) ? storedData : defaultObserverData;
 
   const updateObserverData = (data: Partial<ObserverFormData>) => {
     setObserverData((prev) => ({ ...prev, ...data }));

@@ -9,7 +9,8 @@ import {
   LoadingSpinner,
   DarkTimesTable,
   ExportControls,
-  ChartModal,
+  LazyChartModal,
+  ErrorDisplay,
 } from '@/components';
 import type { ObserverFormData, TimeRangeFilter } from '@/types';
 import type { DarkTimeWindow } from '@/types/astronomy.types';
@@ -21,6 +22,7 @@ export function HomePage() {
   const { observerData, updateObserverData } = useObserver();
   const { darkTimesData, isCalculating, error, progress, calculateDarkTimes } = useAstronomy();
   const [showChart, setShowChart] = useState<string | null>(null);
+  const [lastCalculationParams, setLastCalculationParams] = useState<typeof observerData | null>(null);
   
   // Filter state
   const [minDurationInput, setMinDurationInput] = useState<string>('');
@@ -64,6 +66,9 @@ export function HomePage() {
     // Update observer context
     updateObserverData(formData);
 
+    // Store params for retry
+    setLastCalculationParams(formData);
+
     // Trigger calculations with validated timezone
     calculateDarkTimes({
       latitude: parseFloat(formData.latitude),
@@ -73,6 +78,12 @@ export function HomePage() {
       dateStart: formData.dateStart,
       dateEnd: formData.dateEnd,
     });
+  };
+
+  const handleRetry = () => {
+    if (lastCalculationParams) {
+      handleFormSubmit(lastCalculationParams);
+    }
   };
 
   const handleShowChart = (date: string) => {
@@ -132,8 +143,8 @@ export function HomePage() {
 
         <main className="space-y-8">
           {/* Observer Form */}
-          <section className="bg-gray-900/60 border-2 border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.15)] rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Observer Configuration</h2>
+          <section className="bg-gray-900/60 border-2 border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.15)] rounded-lg p-6" aria-labelledby="config-heading">
+            <h2 id="config-heading" className="text-xl font-semibold mb-4">Observer Configuration</h2>
             <ObserverForm
               onSubmit={handleFormSubmit}
               isCalculating={isCalculating}
@@ -142,25 +153,24 @@ export function HomePage() {
 
           {/* Loading State */}
           {isCalculating && (
-            <div className="flex justify-center py-12">
+            <div className="flex justify-center py-12" role="status" aria-live="polite" aria-label="Calculating dark times">
               <LoadingSpinner progress={progress || undefined} />
             </div>
           )}
 
           {/* Error State */}
           {error && !isCalculating && (
-            <div className="bg-red-900/50 border border-red-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-red-400 mb-2">Error</h3>
-              <p className="text-red-200">{error}</p>
+            <div role="alert" aria-live="assertive">
+              <ErrorDisplay error={error} onRetry={handleRetry} />
             </div>
           )}
 
           {/* Results */}
           {hasResults && !isCalculating && (
             <>
-              <section className="bg-gray-800 rounded-lg shadow-lg p-6">
+              <section className="bg-gray-800 rounded-lg shadow-lg p-6" aria-labelledby="results-heading">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold">Dark Times Results</h2>
+                  <h2 id="results-heading" className="text-xl font-semibold">Dark Times Results</h2>
                   <ExportControls
                     darkTimesData={filteredDarkTimesData}
                     timezone={getValidTimezone(observerData.timezone)}
@@ -212,7 +222,7 @@ export function HomePage() {
 
       {/* Chart Modal */}
       {showChart && (
-        <ChartModal
+        <LazyChartModal
           date={showChart}
           observerConfig={{
             latitude: parseFloat(observerData.latitude),
