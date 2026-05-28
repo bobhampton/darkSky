@@ -44,13 +44,13 @@ export function Footer() {
           <p>
             Cite this work:{' '}
             <a
-              href="https://doi.org/10.5281/zenodo.14847872"
+              href="https://doi.org/10.5281/zenodo.14847871"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 transition-colors underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
               aria-label="View DOI citation (opens in new tab)"
             >
-              https://doi.org/10.5281/zenodo.14847872
+              https://doi.org/10.5281/zenodo.14847871
             </a>
           </p>
 

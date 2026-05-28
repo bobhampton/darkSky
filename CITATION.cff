@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "darkSky: Dark Sky Time Calculator"
-version: 2.0.0
+version: 2.0.1
 date-released: 2026-05-28
 url: "https://darkskycalculator.com"
 repository-code: "https://github.com/bobhampton/darkSky"
@@ -24,5 +24,5 @@ abstract: >-
   and astronomy-engine for precise astronomical calculations.
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.14847872
-    description: "Zenodo DOI for all versions"
+    value: 10.5281/zenodo.14847871
+    description: "Zenodo DOI (all versions)"

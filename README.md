@@ -113,7 +113,7 @@ The development server will start at `http://localhost:5173`
 
 If you use darkSky in your research, please cite it using the DOI provided by Zenodo.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14847872.svg)](https://doi.org/10.5281/zenodo.14847872)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14847871.svg)](https://doi.org/10.5281/zenodo.14847871)
 
 ## Acknowledgements
 
