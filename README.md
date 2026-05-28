@@ -4,7 +4,7 @@ The darkSky repository allows users to easily determine the times when the sky i
 
 ## Quick Start
 
-1. **Visit the application**: [https://bobhampton.github.io/darkSky/](https://bobhampton.github.io/darkSky/)
+1. **Visit the application**: [https://darkskycalculator.com](https://darkskycalculator.com)
 2. **Enter your location**: Input latitude, longitude, and elevation for your observation site
 3. **Select timezone**: Choose your local timezone for accurate results
 4. **Set date range**: Pick start and end dates for your observation period
