@@ -1,0 +1,1 @@
+import{c as e,u as r,r as a}from"./react-vendor-Cjh3VRcu.js";function o(){const o=e(),t=r();return a.useEffect(()=>{o("/error",{replace:!0,state:{code:404,reason:`The page "${t.pathname}" could not be found.`}})},[o,t.pathname]),null}export{o as NotFoundRedirect};
