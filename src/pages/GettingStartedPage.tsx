@@ -1,13 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Home, MapPin, Download, LineChart, Info } from 'lucide-react';
-import { TypeBadge } from '@/components';
 import { useState, useEffect } from 'react';
 import {
   ASTRONOMICAL_TWILIGHT_THRESHOLD,
-  MIN_LATITUDE,
-  MAX_LATITUDE,
-  MIN_LONGITUDE,
-  MAX_LONGITUDE,
 } from '@/utils/constants';
 
 /**
