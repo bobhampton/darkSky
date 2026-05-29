@@ -28,3 +28,6 @@ dist-ssr
 src/**/*.js
 src/**/*.js.map
 !src/**/*.test.js
+
+# Internal notes
+RELEASE_CHECKLIST.md
