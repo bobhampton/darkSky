@@ -1,0 +1,12 @@
+# robots.txt for darkSky Calculator
+# https://darkskycalculator.com
+
+User-agent: *
+Allow: /
+
+# Disallow utility pages and pages not ready for public
+Disallow: /error
+Disallow: /partners
+
+# Sitemap location
+Sitemap: https://darkskycalculator.com/sitemap.xml

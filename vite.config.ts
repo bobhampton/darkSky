@@ -18,6 +18,12 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     // Enable minification
     minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.log in production
+        drop_debugger: true,
+      },
+    },
     rollupOptions: {
       output: {
         // Manual chunking for better caching
@@ -26,6 +32,7 @@ export default defineConfig({
           'charts': ['chart.js', 'react-chartjs-2'],
           'luxon': ['luxon'],
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'leaflet': ['leaflet', 'react-leaflet'],
         },
         // Add hashed filenames for better caching
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -33,5 +40,14 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
+    // Enable CSS code splitting
+    cssCodeSplit: true,
+    // Increase the size warning limit for initial chunk
+    assetsInlineLimit: 4096, // inline assets smaller than 4kb
+  },
+  // Optimize dependency pre-bundling
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: ['@vite/client', '@vite/env'],
   },
 })

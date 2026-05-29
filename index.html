@@ -4,7 +4,87 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darkSky - Dark Sky Time Calculator</title>
+    <title>darkSky Calculator - Dark Sky Times for Light Pollution Monitoring & Astronomy</title>
+    
+    <!-- Preconnect to critical external domains for faster resource loading -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="preconnect" href="https://nominatim.openstreetmap.org" crossorigin>
+    <link rel="preconnect" href="https://timeapi.io" crossorigin>
+    
+    <!-- DNS prefetch for map tile servers (used when map is opened) -->
+    <link rel="dns-prefetch" href="https://tile.openstreetmap.org">
+    <link rel="dns-prefetch" href="https://basemaps.cartocdn.com">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Free dark sky calculator for light pollution monitoring, astronomy, and astrophotography. Calculate when the sun is 18° below the horizon (astronomical twilight) with no moon in the sky. Support citizen science initiatives for long-term night sky monitoring." />
+    <meta name="keywords" content="dark sky calculator, light pollution monitoring, citizen science, astronomical twilight calculator, astronomy tools, astrophotography planning, stargazing times, dark sky times, astronomical night calculator, no moon calculator, night sky monitoring, environmental monitoring" />
+    <meta name="author" content="darkSky Calculator" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="canonical" href="https://darkskycalculator.com/" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://darkskycalculator.com/" />
+    <meta property="og:title" content="darkSky Calculator - Dark Sky Times for Light Pollution Monitoring" />
+    <meta property="og:description" content="Calculate optimal dark sky times for light pollution monitoring, astronomy, and astrophotography. Find when the sun is 18° below the horizon with no moon in the sky." />
+    <meta property="og:image" content="https://darkskycalculator.com/screenshots/darkTimesResults.png" />
+    <meta property="og:image:alt" content="darkSky Calculator results showing dark time windows with astronomical event details" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="darkSky Calculator" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://darkskycalculator.com/" />
+    <meta name="twitter:title" content="darkSky Calculator - Light Pollution Monitoring Tool" />
+    <meta name="twitter:description" content="Calculate optimal dark sky times for light pollution monitoring, astronomy, and astrophotography. Support citizen science initiatives." />
+    <meta name="twitter:image" content="https://darkskycalculator.com/screenshots/darkTimesResults.png" />
+    <meta name="twitter:image:alt" content="darkSky Calculator results showing dark time windows with astronomical event details" />
+    
+    <!-- Structured Data (Schema.org JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "darkSky Calculator",
+      "alternateName": "Dark Sky Time Calculator",
+      "url": "https://darkskycalculator.com",
+      "description": "Free web application for calculating optimal dark sky observation times when the sun is 18° below the horizon (astronomical twilight) with no moon in the sky. Supports light pollution monitoring, astronomy research, and astrophotography planning.",
+      "applicationCategory": "ScienceApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Astronomical twilight calculation (sun -18° below horizon)",
+        "Moon absence detection and timing",
+        "Interactive location picker with map and GPS",
+        "Flexible date range selection",
+        "Timezone support worldwide",
+        "CSV export (simple and detailed formats)",
+        "Interactive altitude charts for sun and moon",
+        "Saved locations management",
+        "Filter controls for custom results"
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": ["Astronomers", "Astrophotographers", "Citizen Scientists", "Environmental Researchers", "Light Pollution Researchers"]
+      },
+      "keywords": "dark sky calculator, astronomical twilight, light pollution monitoring, citizen science, astronomy tools, astrophotography planning, moonless nights",
+      "inLanguage": "en-US",
+      "isAccessibleForFree": true,
+      "creator": {
+        "@type": "Organization",
+        "name": "darkSky Calculator"
+      }
+    }
+    </script>
+    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z8KZLD7W83"></script>
     <script>

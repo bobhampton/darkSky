@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Redirecting...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - darkSky Calculator</title>
+  <meta name="description" content="The page you are looking for could not be found. Redirecting to darkSky Calculator.">
+  <meta name="robots" content="noindex, nofollow">
+  
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z8KZLD7W83"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-Z8KZLD7W83');
   </script>
+  
   <script>
     // GitHub Pages SPA redirect solution
     // This script takes the current URL and redirects to index.html
@@ -19,8 +23,82 @@
     sessionStorage.redirect = location.pathname + location.search + location.hash;
   </script>
   <meta http-equiv="refresh" content="0;URL='/darkSky/'">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 6rem;
+      font-weight: bold;
+      color: #60a5fa;
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #f1f5f9;
+    }
+    p {
+      font-size: 1rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 3px solid #334155;
+      border-top-color: #60a5fa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .link {
+      color: #60a5fa;
+      text-decoration: underline;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+    .link:hover {
+      color: #93c5fd;
+    }
+  </style>
 </head>
 <body>
-  Redirecting to app...
+  <div class="container">
+    <h1>404</h1>
+    <h2>Page Not Found</h2>
+    <p>
+      The page you're looking for doesn't exist.<br>
+      Redirecting you to the darkSky Calculator...
+    </p>
+    <div class="spinner" role="status" aria-label="Loading"></div>
+    <p style="margin-top: 2rem; font-size: 0.875rem;">
+      Not redirecting automatically?<br>
+      <a href="/darkSky/" class="link">Click here to go to the homepage</a>
+    </p>
+  </div>
 </body>
 </html>

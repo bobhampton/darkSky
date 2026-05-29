@@ -4,6 +4,7 @@ import { Navbar, Footer, ScrollToTop, ScrollToTopOnNav, ErrorBoundaryWrapper, St
 import { HomePage } from '@/pages';
 
 // Lazy load non-critical pages for better initial load performance
+const FAQPage = lazy(() => import('@/pages/FAQPage').then(m => ({ default: m.FAQPage })));
 const GettingStartedPage = lazy(() => import('@/pages/GettingStartedPage').then(m => ({ default: m.GettingStartedPage })));
 const PartnersPage = lazy(() => import('@/pages/PartnersPage').then(m => ({ default: m.PartnersPage })));
 const PrivacyPage = lazy(() => import('@/pages/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
@@ -36,6 +37,7 @@ function App() {
             }>
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/faq" element={<FAQPage />} />
                 <Route path="/getting-started" element={<GettingStartedPage />} />
                 <Route path="/partners" element={<PartnersPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
