@@ -4,6 +4,7 @@
  */
 
 export { HomePage } from './HomePage';
+export { FAQPage } from './FAQPage';
 export { GettingStartedPage } from './GettingStartedPage';
 export { PartnersPage } from './PartnersPage';
 export { PrivacyPage } from './PrivacyPage';

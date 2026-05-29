@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Home, MapPin, Download, LineChart, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { usePageMetadata } from '@/hooks';
+import { Breadcrumbs } from '@/components';
 import {
   ASTRONOMICAL_TWILIGHT_THRESHOLD,
 } from '@/utils/constants';
@@ -9,6 +11,11 @@ import {
  * Getting Started page - Comprehensive guide for using Dark Sky Calculator
  */
 export function GettingStartedPage() {
+  usePageMetadata({
+    title: 'Getting Started - darkSky Calculator',
+    description: 'Learn how to use the darkSky calculator to find optimal dark sky observation times. Step-by-step guide for location input, date selection, understanding results, and exporting data for light pollution monitoring and astronomy.',
+  });
+
   const [activeSection, setActiveSection] = useState<string>('what-is');
 
   useEffect(() => {
@@ -62,6 +69,7 @@ export function GettingStartedPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <Breadcrumbs />
       <div className="flex gap-8">
         {/* Sidebar Table of Contents */}
         <aside className="hidden lg:block w-64 flex-shrink-0">
@@ -169,6 +177,12 @@ export function GettingStartedPage() {
 
         {/* Quick Start Guide */}
         <Section id="quick-start" title="Quick Start Guide" icon={<Home className="w-6 h-6" />}>
+          <p className="text-gray-400 mb-6">
+            Follow these steps to start finding optimal dark sky times. For common questions, visit our{' '}
+            <Link to="/faq" className="text-blue-400 hover:text-blue-300 underline transition-colors">
+              FAQ page
+            </Link>.
+          </p>
           <div className="space-y-4">
             <Step number={1} title="Navigate to the Calculator">
               From the navigation bar, click <strong className="text-blue-400">Home</strong> to access the main calculator interface.

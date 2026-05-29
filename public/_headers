@@ -1,10 +1,18 @@
-# Netlify/Cloudflare Pages cache headers for production optimization
+# Netlify/Cloudflare Pages/GitHub Pages cache and security headers for production optimization
 
-# Cache static assets for 1 year
+# Cache static assets for 1 year (immutable assets with hash in filename)
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+  # Enable compression
+  Content-Encoding: gzip
 
-# Cache HTML with revalidation
+# Cache JavaScript and CSS files for 1 year
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache HTML with revalidation (0 seconds = always revalidate)
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
@@ -12,10 +20,14 @@
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate
 
-# Security headers
+# Security and performance headers for all pages
 /*
+  # Security Headers
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  
+  # Content Security Policy (adjust as needed)
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://nominatim.openstreetmap.org https://timeapi.io https://www.google-analytics.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; frame-ancestors 'none';

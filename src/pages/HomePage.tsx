@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useObserver } from '@/context';
-import { useAstronomy } from '@/hooks';
+import { useAstronomy, usePageMetadata } from '@/hooks';
 import { getValidTimezone } from '@/utils/timezones';
 import { filterDarkTimesData, getAvailableWindowTypes } from '@/utils/filterUtils';
 import {
@@ -19,6 +20,11 @@ import type { DarkTimeWindow } from '@/types/astronomy.types';
  * Home page - Main dark times calculator
  */
 export function HomePage() {
+  usePageMetadata({
+    title: 'darkSky Calculator - Dark Sky Times for Light Pollution Monitoring & Astronomy',
+    description: 'Free dark sky calculator for light pollution monitoring, astronomy, and astrophotography. Calculate when the sun is 18° below the horizon (astronomical twilight) with no moon in the sky. Support citizen science initiatives for long-term night sky monitoring.',
+  });
+
   const { observerData, updateObserverData } = useObserver();
   const { darkTimesData, isCalculating, error, progress, calculateDarkTimes } = useAstronomy();
   const [showChart, setShowChart] = useState<string | null>(null);
@@ -237,8 +243,25 @@ export function HomePage() {
           {/* Empty State */}
           {!hasResults && !isCalculating && !error && (
             <div className="text-center py-12 text-gray-400">
-              <p className="text-lg">
+              <p className="text-lg mb-4">
                 Enter your observer location and date range above to calculate dark times.
+              </p>
+              <p className="text-sm">
+                New to the calculator?{' '}
+                <Link
+                  to="/getting-started"
+                  className="text-blue-400 hover:text-blue-300 underline transition-colors"
+                >
+                  View the Getting Started guide
+                </Link>
+                {' '}or check out our{' '}
+                <Link
+                  to="/faq"
+                  className="text-blue-400 hover:text-blue-300 underline transition-colors"
+                >
+                  FAQ
+                </Link>
+                .
               </p>
             </div>
           )}

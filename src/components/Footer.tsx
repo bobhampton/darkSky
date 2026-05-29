@@ -23,6 +23,12 @@ export function Footer() {
               Source Code
             </a>
             <Link
+              to="/faq"
+              className="text-blue-400 hover:text-blue-300 transition-colors underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+            >
+              FAQ
+            </Link>
+            <Link
               to="/privacy"
               className="text-blue-400 hover:text-blue-300 transition-colors underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
             >
@@ -80,6 +86,7 @@ export function Footer() {
                 Astronomy Engine
               </a>
             </p>
+            <p aria-hidden="true">&nbsp;</p>
             <p aria-hidden="true">&nbsp;</p>
             <p>&copy; {currentYear} darkSky Project. MIT License.</p>
           </div>

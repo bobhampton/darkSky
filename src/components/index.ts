@@ -1,8 +1,10 @@
 export { LoadingSpinner } from './LoadingSpinner';
 export { Navbar } from './Navbar';
+export { Breadcrumbs } from './Breadcrumbs';
 export { Header } from './Header';
 export { Footer } from './Footer';
 export { ExportControls } from './ExportControls';
+export { FAQSection } from './FAQSection';
 export { ObserverForm } from './ObserverForm';
 export { DarkTimesTable, TypeBadge } from './DarkTimesTable';
 // ChartModal not exported - use LazyChartModal instead for code splitting

@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom';
 import { Shield, Home } from 'lucide-react';
+import { usePageMetadata } from '@/hooks';
+import { Breadcrumbs } from '@/components';
 
 /**
  * Privacy Policy page - Explains data collection and usage
  */
 export function PrivacyPage() {
+  usePageMetadata({
+    title: 'Privacy Policy - darkSky Calculator',
+    description: 'darkSky Calculator privacy policy. Learn about our data collection practices, use of Google Analytics, local storage, and your privacy rights. We do not collect personally identifiable information.',
+  });
+
   const lastUpdated = 'May 27, 2026';
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Breadcrumbs />
+      
       {/* Header */}
       <header className="mb-8">
         <div className="flex items-center gap-3 mb-4">
@@ -188,7 +197,7 @@ export function PrivacyPage() {
         {/* Contact */}
         <section>
           <h2 className="text-2xl font-semibold text-white mb-4">Contact</h2>
-          <p className="leading-relaxed">
+          <p className="leading-relaxed mb-3">
             If you have questions about this privacy policy, please visit our{' '}
             <a
               href="https://github.com/bobhampton/darkSky/issues"
@@ -205,13 +214,34 @@ export function PrivacyPage() {
 
       {/* Navigation */}
       <div className="mt-12 pt-8 border-t border-gray-700">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 rounded px-2 py-1"
-        >
-          <Home className="w-4 h-4" />
-          Back to Calculator
-        </Link>
+        <div className="text-center mb-6">
+          <p className="text-gray-400 mb-4">
+            Ready to calculate dark sky times?{' '}
+            <Link
+              to="/getting-started"
+              className="text-blue-400 hover:text-blue-300 underline transition-colors"
+            >
+              Learn how to use the calculator
+            </Link>
+            {' '}or check our{' '}
+            <Link
+              to="/faq"
+              className="text-blue-400 hover:text-blue-300 underline transition-colors"
+            >
+              FAQ
+            </Link>
+            {' '}for answers.
+          </p>
+        </div>
+        <div className="text-center">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+          >
+            <Home className="w-5 h-5" />
+            Return to Calculator
+          </Link>
+        </div>
       </div>
     </div>
   );

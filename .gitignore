@@ -31,3 +31,4 @@ src/**/*.js.map
 
 # Internal notes
 RELEASE_CHECKLIST.md
+PERFORMANCE.md

@@ -55,6 +55,18 @@ export function Navbar() {
             >
               Getting Started
             </Link>
+            <Link
+              to="/faq"
+              className={`text-sm transition-colors pb-1 border-b-2 ${
+                isActive('/faq')
+                  ? 'text-purple-400 border-purple-500 font-semibold'
+                  : 'text-gray-300 hover:text-white border-transparent'
+              }`}
+              role="menuitem"
+              aria-current={isActive('/faq') ? 'page' : undefined}
+            >
+              FAQ
+            </Link>
             {/* <Link
               to="/partners"
               className={`text-sm transition-colors pb-1 border-b-2 ${
@@ -62,6 +74,8 @@ export function Navbar() {
                   ? 'text-purple-400 border-purple-500 font-semibold'
                   : 'text-gray-300 hover:text-white border-transparent'
               }`}
+              role="menuitem"
+              aria-current={isActive('/partners') ? 'page' : undefined}
             >
               Partners & Resources
             </Link> */}
