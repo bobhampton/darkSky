@@ -1,13 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { filterTimezones, getDefaultTimezone, saveDefaultTimezone } from '@/utils/timezones';
+import { useState, useEffect } from 'react';
+import { filterTimezones } from '@/utils/timezones';
 
 interface UseTimezonesReturn {
   allTimezones: string[];
   filteredTimezones: string[];
-  defaultTimezone: string;
   filterText: string;
   setFilterText: (text: string) => void;
-  setDefaultTimezone: (timezone: string) => void;
 }
 
 /**
@@ -21,9 +19,6 @@ export function useTimezones(): UseTimezonesReturn {
   });
 
   const [filteredTimezones, setFilteredTimezones] = useState<string[]>(allTimezones);
-  const [defaultTimezone, setDefaultTimezoneState] = useState<string>(() => 
-    getDefaultTimezone()
-  );
   const [filterText, setFilterText] = useState<string>('');
 
   // Filter timezones when filter text changes
@@ -32,18 +27,10 @@ export function useTimezones(): UseTimezonesReturn {
     setFilteredTimezones(filtered);
   }, [filterText]);
 
-  // Save default timezone to localStorage
-  const setDefaultTimezone = useCallback((timezone: string) => {
-    setDefaultTimezoneState(timezone);
-    saveDefaultTimezone(timezone);
-  }, []);
-
   return {
     allTimezones,
     filteredTimezones,
-    defaultTimezone,
     filterText,
     setFilterText,
-    setDefaultTimezone,
   };
 }

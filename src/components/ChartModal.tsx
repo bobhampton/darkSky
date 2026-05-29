@@ -14,7 +14,6 @@ import { Line } from 'react-chartjs-2';
 import type { ChartModalProps } from '@/types';
 import { useChartData } from '@/hooks/useChartData';
 import { createChartOptions, createDarkSkyPlugin, createChartJSData } from '@/utils/chartConfig';
-import { ASTRONOMICAL_TWILIGHT_THRESHOLD } from '@/utils/constants';
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
@@ -93,7 +92,7 @@ export function ChartModal({ date, observerConfig, onClose }: ChartModalProps) {
 
         {/* Info */}
         <div className="px-6 pb-6 text-sm text-gray-400">
-          <p>{ASTRONOMICAL_TWILIGHT_THRESHOLD}
+          <p>
             <strong>Dark periods</strong> occur when the Sun is below -18° (astronomical twilight) and the Moon is
             below the horizon.
           </p>

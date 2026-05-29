@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useObserver } from '@/context';
 import { useTimezones } from '@/hooks';
 import { validateFormData } from '@/utils/validation';
-import { Tooltip } from './Tooltip';
 import { FormInput } from './FormInput';
 import { FormTimezoneInput } from './FormTimezoneInput';
-import type { ObserverFormData, ValidationError } from '@/types';
+import { LocationPicker } from './LocationPicker';
+import type { ObserverFormData, ValidationError, LocationData } from '@/types';
 
 interface ObserverFormProps {
   onSubmit: (data: ObserverFormData) => void;
@@ -17,10 +17,13 @@ interface ObserverFormProps {
  */
 export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
   const { observerData, updateObserverData } = useObserver();
-  const { filteredTimezones, setFilterText, defaultTimezone, setDefaultTimezone } = useTimezones();
+  const { filteredTimezones, setFilterText } = useTimezones();
   
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [showTimezoneDropdown, setShowTimezoneDropdown] = useState(false);
+  const [activeTab, setActiveTab] = useState<'search' | 'saved'>('search');
+  const [selectedSavedLocationId, setSelectedSavedLocationId] = useState<string | undefined>();
+  const [attemptedCalculate, setAttemptedCalculate] = useState(false);
 
   // Update timezone filter when observerData timezone changes
   useEffect(() => {
@@ -33,8 +36,47 @@ export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
     setErrors(prev => prev.filter(err => err.field !== field));
   };
 
+  const handleLocationChange = (location: LocationData) => {
+    // Convert LocationData to form fields
+    const updates: Partial<ObserverFormData> = {
+      latitude: location.lat.toString(),
+      longitude: location.lng.toString(),
+      elevation: location.elevation !== undefined ? location.elevation.toString() : '0',
+      address: location.address,
+    };
+    
+    updateObserverData(updates);
+    
+    // Clear errors for location fields
+    setErrors(prev => prev.filter(
+      err => err.field !== 'latitude' && err.field !== 'longitude' && err.field !== 'elevation'
+    ));
+  };
+
+  const getCurrentLocation = (): LocationData => {
+    return {
+      lat: parseFloat(observerData.latitude) || 0,
+      lng: parseFloat(observerData.longitude) || 0,
+      elevation: observerData.elevation ? parseFloat(observerData.elevation) : undefined,
+      address: observerData.address,
+    };
+  };
+
+  const handleSelectionStateChange = (
+    _hasSelection: boolean,
+    currentTab: 'search' | 'saved',
+    _currentLocationSource: 'search' | 'saved' | null,
+    savedLocationId?: string
+  ) => {
+    setActiveTab(currentTab);
+    setSelectedSavedLocationId(savedLocationId);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Mark that user attempted to calculate
+    setAttemptedCalculate(true);
     
     // Validate form data
     const validationErrors = validateFormData(observerData);
@@ -43,16 +85,51 @@ export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
       return;
     }
 
-    // Save timezone as default if checkbox is checked
-    if (observerData.saveDefaultTimezone) {
-      setDefaultTimezone(observerData.timezone);
-    }
-
     onSubmit(observerData);
   };
 
   const getFieldError = (field: keyof ObserverFormData): string | undefined => {
     return errors.find(err => err.field === field)?.message;
+  };
+
+  // Comprehensive validation for calculate button
+  const canCalculate = () => {
+    const lat = parseFloat(observerData.latitude);
+    const lng = parseFloat(observerData.longitude);
+    
+    // Check lat/lng are valid non-zero numbers
+    const hasValidLocation = 
+      observerData.latitude !== '' &&
+      observerData.longitude !== '' &&
+      !isNaN(lat) &&
+      !isNaN(lng) &&
+      lat !== 0 &&
+      lng !== 0;
+    
+    // Check dates are filled
+    const hasDates = observerData.dateStart !== '' && observerData.dateEnd !== '';
+    
+    // Special validation for saved tab: must have a saved location selected
+    const savedTabValid = activeTab !== 'saved' || selectedSavedLocationId !== undefined;
+    
+    return hasValidLocation && hasDates && savedTabValid;
+  };
+
+  // Get descriptive message for why calculate is disabled
+  const getDisabledMessage = () => {
+    const lat = parseFloat(observerData.latitude);
+    const lng = parseFloat(observerData.longitude);
+    
+    if (observerData.latitude === '' || observerData.longitude === '' || isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+      return 'Please enter a valid location';
+    }
+    if (observerData.dateStart === '' || observerData.dateEnd === '') {
+      return 'Please select start and end dates';
+    }
+    if (activeTab === 'saved' && selectedSavedLocationId === undefined) {
+      return 'Please select a saved location';
+    }
+    return '';
   };
 
   return (
@@ -74,45 +151,36 @@ export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
         </div>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Latitude */}
-        <FormInput
-          id="latitude"
-          label="Latitude (degrees)"
-          tooltip="Enter the latitude for the location where the dark sky time is to be observed (e.g., 40.7720)."
-          value={observerData.latitude}
-          onChange={(value) => handleChange('latitude', value)}
-          error={getFieldError('latitude')}
-          placeholder="e.g., 40.7128"
+      {/* Location Picker - replaces separate lat/lng/elevation inputs */}
+      <div className="mb-6">
+        <LocationPicker
+          location={getCurrentLocation()}
+          onLocationChange={handleLocationChange}
+          onTimezoneChange={(timezone) => handleChange('timezone', timezone)}
+          onSelectionStateChange={handleSelectionStateChange}
+          disabled={isCalculating}
+          showSavedTabError={attemptedCalculate && activeTab === 'saved' && selectedSavedLocationId === undefined}
         />
-
-        {/* Longitude */}
-        <FormInput
-          id="longitude"
-          label="Longitude (degrees)"
-          tooltip="Enter the longitude for the location where the dark sky time is to be observed (e.g., -112.1012)."
-          value={observerData.longitude}
-          onChange={(value) => handleChange('longitude', value)}
-          error={getFieldError('longitude')}
-          placeholder="e.g., -74.0060"
-        />
-
-        {/* Elevation */}
-        <FormInput
-          id="elevation"
-          label="Elevation (meters)"
-          tooltip="Enter the elevation in meters for the location where the dark sky time is to be observed. Default is 0."
-          value={observerData.elevation}
-          onChange={(value) => handleChange('elevation', value)}
-          error={getFieldError('elevation')}
-          placeholder="e.g., 0"
-        />
-
-        {/* Timezone */}
+        
+        {/* Show location-specific errors if any */}
+        {(getFieldError('latitude') || getFieldError('longitude') || getFieldError('elevation')) && (
+          <div className="mt-4 bg-red-900/20 border border-red-600/50 rounded-lg p-3">
+            <p className="text-sm font-medium text-red-400 mb-1">Location Errors:</p>
+            <ul className="text-sm text-red-300 space-y-1">
+              {getFieldError('latitude') && <li>• {getFieldError('latitude')}</li>}
+              {getFieldError('longitude') && <li>• {getFieldError('longitude')}</li>}
+              {getFieldError('elevation') && <li>• {getFieldError('elevation')}</li>}
+            </ul>
+          </div>
+        )}
+      </div>
+      
+      {/* Timezone and Elevation on same line */}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormTimezoneInput
           id="timezone"
           label="Timezone"
-          tooltip="Select the time zone that you want the calculated times to be displayed in. Typically this will be the same time zone as the latitude and longitude entered above."
+          tooltip="Automatically detected from your location. You can also search and select a different time zone if needed."
           value={observerData.timezone}
           onChange={(value) => {
             handleChange('timezone', value);
@@ -129,6 +197,21 @@ export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
           }}
         />
 
+        {/* Elevation */}
+        <FormInput
+          id="elevation"
+          label="Elevation (meters)"
+          tooltip="Enter the elevation of your observing location in meters above sea level. This affects the calculated twilight times. Defaults to 0 (sea level)."
+          type="number"
+          value={observerData.elevation}
+          onChange={(value) => handleChange('elevation', value)}
+          error={getFieldError('elevation')}
+          placeholder="0"
+        />
+      </div>
+
+      {/* Date Range - Start and End Date on same line */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Start Date */}
         <FormInput
           id="dateStart"
@@ -152,38 +235,26 @@ export function ObserverForm({ onSubmit, isCalculating }: ObserverFormProps) {
         />
       </div>
 
-      {/* Save Default Timezone Checkbox */}
-      <div className="mt-4">
-        <label className="flex items-center text-gray-300">
-          <input
-            type="checkbox"
-            checked={observerData.saveDefaultTimezone}
-            onChange={(e) => handleChange('saveDefaultTimezone', e.target.checked)}
-            className="mr-2 h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 
-                       focus:ring-blue-500 focus:ring-offset-gray-800"
-          />
-          <span className="text-sm">
-            Save this timezone as default
-            <Tooltip text="Enable this to automatically select this time zone the next time you visit this page." />
-          </span>
-        </label>
-        {defaultTimezone !== observerData.timezone && (
-          <p className="mt-1 text-xs text-gray-400">
-            Current default: {defaultTimezone}
-          </p>
-        )}
-      </div>
-
       {/* Submit Button */}
-      <div className="mt-6">
+      <div>
         <button
           type="submit"
-          disabled={isCalculating}
+          disabled={isCalculating || !canCalculate()}
           className="w-full px-6 py-3 bg-blue-800/70 text-white rounded-lg hover:bg-blue-700/80 
-                     disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors font-medium"
+                     disabled:bg-blue-900/30 disabled:border-2 disabled:border-blue-700/40 disabled:text-blue-300/60 
+                     disabled:cursor-not-allowed transition-colors font-medium shadow-lg disabled:shadow-none"
         >
           {isCalculating ? 'Calculating...' : 'Calculate Dark Times'}
         </button>
+        {!canCalculate() && !isCalculating && (
+          <p className={`text-sm mt-2 text-center ${
+            activeTab === 'saved' && selectedSavedLocationId === undefined
+              ? 'text-red-400'
+              : 'text-yellow-400'
+          }`}>
+            {getDisabledMessage()}
+          </p>
+        )}
       </div>
 
       {/* General Error Message */}

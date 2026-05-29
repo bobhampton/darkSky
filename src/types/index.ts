@@ -26,6 +26,20 @@ export type {
   DarkPeriod,
 } from './chart.types';
 
+// Location types
+export type {
+  Coordinates,
+  LocationData,
+  NominatimResult,
+  GeolocationError,
+} from './location.types';
+
+// Saved location types
+export type {
+  SavedLocation,
+  SavedLocationsData,
+} from './savedLocation.types';
+
 // Worker types
 export type {
   WorkerCalculateMessage,

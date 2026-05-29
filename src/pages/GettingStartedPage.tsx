@@ -179,24 +179,38 @@ export function GettingStartedPage() {
               From the navigation bar, click <strong className="text-blue-400">Home</strong> to access the main calculator interface.
             </Step>
 
-            <Step number={2} title="Enter Your Location">
-              <p className="text-gray-300 mb-2">
-                Input your observation site coordinates:
+            <Step number={2} title="Choose Your Location">
+              <p className="text-gray-300 mb-3">
+                You have multiple options for setting your observation location using the two-tab interface:
               </p>
-              <ul className="list-disc list-inside text-gray-300 space-y-1 ml-4">
-                <li><strong>Latitude</strong>: {MIN_LATITUDE} to {MAX_LATITUDE} degrees (North is positive, South is negative)</li>
-                <li><strong>Longitude</strong>: {MIN_LONGITUDE} to {MAX_LONGITUDE} degrees (East is positive, West is negative)</li>
-                <li><strong>Elevation</strong>: Height above sea level in meters</li>
-              </ul>
-              <p className="text-gray-400 text-sm mt-2 italic">
-                Example: New York City = Lat: 40.7128, Lon: -74.0060, Elevation: 10m
+              
+              <div className="bg-gray-700/30 rounded-lg p-4 mb-3">
+                <h4 className="text-blue-400 font-semibold mb-2">🔍 Search Tab</h4>
+                <ul className="list-disc list-inside text-gray-300 space-y-1 ml-2">
+                  <li><strong>Search by name:</strong> Type a city, address, or landmark (e.g., "Yellowstone National Park")</li>
+                  <li><strong>Enter coordinates:</strong> Type latitude, longitude format (e.g., "40.7128, -74.0060")</li>
+                  <li><strong>Use the map:</strong> Click anywhere on the interactive map to place a marker</li>
+                  <li><strong>GPS location:</strong> Click "My Location" button to use your current position</li>
+                </ul>
+              </div>
+              
+              <div className="bg-gray-700/30 rounded-lg p-4">
+                <h4 className="text-purple-400 font-semibold mb-2">📍 Saved Tab</h4>
+                <ul className="list-disc list-inside text-gray-300 space-y-1 ml-2">
+                  <li>Select from previously saved locations</li>
+                  <li>Save new locations for future use (stored in your browser)</li>
+                  <li>Delete locations you no longer need</li>
+                </ul>
+              </div>
+              
+              <p className="text-gray-400 text-sm mt-3 italic">
+                <strong>Map controls:</strong> My Location (GPS), Center (recenter on marker), Clear (remove marker), Light/Dark (toggle map theme)
               </p>
             </Step>
 
             <Step number={3} title="Select Your Timezone">
               Choose the timezone from the dropdown menu that you want the results to be displayed in. 
-              Start typing to filter the list. This ensures all times are displayed in the selected time zone. 
-              You can optionally save it as your default timezone.
+              Start typing to filter the list. This ensures all times are displayed in the selected time zone.
             </Step>
 
             <Step number={4} title="Choose Date Range">
@@ -224,8 +238,9 @@ export function GettingStartedPage() {
                 Your geographic coordinates determine the Sun and Moon positions relative to your location.
               </p>
               <p className="text-gray-400 text-sm">
-                <strong>How to find them:</strong> Use Google Maps (right-click on your location), GPS coordinates from your phone, 
-                or online geocoding services.
+                <strong>How to find them:</strong> Use the built-in location search (just type a place name), 
+                GPS button for your current location, or click directly on the interactive map. You can also 
+                enter coordinates manually if you have them.
               </p>
             </InputDetail>
 
@@ -259,6 +274,17 @@ export function GettingStartedPage() {
                 <strong>Recommendation:</strong> Start with a week or month, then expand as needed.
               </p>
             </InputDetail>
+
+            <InputDetail title="Saved Locations">
+              <p className="text-gray-300 mb-2">
+                Save your frequently-used observation sites for quick access. Saved locations are stored 
+                in your browser's local storage and include the full address, coordinates, timezone, and elevation.
+              </p>
+              <p className="text-gray-400 text-sm">
+                <strong>Note:</strong> Clearing your browser's website data will remove all saved locations. 
+                Export important data before clearing browser storage.
+              </p>
+            </InputDetail>
           </div>
         </Section>
 
@@ -281,17 +307,28 @@ export function GettingStartedPage() {
               </ul>
             </ResultDetail>
 
-            <ResultDetail title="Type Badges">
-              Windows are classified by type:
+            <ResultDetail title="Type Badges & Duration">
+              Windows are classified by type with color-coded vertical badges integrated into each window box:
               <ul className="list-disc list-inside text-gray-300 space-y-1 mt-2 ml-4">
-                <li><TypeBadge type="polarNight" /> - Entire night between astronomical twilights</li>
-                <li><TypeBadge type="dusk" /> - Dark period after sunset before midnight</li>
-                <li><TypeBadge type="dawn" /> - Dark period after midnight before sunrise</li>
+                <li><strong className="text-purple-400">Purple (Polar Night):</strong> Entire night between astronomical twilights</li>
+                <li><strong className="text-orange-400">Orange (Dusk):</strong> Dark period after sunset before midnight</li>
+                <li><strong className="text-blue-400">Blue (Dawn):</strong> Dark period after midnight before sunrise</li>
               </ul>
+              <p className="text-gray-300 mt-2">
+                The <strong>Duration</strong> column (immediately to the right of Dark Windows) shows how long each window lasts in hours and minutes (e.g., "4h 32m").
+              </p>
             </ResultDetail>
 
-            <ResultDetail title="Duration">
-              Shows how long each dark window lasts in hours and minutes (e.g., "4h 32m").
+            <ResultDetail title="Filter Controls">
+              Click the <strong className="text-purple-400">"Filter Controls"</strong> banner to expand/collapse filtering options:
+              <ul className="list-disc list-inside text-gray-300 space-y-1 mt-2 ml-4">
+                <li><strong>Minimum Duration:</strong> Show only windows longer than specified hours</li>
+                <li><strong>Window Types:</strong> Filter by Dawn, Dusk, or hide empty days entirely</li>
+                <li><strong>Time Range:</strong> Display only windows within specific hours (e.g., 8 PM to 10 PM)</li>
+              </ul>
+              <p className="text-gray-400 text-sm mt-2">
+                <em>Active filters apply to both table display and CSV exports.</em>
+              </p>
             </ResultDetail>
 
             <ResultDetail title="View Chart">
@@ -357,11 +394,6 @@ export function GettingStartedPage() {
             <Tip>
               <strong>Plan ahead:</strong> Calculate dark times well in advance for important observations. Weather 
               conditions may limit actual observing opportunities.
-            </Tip>
-            
-            <Tip>
-              <strong>Save your timezone:</strong> Check "Save as default timezone" to avoid re-entering it for future 
-              calculations.
             </Tip>
             
             <Tip>

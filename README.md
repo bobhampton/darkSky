@@ -5,7 +5,7 @@ The darkSky repository allows users to easily determine the times when the sky i
 ## Quick Start
 
 1. **Visit the application**: [https://darkskycalculator.com](https://darkskycalculator.com)
-2. **Enter your location**: Input latitude, longitude, and elevation for your observation site
+2. **Choose your location**: Search by place name, enter coordinates, use GPS, click the map, or load a saved location
 3. **Select timezone**: Choose your local timezone for accurate results
 4. **Set date range**: Pick start and end dates for your observation period
 5. **Calculate**: Click "Calculate Dark Times" to generate results
@@ -22,12 +22,17 @@ darkSky simplifies the process of identifying these critical time windows, empow
 ### Observer Configuration
 
 ![Observer Configuration Form](./public/screenshots/observerConfiguration.png)
-*Enter your location details, timezone, and date range to begin calculations*
+*Choose your location using the Search tab (place search, coordinates, or map) or Saved tab. Set timezone and date range to begin calculations.*
+
+### Saved Locations
+
+![Saved Locations Tab](./public/screenshots/savedLocations.png)
+*Manage your favorite observation sites - save, load, and delete locations stored in your browser*
 
 ### Dark Times Results
 
 ![Dark Times Results Table](./public/screenshots/darkTimesResults.png)
-*Interactive table showing all dark time windows with expandable astronomical event details for each date*
+*Interactive table showing dark time windows with color-coded type badges (dawn/dusk/polar night), duration, and expandable astronomical events. Includes collapsible filter controls for customizing results.*
 
 ### Altitude Chart Visualization
 
@@ -44,14 +49,23 @@ darkSky simplifies the process of identifying these critical time windows, empow
 
 ## Features
 
+- **Flexible Location Input**: Multiple ways to set your observation location:
+  - Search by place name with intelligent geocoding (powered by Nominatim)
+  - Enter precise coordinates (latitude, longitude) directly
+  - Interactive map with click-to-place marker
+  - GPS/geolocation support for current location
+  - Save and manage frequently-used locations
+- **Saved Locations**: Store your favorite observation sites in browser localStorage for quick access
+- **Interactive Map**: Leaflet-powered map with multiple controls (GPS, center, clear, light/dark theme toggle)
 - **Precise Astronomical Calculations**: Determines when the Sun is -18° below the horizon (astronomical twilight) and the Moon is not visible
 - **Interactive Results Table**: View all dark time windows with expandable details for each date
 - **Astronomical Event Details**: See astronomical night start/end times, moonrise/moonset times for any date
+- **Filter Controls**: Customize results by minimum duration, window type, time range, or hide empty days
 - **Chart Visualization**: Interactive altitude charts showing Sun and Moon positions throughout the day
 - **CSV Export Options**: 
   - **Simple CSV**: Just the dark time windows and durations
   - **Detailed CSV**: Includes all astronomical event metadata
-- **Window Type Classification**: Identifies full dark periods, dusk windows, and dawn windows
+- **Window Type Classification**: Identifies full dark periods, dusk windows, and dawn windows with color-coded badges
 - **Timezone Support**: Accurate calculations for any timezone worldwide
 - **Date Range Flexibility**: Calculate dark times for any date range
 - **Modern UI**: Built with React 19 and Tailwind CSS for a responsive, accessible experience
@@ -72,12 +86,18 @@ This project is built with modern web technologies:
 - **Chart.js** for interactive altitude visualizations
 - **Lazy loading** for optimal performance (charts load on-demand)
 
+### Mapping & Geolocation
+- **Leaflet** with react-leaflet for interactive maps
+- **Nominatim (OpenStreetMap)** for intelligent place name geocoding
+- **TimeAPI.io** for timezone lookup from coordinates
+- **Geolocation API** for GPS-based location detection
+
 ### Astronomical Calculations
 - **Astronomy Engine** for precise astronomical calculations
 - **Luxon** for timezone-aware date/time handling
 
 ### Testing & Quality
-- **Vitest** with React Testing Library (279 passing tests)
+- **Vitest** with React Testing Library (274 passing tests)
 - **TypeScript strict mode** for compile-time safety
 - **ESLint** for code quality
 

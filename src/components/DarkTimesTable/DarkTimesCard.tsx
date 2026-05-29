@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getActualDarkWindows } from '@/utils/filterUtils';
 import { AstronomicalEventsDisplay } from './AstronomicalEventsDisplay';
-import { TypeBadge } from './TypeBadge';
 import type { DarkTimeWindow, DarkTimeMetadata } from '@/types';
 
 interface DarkTimesCardProps {
@@ -57,6 +56,13 @@ export function DarkTimesCard({ date, windows, metadata, timezone, onShowChart }
   // Expand dark windows by default when they exist
   const [isExpanded, setIsExpanded] = useState(hasWindows);
   const [showAstro, setShowAstro] = useState(false);
+  
+  // Sync isExpanded when hasWindows changes (e.g., when data loads)
+  useEffect(() => {
+    if (hasWindows && !isExpanded) {
+      setIsExpanded(true);
+    }
+  }, [hasWindows, isExpanded, date]);
 
   return (
     <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 space-y-3">
@@ -95,32 +101,44 @@ export function DarkTimesCard({ date, windows, metadata, timezone, onShowChart }
             {/* Expanded Windows */}
             {isExpanded && (
               <div className="mt-3 space-y-3">
-                {actualWindows.map((window, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-gray-700/50 border border-green-500/30 rounded p-3 space-y-2"
-                  >
-                    {/* Type Badge */}
-                    <div className="flex items-center gap-2">
-                      <TypeBadge type={window.type} />
-                      <span className="text-sm font-medium text-gray-300">
-                        {calculateDuration(window.start, window.end)}
-                      </span>
-                    </div>
+                {actualWindows.map((window, idx) => {
+                  // Type badge configuration
+                  const typeConfig: Record<string, { color: string; label: string; borderColor: string }> = {
+                    dawn: { color: 'bg-blue-600', label: 'Dawn', borderColor: 'border-blue-500/30' },
+                    dusk: { color: 'bg-orange-600', label: 'Dusk', borderColor: 'border-orange-500/30' },
+                    polarNight: { color: 'bg-purple-600', label: 'Polar Night', borderColor: 'border-purple-500/30' },
+                  };
+                  const config = typeConfig[window.type] || { color: 'bg-gray-600', label: window.type, borderColor: 'border-green-500/30' };
 
-                    {/* Times */}
-                    <div className="text-sm space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-400 w-12">Start:</span>
-                        <span className="text-white">{formatTime(window.start, timezone)}</span>
+                  return (
+                    <div
+                      key={idx}
+                      className={`flex rounded border ${config.borderColor} overflow-hidden`}
+                    >
+                      {/* Vertical stripe with rotated text */}
+                      <div className={`${config.color} flex items-center justify-center w-8 flex-shrink-0`}>
+                        <span className="text-white text-xs font-medium whitespace-nowrap" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+                          {config.label}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-400 w-12">End:</span>
-                        <span className="text-white">{formatTime(window.end, timezone)}</span>
+                      {/* Window content */}
+                      <div className="flex-1 bg-gray-700/50 p-3 text-sm space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 w-16">Start:</span>
+                          <span className="text-white">{formatTime(window.start, timezone)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 w-16">End:</span>
+                          <span className="text-white">{formatTime(window.end, timezone)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 w-16">Duration:</span>
+                          <span className="text-white">{calculateDuration(window.start, window.end)}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>

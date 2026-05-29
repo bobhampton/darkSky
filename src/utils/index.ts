@@ -29,7 +29,6 @@ export {
   timezones,
   filterTimezones,
   getDefaultTimezone,
-  saveDefaultTimezone,
   removeDefaultTimezone,
   isValidTimezone,
   getSystemTimezone,

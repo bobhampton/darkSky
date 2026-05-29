@@ -10,6 +10,9 @@ export function useLocalStorage<T>(
   key: string,
   initialValue: T
 ): [T, (value: T | ((val: T) => T)) => void, () => void] {
+  // Track if we just removed the value to prevent writing it back
+  const [isRemoved, setIsRemoved] = useState(false);
+  
   // Get initial value from localStorage or use provided initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
@@ -50,41 +53,63 @@ export function useLocalStorage<T>(
           return;
         }
 
-        // Allow value to be a function (like useState)
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
-        setStoredValue(valueToStore);
-        
-        // Try to serialize and store
-        try {
-          const serialized = JSON.stringify(valueToStore);
-          
-          // Check serialized size (warn if > 1MB, reject if > 5MB)
-          const sizeInBytes = new Blob([serialized]).size;
-          const sizeInMB = sizeInBytes / (1024 * 1024);
-          
-          if (sizeInMB > 5) {
-            console.error(`Data too large for localStorage (${sizeInMB.toFixed(2)}MB). Maximum 5MB.`);
-            throw new Error('Data too large to store');
-          } else if (sizeInMB > 1) {
-            console.warn(`Large data stored in localStorage (${sizeInMB.toFixed(2)}MB). Consider reducing data size.`);
-          }
-          
-          window.localStorage.setItem(key, serialized);
-        } catch (serializeError) {
-          // Check for quota exceeded
-          if (serializeError instanceof Error && serializeError.name === 'QuotaExceededError') {
-            console.error(`localStorage quota exceeded for key "${key}"`);
-            throw new Error('Storage quota exceeded. Please clear some data.');
-          }
-          console.error(`Error serializing value for key "${key}":`, serializeError);
-          throw new Error('Failed to save data: value cannot be serialized');
-        }
+        // Let React handle the functional update by passing it directly to setStoredValue
+        setStoredValue(value);
       } catch (error) {
         console.error(`Error setting localStorage key "${key}":`, error);
       }
     },
-    [key, storedValue]
+    [key]
   );
+
+  // Sync to localStorage whenever storedValue changes
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) {
+        return;
+      }
+
+      // Skip writing if we just removed the value
+      if (isRemoved) {
+        setIsRemoved(false);
+        return;
+      }
+      
+      // Don't write initial value to localStorage if key doesn't exist
+      // This prevents writing default values after a reset/removal
+      const existingValue = window.localStorage.getItem(key);
+      if (existingValue === null && JSON.stringify(storedValue) === JSON.stringify(initialValue)) {
+        return;
+      }
+
+      // Try to serialize and store
+      try {
+        const serialized = JSON.stringify(storedValue);
+        
+        // Check serialized size (warn if > 1MB, reject if > 5MB)
+        const sizeInBytes = new Blob([serialized]).size;
+        const sizeInMB = sizeInBytes / (1024 * 1024);
+        
+        if (sizeInMB > 5) {
+          console.error(`Data too large for localStorage (${sizeInMB.toFixed(2)}MB). Maximum 5MB.`);
+          return;
+        } else if (sizeInMB > 1) {
+          console.warn(`Large data stored in localStorage (${sizeInMB.toFixed(2)}MB). Consider reducing data size.`);
+        }
+        
+        window.localStorage.setItem(key, serialized);
+      } catch (serializeError) {
+        // Check for quota exceeded
+        if (serializeError instanceof Error && serializeError.name === 'QuotaExceededError') {
+          console.error(`localStorage quota exceeded for key "${key}"`);
+        } else {
+          console.error(`Error serializing value for key "${key}":`, serializeError);
+        }
+      }
+    } catch (error) {
+      console.error(`Error syncing to localStorage key "${key}":`, error);
+    }
+  }, [key, storedValue, isRemoved, initialValue]);
 
   // Remove value from localStorage
   const removeValue = useCallback(() => {
@@ -92,11 +117,13 @@ export function useLocalStorage<T>(
       // Check if localStorage is available
       if (typeof window === 'undefined' || !window.localStorage) {
         console.warn('localStorage is not available');
+        setIsRemoved(true);
         setStoredValue(initialValue);
         return;
       }
 
       window.localStorage.removeItem(key);
+      setIsRemoved(true);
       setStoredValue(initialValue);
     } catch (error) {
       console.error(`Error removing localStorage key "${key}":`, error);

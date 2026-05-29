@@ -104,6 +104,49 @@ export function getSystemTimezone(): string {
 }
 
 /**
+ * Gets the timezone for a given latitude/longitude using TimeAPI
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @returns IANA timezone identifier or null if lookup fails
+ */
+export async function getTimezoneFromCoordinates(
+  lat: number,
+  lng: number
+): Promise<string | null> {
+  try {
+    // Use TimeAPI.io (free, no API key required)
+    const response = await fetch(
+      `https://timeapi.io/api/timezone/coordinate?latitude=${lat}&longitude=${lng}`,
+      {
+        headers: {
+          'Accept': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.warn('Timezone lookup failed:', response.statusText);
+      return null;
+    }
+
+    const data = await response.json();
+    
+    // TimeAPI returns { timeZone: "America/New_York" }
+    const timezone = data.timeZone;
+    
+    if (timezone && isValidTimezone(timezone)) {
+      return timezone;
+    }
+    
+    console.warn('Invalid timezone received from API:', timezone);
+    return null;
+  } catch (error) {
+    console.warn('Error fetching timezone from coordinates:', error);
+    return null;
+  }
+}
+
+/**
  * Validates timezone and returns UTC if invalid/empty
  * @param timezone - Timezone string to validate
  * @returns Valid timezone string or UTC as fallback
