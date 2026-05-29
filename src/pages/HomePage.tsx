@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useObserver } from '@/context';
 import { useAstronomy } from '@/hooks';
 import { getValidTimezone } from '@/utils/timezones';
@@ -23,6 +23,7 @@ export function HomePage() {
   const { darkTimesData, isCalculating, error, progress, calculateDarkTimes } = useAstronomy();
   const [showChart, setShowChart] = useState<string | null>(null);
   const [lastCalculationParams, setLastCalculationParams] = useState<typeof observerData | null>(null);
+  const shouldScrollToResults = useRef(false);
   
   // Filter state
   const [minDurationInput, setMinDurationInput] = useState<string>('');
@@ -49,6 +50,27 @@ export function HomePage() {
     }
   }, [darkTimesData]);
 
+  // Scroll to results after calculation completes
+  useEffect(() => {
+    if (!isCalculating && shouldScrollToResults.current && darkTimesData && Object.keys(darkTimesData).length > 0) {
+      // Wait a brief moment for DOM to update, then scroll
+      setTimeout(() => {
+        const resultsElement = document.getElementById('results-heading');
+        if (resultsElement) {
+          // Get the element's position
+          const elementPosition = resultsElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - 90; // 90px offset for navbar (64px) + padding
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+        shouldScrollToResults.current = false;
+      }, 100);
+    }
+  }, [isCalculating, darkTimesData]);
+
   // Apply filters to create filtered dataset
   const filteredDarkTimesData = useMemo(() => {
     if (!darkTimesData) return {};
@@ -68,6 +90,9 @@ export function HomePage() {
 
     // Store params for retry
     setLastCalculationParams(formData);
+
+    // Flag to scroll to results when calculation completes
+    shouldScrollToResults.current = true;
 
     // Trigger calculations with validated timezone
     calculateDarkTimes({

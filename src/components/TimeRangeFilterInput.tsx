@@ -77,7 +77,7 @@ export function TimeRangeFilterInput({ value, onChange }: TimeRangeFilterInputPr
   const minuteOptions = [0, 15, 30, 45];
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* Enable checkbox */}
       <div className="flex items-center gap-2">
         <input
@@ -93,109 +93,115 @@ export function TimeRangeFilterInput({ value, onChange }: TimeRangeFilterInputPr
         <Tooltip text="Filter windows to only show those overlapping with your desired time range. Overnight ranges are supported (e.g., 11:00 PM - 1:00 AM)." />
       </div>
 
-      {/* Time inputs */}
-      <div className={`space-y-3 pl-6 ${!value.enabled ? 'opacity-50' : ''}`}>
-        {/* Start Time */}
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-400 w-16">Start:</label>
-          <select
-            value={startHours}
-            onChange={(e) => setStartHours(parseInt(e.target.value))}
-            disabled={!value.enabled}
-            className="bg-gray-700 border border-gray-600 text-white text-sm rounded px-2 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {hourOptions.map(hour => (
-              <option key={hour} value={hour}>{hour}</option>
-            ))}
-          </select>
-          <span className="text-gray-400">:</span>
-          <select
-            value={startMinutes}
-            onChange={(e) => setStartMinutes(parseInt(e.target.value))}
-            disabled={!value.enabled}
-            className="bg-gray-700 border border-gray-600 text-white text-sm rounded px-2 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {minuteOptions.map(min => (
-              <option key={min} value={min}>{min.toString().padStart(2, '0')}</option>
-            ))}
-          </select>
-          <div className="flex gap-1">
-            <button
-              type="button"
-              onClick={() => setStartPeriod('AM')}
+      {/* Time inputs - Compact layout */}
+      <div className={`pl-6 ${!value.enabled ? 'opacity-50' : ''}`}>
+        {/* Single row with Start and End times on desktop, stacked on mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          {/* Start Time */}
+          <div className="flex items-center gap-1.5">
+            <label className="text-xs text-gray-400 w-10 flex-shrink-0">Start:</label>
+            <select
+              value={startHours}
+              onChange={(e) => setStartHours(parseInt(e.target.value))}
               disabled={!value.enabled}
-              className={`px-2 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                startPeriod === 'AM'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
+              className="bg-gray-700 border border-gray-600 text-white text-xs rounded px-1.5 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-12"
             >
-              AM
-            </button>
-            <button
-              type="button"
-              onClick={() => setStartPeriod('PM')}
+              {hourOptions.map(hour => (
+                <option key={hour} value={hour}>{hour}</option>
+              ))}
+            </select>
+            <span className="text-gray-400 text-xs">:</span>
+            <select
+              value={startMinutes}
+              onChange={(e) => setStartMinutes(parseInt(e.target.value))}
               disabled={!value.enabled}
-              className={`px-2 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                startPeriod === 'PM'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
+              className="bg-gray-700 border border-gray-600 text-white text-xs rounded px-1.5 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-12"
             >
-              PM
-            </button>
+              {minuteOptions.map(min => (
+                <option key={min} value={min}>{min.toString().padStart(2, '0')}</option>
+              ))}
+            </select>
+            <div className="flex gap-0.5">
+              <button
+                type="button"
+                onClick={() => setStartPeriod('AM')}
+                disabled={!value.enabled}
+                className={`px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  startPeriod === 'AM'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                AM
+              </button>
+              <button
+                type="button"
+                onClick={() => setStartPeriod('PM')}
+                disabled={!value.enabled}
+                className={`px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  startPeriod === 'PM'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                PM
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* End Time */}
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-400 w-16">End:</label>
-          <select
-            value={endHours}
-            onChange={(e) => setEndHours(parseInt(e.target.value))}
-            disabled={!value.enabled}
-            className="bg-gray-700 border border-gray-600 text-white text-sm rounded px-2 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {hourOptions.map(hour => (
-              <option key={hour} value={hour}>{hour}</option>
-            ))}
-          </select>
-          <span className="text-gray-400">:</span>
-          <select
-            value={endMinutes}
-            onChange={(e) => setEndMinutes(parseInt(e.target.value))}
-            disabled={!value.enabled}
-            className="bg-gray-700 border border-gray-600 text-white text-sm rounded px-2 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {minuteOptions.map(min => (
-              <option key={min} value={min}>{min.toString().padStart(2, '0')}</option>
-            ))}
-          </select>
-          <div className="flex gap-1">
-            <button
-              type="button"
-              onClick={() => setEndPeriod('AM')}
+          {/* Separator */}
+          <span className="hidden sm:inline text-gray-500 text-xs">→</span>
+
+          {/* End Time */}
+          <div className="flex items-center gap-1.5">
+            <label className="text-xs text-gray-400 w-10 flex-shrink-0">End:</label>
+            <select
+              value={endHours}
+              onChange={(e) => setEndHours(parseInt(e.target.value))}
               disabled={!value.enabled}
-              className={`px-2 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                endPeriod === 'AM'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
+              className="bg-gray-700 border border-gray-600 text-white text-xs rounded px-1.5 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-12"
             >
-              AM
-            </button>
-            <button
-              type="button"
-              onClick={() => setEndPeriod('PM')}
+              {hourOptions.map(hour => (
+                <option key={hour} value={hour}>{hour}</option>
+              ))}
+            </select>
+            <span className="text-gray-400 text-xs">:</span>
+            <select
+              value={endMinutes}
+              onChange={(e) => setEndMinutes(parseInt(e.target.value))}
               disabled={!value.enabled}
-              className={`px-2 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                endPeriod === 'PM'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
+              className="bg-gray-700 border border-gray-600 text-white text-xs rounded px-1.5 py-1 focus:ring-purple-500 focus:border-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-12"
             >
-              PM
-            </button>
+              {minuteOptions.map(min => (
+                <option key={min} value={min}>{min.toString().padStart(2, '0')}</option>
+              ))}
+            </select>
+            <div className="flex gap-0.5">
+              <button
+                type="button"
+                onClick={() => setEndPeriod('AM')}
+                disabled={!value.enabled}
+                className={`px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  endPeriod === 'AM'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                AM
+              </button>
+              <button
+                type="button"
+                onClick={() => setEndPeriod('PM')}
+                disabled={!value.enabled}
+                className={`px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  endPeriod === 'PM'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                PM
+              </button>
+            </div>
           </div>
         </div>
 

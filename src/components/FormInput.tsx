@@ -4,7 +4,7 @@ interface FormInputProps {
   id: string;
   label: string;
   tooltip: string;
-  type?: 'text' | 'date';
+  type?: 'text' | 'date' | 'number';
   value: string;
   onChange: (value: string) => void;
   error?: string;

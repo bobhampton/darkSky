@@ -216,7 +216,6 @@ describe('Validation Functions - Core Unit Tests', () => {
       dateStart: '2024-01-15',
       dateEnd: '2024-01-20',
       timezone: 'America/New_York',
-      saveDefaultTimezone: false,
     };
 
     test('accepts valid form data', () => {
@@ -231,7 +230,6 @@ describe('Validation Functions - Core Unit Tests', () => {
         elevation: '-10', // Invalid
         dateStart: '', // Invalid
         dateEnd: '', // Invalid
-        saveDefaultTimezone: false,
         timezone: '', // Invalid
       };
       

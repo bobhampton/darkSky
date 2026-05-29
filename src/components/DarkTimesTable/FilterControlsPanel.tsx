@@ -83,11 +83,11 @@ export function FilterControlsPanel({
 
       {/* Panel Content */}
       {filtersExpanded && (
-        <div id="filter-controls-panel" className="p-4 space-y-6 border-t border-gray-700" role="region" aria-label="Filter controls">
-          {/* Info Banner */}
-          <div className="p-3 bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg">
-            <div className="flex items-start gap-2">
-              <svg className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <div id="filter-controls-panel" className="p-3 border-t border-gray-700" role="region" aria-label="Filter controls">
+          {/* Info Banner - Compact */}
+          <div className="mb-3 p-2 bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-blue-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -100,33 +100,36 @@ export function FilterControlsPanel({
             </div>
           </div>
 
-          {/* Duration Filter */}
-          <div>
-            <label htmlFor="min-duration" className="block text-sm font-medium text-gray-300 mb-2">
-              Minimum Duration (hours)
-            </label>
-            <input
-              type="number"
-              id="min-duration"
-              min="0"
-              step="0.5"
-              placeholder="e.g., 2.5"
-              value={minDurationInput}
-              onChange={(e) => onMinDurationChange(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <p className="mt-1 text-xs text-gray-400">Filter windows shorter than this duration</p>
+          {/* Grid Layout for Desktop: Duration + Time Range side-by-side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Duration Filter */}
+            <div>
+              <label htmlFor="min-duration" className="block text-sm font-medium text-gray-300 mb-1.5">
+                Minimum Duration (hours)
+              </label>
+              <input
+                type="number"
+                id="min-duration"
+                min="0"
+                step="0.5"
+                placeholder="e.g., 2.5"
+                value={minDurationInput}
+                onChange={(e) => onMinDurationChange(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <p className="mt-1 text-xs text-gray-400">Filter windows shorter than this duration</p>
+            </div>
+
+            {/* Time Range Filter */}
+            <div>
+              <TimeRangeFilterInput value={timeRangeFilter} onChange={onTimeRangeChange} />
+            </div>
           </div>
 
-          {/* Time Range Filter */}
-          <div>
-            <TimeRangeFilterInput value={timeRangeFilter} onChange={onTimeRangeChange} />
-          </div>
-
-          {/* Window Types Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Window Types</label>
-            <div className="space-y-2">
+          {/* Window Types Filter - Horizontal on Desktop */}
+          <div className="mt-3">
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">Window Types</label>
+            <div className="flex flex-wrap gap-4">
               {Array.from(availableTypes)
                 .sort()
                 .map((type) => {
@@ -147,21 +150,18 @@ export function FilterControlsPanel({
                     </label>
                   );
                 })}
+              {/* Hide Empty Days - inline with window types */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hideEmptyDays}
+                  onChange={(e) => onHideEmptyDaysChange(e.target.checked)}
+                  className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-purple-500"
+                />
+                <span className="text-sm font-medium text-gray-300">Hide days with no dark windows</span>
+              </label>
             </div>
-            <p className="mt-2 text-xs text-gray-400">Select which types of windows to display</p>
-          </div>
-
-          {/* Hide Empty Days */}
-          <div>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={hideEmptyDays}
-                onChange={(e) => onHideEmptyDaysChange(e.target.checked)}
-                className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-purple-500"
-              />
-              <span className="text-sm font-medium text-gray-300">Hide days with no dark windows</span>
-            </label>
+            <p className="mt-1.5 text-xs text-gray-400">Select which types of windows to display</p>
           </div>
         </div>
       )}

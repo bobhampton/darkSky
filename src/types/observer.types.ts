@@ -27,8 +27,8 @@ export interface ObserverFormData {
   dateEnd: string;
   /** IANA timezone identifier */
   timezone: string;
-  /** Whether to save this timezone as default */
-  saveDefaultTimezone: boolean;
+  /** Optional address/location name */
+  address?: string;
   /** Optional time range filter for filtering dark windows by time of day */
   timeRangeFilter?: TimeRangeFilter;
 }

@@ -41,23 +41,4 @@ describe('useTimezones', () => {
     expect(timezones.some((tz) => tz.startsWith('Asia/'))).toBe(true);
     expect(timezones.some((tz) => tz.startsWith('Pacific/'))).toBe(true);
   });
-
-  test('returns default timezone', () => {
-    const { result } = renderHook(() => useTimezones());
-
-    expect(result.current.defaultTimezone).toBeDefined();
-    expect(typeof result.current.defaultTimezone).toBe('string');
-  });
-
-  test('can update default timezone', () => {
-    const { result } = renderHook(() => useTimezones());
-
-    const newTimezone = 'America/Los_Angeles';
-    
-    act(() => {
-      result.current.setDefaultTimezone(newTimezone);
-    });
-
-    expect(result.current.defaultTimezone).toBe(newTimezone);
-  });
 });

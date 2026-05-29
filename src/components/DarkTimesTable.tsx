@@ -4,7 +4,6 @@ import { FilterSummaryBar } from './DarkTimesTable/FilterSummaryBar';
 import { FilterControlsPanel } from './DarkTimesTable/FilterControlsPanel';
 import { AstronomicalEventsDisplay } from './DarkTimesTable/AstronomicalEventsDisplay';
 import { WindowRow } from './DarkTimesTable/WindowRow';
-import { TypeBadge } from './DarkTimesTable/TypeBadge';
 import { DarkTimesCard } from './DarkTimesTable/DarkTimesCard';
 import type { DarkTimesData, DarkTimeWindow, DarkTimeMetadata, TimeRangeFilter } from '@/types';
 
@@ -173,13 +172,10 @@ export function DarkTimesTable({
                     Dark Windows
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Astronomical Events
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Type
-                  </th>
-                  <th scope="col" className="px-6 py-3">
                     Duration
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Astronomical Events
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
@@ -197,7 +193,7 @@ export function DarkTimesTable({
                   return (
                     <tr key={date} className="border-b border-gray-700 hover:bg-gray-800/50">
                       <td className="px-6 py-4 font-medium text-white whitespace-nowrap">{date}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 align-top">
                         {windows.length === 0 ? (
                           <span className="text-gray-500">No dark time</span>
                         ) : (
@@ -227,6 +223,23 @@ export function DarkTimesTable({
                           </div>
                         )}
                       </td>
+                      <td className="px-6 py-4 align-top">
+                        {windows.length > 0 && (
+                          <div>
+                            {/* spacer matching the "N windows" header row height */}
+                            <div className="h-5" />
+                            {!isCollapsed && (
+                              <div className="mt-2 space-y-2">
+                                {windows.map((window, idx) => (
+                                  <div key={idx} className="min-h-[3.25rem] flex items-center">
+                                    {calculateDuration(window.start, window.end)}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </td>
                       <td className="px-6 py-4">
                         <button
                           onClick={() => toggleAstro(date)}
@@ -237,26 +250,6 @@ export function DarkTimesTable({
                           {isAstroExpanded ? '▼ Hide' : '▶ Show'}
                         </button>
                         {isAstroExpanded && metadata && <AstronomicalEventsDisplay metadata={metadata} timezone={timezone} />}
-                      </td>
-                      <td className="px-6 py-4">
-                        {windows.length > 0 && (
-                          <div className="space-y-2">
-                            {windows.map((window, idx) => (
-                              <div key={idx}>
-                                <TypeBadge type={window.type} />
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        {windows.length > 0 && (
-                          <div className="space-y-1">
-                            {windows.map((window, idx) => (
-                              <div key={idx}>{calculateDuration(window.start, window.end)}</div>
-                            ))}
-                          </div>
-                        )}
                       </td>
                       <td className="px-6 py-4">
                         {onShowChart && (
