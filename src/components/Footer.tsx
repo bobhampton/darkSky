@@ -42,17 +42,15 @@ export function Footer() {
           {/* Center — Contact */}
           <div className="flex flex-col items-center gap-3 text-center">
             <p className="text-gray-300 font-medium">Found a bug or have feedback?</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <a
-                href="mailto:darkskycalculator@gmail.com?subject=darkSky%20Feedback"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-                aria-label="Send feedback email"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                Email Us
-              </a>
+            <div className="flex flex-col items-center gap-3">
+              <p className="text-gray-200">
+                Email: <a 
+                  href="mailto:darkskycalculator@gmail.com"
+                  className="text-blue-400 hover:text-blue-300 transition-colors underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+                >
+                  darkskycalculator@gmail.com
+                </a>
+              </p>
               <a
                 href="https://github.com/bobhampton/darkSky/issues/new"
                 target="_blank"
