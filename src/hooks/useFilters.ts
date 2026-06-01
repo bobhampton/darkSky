@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { getAvailableWindowTypes, filterDarkTimesData } from '@/utils/filterUtils';
 import type { DarkTimesData, DarkTimeWindow, TimeRangeFilter } from '@/types';
 
@@ -52,12 +52,14 @@ export function useFilters({ darkTimesData, timezone }: UseFiltersOptions): UseF
   }, [darkTimesData]);
 
   // Selected types state - initialize with available types
-  const [selectedTypes, setSelectedTypes] = useState<Set<DarkTimeWindow['type']>>(() => {
-    if (darkTimesData && Object.keys(darkTimesData).length > 0) {
-      return getAvailableWindowTypes(darkTimesData);
+  const [selectedTypes, setSelectedTypes] = useState<Set<DarkTimeWindow['type']>>(new Set());
+
+  // Sync selectedTypes with availableTypes when data loads
+  useEffect(() => {
+    if (availableTypes.size > 0 && selectedTypes.size === 0) {
+      setSelectedTypes(new Set(availableTypes));
     }
-    return new Set();
-  });
+  }, [availableTypes, selectedTypes.size]);
 
   // Filter handlers
   const handleMinDurationChange = (value: string) => {
