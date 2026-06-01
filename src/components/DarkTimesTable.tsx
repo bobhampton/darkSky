@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getActualDarkWindows } from '@/utils/filterUtils';
+import { formatDuration } from '@/utils/dateUtils';
 import { FilterSummaryBar } from './DarkTimesTable/FilterSummaryBar';
 import { FilterControlsPanel } from './DarkTimesTable/FilterControlsPanel';
 import { AstronomicalEventsDisplay } from './DarkTimesTable/AstronomicalEventsDisplay';
@@ -24,20 +25,6 @@ function getMetadata(windows: DarkTimeWindow[]): DarkTimeMetadata | null {
   if (metaOnlyEntry) return metaOnlyEntry.meta;
   if (windows.length > 0) return windows[0].meta;
   return null;
-}
-
-/**
- * Calculate duration in hours and minutes
- */
-function calculateDuration(start: Date, end: Date): string {
-  const diffMs = end.getTime() - start.getTime();
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  return `${minutes}m`;
 }
 
 /**
@@ -226,7 +213,7 @@ export function DarkTimesTable({
                               <div className="mt-2 space-y-2">
                                 {windows.map((window, idx) => (
                                   <div key={idx} className="min-h-[3.25rem] flex items-center">
-                                    {calculateDuration(window.start, window.end)}
+                                    {formatDuration(window.start, window.end)}
                                   </div>
                                 ))}
                               </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getActualDarkWindows } from '@/utils/filterUtils';
+import { formatDuration } from '@/utils/dateUtils';
 import { AstronomicalEventsDisplay } from './AstronomicalEventsDisplay';
 import type { DarkTimeWindow, DarkTimeMetadata } from '@/types';
 
@@ -9,20 +10,6 @@ interface DarkTimesCardProps {
   metadata: DarkTimeMetadata | null;
   timezone: string;
   onShowChart?: (date: string) => void;
-}
-
-/**
- * Calculate duration in hours and minutes
- */
-function calculateDuration(start: Date, end: Date): string {
-  const diffMs = end.getTime() - start.getTime();
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  return `${minutes}m`;
 }
 
 /**
@@ -128,7 +115,7 @@ export function DarkTimesCard({ date, windows, metadata, timezone, onShowChart }
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-gray-400 w-16">Duration:</span>
-                          <span className="text-white">{calculateDuration(window.start, window.end)}</span>
+                          <span className="text-white">{formatDuration(window.start, window.end)}</span>
                         </div>
                       </div>
                     </div>

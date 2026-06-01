@@ -107,7 +107,7 @@ export function LocationPicker({
         }
       }
     },
-    [onLocationChange, onTimezoneChange, reverseGeocode]
+    [actions, onLocationChange, onTimezoneChange, reverseGeocode]
   );
 
   // Handle GPS button click

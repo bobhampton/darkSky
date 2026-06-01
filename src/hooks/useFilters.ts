@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { getAvailableWindowTypes, filterDarkTimesData } from '@/utils/filterUtils';
 import type { DarkTimesData, DarkTimeWindow, TimeRangeFilter } from '@/types';
 
@@ -36,8 +36,6 @@ export function useFilters({ darkTimesData, timezone }: UseFiltersOptions): UseF
   // Filter state
   const [minDurationInput, setMinDurationInput] = useState<string>('');
   const [minDurationHours, setMinDurationHours] = useState<number | undefined>(undefined);
-  const [availableTypes, setAvailableTypes] = useState<Set<DarkTimeWindow['type']>>(new Set());
-  const [selectedTypes, setSelectedTypes] = useState<Set<DarkTimeWindow['type']>>(new Set());
   const [hideEmptyDays, setHideEmptyDays] = useState<boolean>(false);
   const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRangeFilter>({
     startTime: '21:00', // 9:00 PM
@@ -45,18 +43,21 @@ export function useFilters({ darkTimesData, timezone }: UseFiltersOptions): UseF
     enabled: false,
   });
 
-  // Detect available window types when data changes
-  useEffect(() => {
+  // Detect available window types when data changes (memoized)
+  const availableTypes = useMemo(() => {
     if (darkTimesData && Object.keys(darkTimesData).length > 0) {
-      const types = getAvailableWindowTypes(darkTimesData);
-      setAvailableTypes(types);
-      // Initialize selected types to all available types
-      setSelectedTypes(types);
-    } else {
-      setAvailableTypes(new Set());
-      setSelectedTypes(new Set());
+      return getAvailableWindowTypes(darkTimesData);
     }
+    return new Set<DarkTimeWindow['type']>();
   }, [darkTimesData]);
+
+  // Selected types state - initialize with available types
+  const [selectedTypes, setSelectedTypes] = useState<Set<DarkTimeWindow['type']>>(() => {
+    if (darkTimesData && Object.keys(darkTimesData).length > 0) {
+      return getAvailableWindowTypes(darkTimesData);
+    }
+    return new Set();
+  });
 
   // Filter handlers
   const handleMinDurationChange = (value: string) => {

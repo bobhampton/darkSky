@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
  * @returns true if string is a valid number format
  */
 export function isValidNumber(s: string): boolean {
-  return /^[\-\+]?\d+(\.\d*)?$/.test(s);
+  return /^[-+]?\d+(\.\d*)?$/.test(s);
 }
 
 /**
@@ -116,6 +116,23 @@ export function convert12To24Hour(
   const minutesStr = minutes.toString().padStart(2, '0');
   
   return `${hoursStr}:${minutesStr}`;
+}
+
+/**
+ * Calculate and format duration between two dates
+ * @param start - Start date
+ * @param end - End date
+ * @returns Formatted duration string (e.g., "2h 30m" or "45m")
+ */
+export function formatDuration(start: Date, end: Date): string {
+  const diffMs = end.getTime() - start.getTime();
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  return `${minutes}m`;
 }
 
 /**
