@@ -10,6 +10,5 @@ export { useScrollPosition } from './useScrollPosition';
 export { useChartData } from './useChartData';
 export { useGeolocation } from './useGeolocation';
 export { useNominatim } from './useNominatim';
-export { useDebounce } from './useDebounce';
 export { usePageMetadata } from './usePageMetadata';
 export { useSavedLocations } from './useSavedLocations';

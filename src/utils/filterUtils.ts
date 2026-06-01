@@ -141,6 +141,44 @@ export function filterWindowsByTimeRange(
 }
 
 /**
+ * Check if any filters are currently active
+ * Used to show/hide filter summary and adjust UI
+ */
+export function hasActiveFilters(
+  minDurationHours: number | undefined,
+  selectedTypes: Set<DarkTimeWindow['type']>,
+  availableTypes: Set<DarkTimeWindow['type']>,
+  hideEmptyDays: boolean,
+  timeRangeFilter: TimeRangeFilter
+): boolean {
+  return (
+    (minDurationHours !== undefined && minDurationHours > 0) ||
+    selectedTypes.size < availableTypes.size ||
+    hideEmptyDays ||
+    timeRangeFilter.enabled
+  );
+}
+
+/**
+ * Count how many filters are currently active
+ * Used to display active filter count in UI
+ */
+export function getActiveFilterCount(
+  minDurationHours: number | undefined,
+  selectedTypes: Set<DarkTimeWindow['type']>,
+  availableTypes: Set<DarkTimeWindow['type']>,
+  hideEmptyDays: boolean,
+  timeRangeFilter: TimeRangeFilter
+): number {
+  return [
+    minDurationHours !== undefined && minDurationHours > 0,
+    timeRangeFilter.enabled,
+    selectedTypes.size < availableTypes.size,
+    hideEmptyDays,
+  ].filter(Boolean).length;
+}
+
+/**
  * Filter complete dark times data based on all filter criteria
  * Returns a new DarkTimesData object with filtered dates and windows
  */

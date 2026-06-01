@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getActualDarkWindows } from '@/utils/filterUtils';
 import { AstronomicalEventsDisplay } from './AstronomicalEventsDisplay';
 import type { DarkTimeWindow, DarkTimeMetadata } from '@/types';
@@ -36,7 +36,8 @@ function formatTime(date: Date, timezone: string): string {
       minute: '2-digit',
       hour12: true,
     });
-  } catch (error) {
+  } catch {
+    // Fallback to UTC if timezone is invalid
     return date.toLocaleString('en-US', {
       timeZone: 'UTC',
       hour: '2-digit',
@@ -54,15 +55,9 @@ export function DarkTimesCard({ date, windows, metadata, timezone, onShowChart }
   const hasWindows = actualWindows.length > 0;
   
   // Expand dark windows by default when they exist
+  // User can toggle, but each new date starts expanded if it has windows
   const [isExpanded, setIsExpanded] = useState(hasWindows);
   const [showAstro, setShowAstro] = useState(false);
-  
-  // Sync isExpanded when hasWindows changes (e.g., when data loads)
-  useEffect(() => {
-    if (hasWindows && !isExpanded) {
-      setIsExpanded(true);
-    }
-  }, [hasWindows, isExpanded, date]);
 
   return (
     <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 space-y-3">

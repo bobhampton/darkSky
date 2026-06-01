@@ -1,4 +1,5 @@
 import { TimeRangeFilterInput } from '../TimeRangeFilterInput';
+import { hasActiveFilters, getActiveFilterCount } from '@/utils/filterUtils';
 import type { DarkTimeWindow, TimeRangeFilter } from '@/types';
 
 interface FilterControlsPanelProps {
@@ -33,18 +34,21 @@ export function FilterControlsPanel({
   onHideEmptyDaysChange,
   onTimeRangeChange,
 }: FilterControlsPanelProps) {
-  const hasActiveFilters =
-    (minDurationHours && minDurationHours > 0) ||
-    selectedTypes.size < availableTypes.size ||
-    hideEmptyDays ||
-    timeRangeFilter.enabled;
-
-  const activeFilterCount = [
-    minDurationHours && minDurationHours > 0,
-    timeRangeFilter.enabled,
-    selectedTypes.size < availableTypes.size,
+  const filtersActive = hasActiveFilters(
+    minDurationHours,
+    selectedTypes,
+    availableTypes,
     hideEmptyDays,
-  ].filter(Boolean).length;
+    timeRangeFilter
+  );
+
+  const activeFilterCount = getActiveFilterCount(
+    minDurationHours,
+    selectedTypes,
+    availableTypes,
+    hideEmptyDays,
+    timeRangeFilter
+  );
 
   return (
     <div className="mb-6 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
@@ -65,7 +69,7 @@ export function FilterControlsPanel({
             />
           </svg>
           <span className="text-sm font-semibold text-gray-200">Filter Controls</span>
-          {hasActiveFilters && (
+          {filtersActive && (
             <span className="px-2 py-0.5 bg-purple-600 text-white text-xs font-medium rounded-full">
               {activeFilterCount}
             </span>
