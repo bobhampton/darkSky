@@ -27,7 +27,9 @@ dist-ssr
 # TypeScript compiled output (not needed with Vite)
 src/**/*.js
 src/**/*.js.map
-!src/**/*.test.js
+
+# TypeScript build info
+*.tsbuildinfo
 
 # Internal notes
 RELEASE_CHECKLIST.md
