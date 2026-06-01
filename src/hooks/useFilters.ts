@@ -57,7 +57,8 @@ export function useFilters({ darkTimesData, timezone }: UseFiltersOptions): UseF
   // Sync selectedTypes with availableTypes when data loads
   useEffect(() => {
     if (availableTypes.size > 0 && selectedTypes.size === 0) {
-      setSelectedTypes(new Set(availableTypes));
+      const timer = setTimeout(() => setSelectedTypes(new Set(availableTypes)), 0);
+      return () => clearTimeout(timer);
     }
   }, [availableTypes, selectedTypes.size]);
 

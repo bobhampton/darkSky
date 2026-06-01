@@ -105,7 +105,7 @@ function getTimesWithProgress(
   observer: Observer,
   totalDays: number
 ): DarkTimesData {
-  const darkObj: Record<string, any[]> = {};
+  const darkObj: DarkTimesData = {};
   let currentDay = 0;
 
   // Import the getTimes function logic inline to add progress reporting

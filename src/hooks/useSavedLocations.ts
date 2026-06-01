@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import type { SavedLocation, SavedLocationsData } from '@/types/savedLocation.types';
 
@@ -20,7 +20,7 @@ export function useSavedLocations() {
   );
 
   // Get all saved locations
-  const savedLocations = storedData.locations || [];
+  const savedLocations = useMemo(() => storedData.locations || [], [storedData.locations]);
 
   // Add a new saved location
   const saveLocation = useCallback(

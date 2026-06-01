@@ -33,17 +33,21 @@ export function ManualInputs({
   // Populate inputs when tab becomes active (only once per activation)
   useEffect(() => {
     if (isActive && !hasPopulated) {
-      setLatInput(location.lat.toString());
-      setLngInput(location.lng.toString());
-      setHasPopulated(true);
-      setErrors({}); // Clear any errors
+      const timer = setTimeout(() => {
+        setLatInput(location.lat.toString());
+        setLngInput(location.lng.toString());
+        setHasPopulated(true);
+        setErrors({}); // Clear any errors
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isActive, hasPopulated, location.lat, location.lng]);
 
   // Reset hasPopulated when tab becomes inactive
   useEffect(() => {
     if (!isActive) {
-      setHasPopulated(false);
+      const timer = setTimeout(() => setHasPopulated(false), 0);
+      return () => clearTimeout(timer);
     }
   }, [isActive]);
 

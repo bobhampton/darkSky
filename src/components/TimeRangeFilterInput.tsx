@@ -33,13 +33,16 @@ export function TimeRangeFilterInput({ value, onChange }: TimeRangeFilterInputPr
     const start12 = convert24To12Hour(value.startTime);
     const end12 = convert24To12Hour(value.endTime);
     
-    setStartHours(start12.hours);
-    setStartMinutes(start12.minutes);
-    setStartPeriod(start12.period);
-    
-    setEndHours(end12.hours);
-    setEndMinutes(end12.minutes);
-    setEndPeriod(end12.period);
+    const timer = setTimeout(() => {
+      setStartHours(start12.hours);
+      setStartMinutes(start12.minutes);
+      setStartPeriod(start12.period);
+      
+      setEndHours(end12.hours);
+      setEndMinutes(end12.minutes);
+      setEndPeriod(end12.period);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [value.startTime, value.endTime]);
 
   // Update parent when time values change
@@ -55,13 +58,14 @@ export function TimeRangeFilterInput({ value, onChange }: TimeRangeFilterInputPr
 
     // Validate the new time range
     const error = validateTimeRange(newValue);
-    setValidationError(error);
+    const timer = setTimeout(() => setValidationError(error), 0);
 
     // Only update parent if different and valid when enabled
     if (newStartTime !== value.startTime || newEndTime !== value.endTime) {
       onChange(newValue);
     }
-  }, [startHours, startMinutes, startPeriod, endHours, endMinutes, endPeriod, value.enabled]);
+    return () => clearTimeout(timer);
+  }, [startHours, startMinutes, startPeriod, endHours, endMinutes, endPeriod, value.enabled, value.startTime, value.endTime, onChange]);
 
   const handleEnabledChange = (checked: boolean) => {
     onChange({ ...value, enabled: checked });

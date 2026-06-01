@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { DateTime } from 'luxon';
 import * as Astronomy from 'astronomy-engine';
 import { calculateAltitude } from '@/utils/astronomy';
@@ -18,11 +18,7 @@ export function useChartData(date: string, observerConfig: ObserverConfig) {
   const [chartData, setChartData] = useState<AltitudeChartData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    generateChartData();
-  }, [date, observerConfig]);
-
-  const generateChartData = () => {
+  const generateChartData = useCallback(() => {
     setIsLoading(true);
     try {
       // Parse date and generate 24 hours of data points
@@ -79,7 +75,11 @@ export function useChartData(date: string, observerConfig: ObserverConfig) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [date, observerConfig.timezone, observerConfig.latitude, observerConfig.longitude, observerConfig.elevation]);
+
+  useEffect(() => {
+    generateChartData();
+  }, [generateChartData]);
 
   return { chartData, isLoading };
 }

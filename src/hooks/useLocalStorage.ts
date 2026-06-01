@@ -31,7 +31,7 @@ export function useLocalStorage<T>(
       // Try to parse the JSON
       try {
         return JSON.parse(item);
-      } catch (parseError) {
+      } catch {
         // If JSON is corrupted, log warning and remove the corrupted data
         console.warn(`Corrupted data in localStorage key "${key}", resetting to default`);
         window.localStorage.removeItem(key);
@@ -71,8 +71,8 @@ export function useLocalStorage<T>(
 
       // Skip writing if we just removed the value
       if (isRemoved) {
-        setIsRemoved(false);
-        return;
+        const timer = setTimeout(() => setIsRemoved(false), 0);
+        return () => clearTimeout(timer);
       }
       
       // Don't write initial value to localStorage if key doesn't exist

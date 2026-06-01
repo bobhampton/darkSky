@@ -55,9 +55,13 @@ export function LocationSearch({
   // Clear results when query is deleted or too short
   useEffect(() => {
     if (query.trim().length < 3 && results.length > 0) {
-      clearResults();
-      setIsOpen(false);
-      setSelectedIndex(-1);
+      // Batch state updates to avoid cascading renders
+      const timer = setTimeout(() => {
+        clearResults();
+        setIsOpen(false);
+        setSelectedIndex(-1);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [query, results.length, clearResults]);
 
@@ -65,17 +69,21 @@ export function LocationSearch({
   useEffect(() => {
     if (lastSelectedAddress && query !== lastSelectedAddress) {
       // User has modified the selected address, clear the selection marker
-      setLastSelectedAddress('');
+      const timer = setTimeout(() => setLastSelectedAddress(''), 0);
+      return () => clearTimeout(timer);
     }
   }, [query, lastSelectedAddress]);
 
   // Sync query with address prop (for cross-tab updates from saved locations)
   useEffect(() => {
     if (address && address !== query) {
-      setQuery(address);
-      setLastSelectedAddress(address);
+      const timer = setTimeout(() => {
+        setQuery(address);
+        setLastSelectedAddress(address);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [address]);
+  }, [address, query]);
 
   // Manual search handler
   const handleSearch = () => {
