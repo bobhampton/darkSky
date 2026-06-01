@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MapPin } from 'lucide-react';
 import { Tooltip } from './Tooltip';
+import { validateLatitude, validateLongitude } from '@/utils/validation';
 import type { LocationData } from '@/types';
 
 interface ManualInputsProps {
@@ -32,65 +33,49 @@ export function ManualInputs({
   // Populate inputs when tab becomes active (only once per activation)
   useEffect(() => {
     if (isActive && !hasPopulated) {
-      setLatInput(location.lat.toString());
-      setLngInput(location.lng.toString());
-      setHasPopulated(true);
-      setErrors({}); // Clear any errors
+      const timer = setTimeout(() => {
+        setLatInput(location.lat.toString());
+        setLngInput(location.lng.toString());
+        setHasPopulated(true);
+        setErrors({}); // Clear any errors
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isActive, hasPopulated, location.lat, location.lng]);
 
   // Reset hasPopulated when tab becomes inactive
   useEffect(() => {
     if (!isActive) {
-      setHasPopulated(false);
+      const timer = setTimeout(() => setHasPopulated(false), 0);
+      return () => clearTimeout(timer);
     }
   }, [isActive]);
 
-  // Validate a single field and update its error state
+  // Validate a single field using centralized validation logic
   const validateField = (field: 'lat' | 'lng', value: string): boolean => {
     const newErrors = { ...errors };
 
     if (field === 'lat') {
-      if (value === '') {
-        newErrors.lat = 'Latitude is required';
+      const validationError = validateLatitude(value);
+      if (validationError) {
+        newErrors.lat = validationError.message;
         setErrors(newErrors);
         return false;
       } else {
-        const num = parseFloat(value);
-        if (isNaN(num)) {
-          newErrors.lat = 'Must be a valid number';
-          setErrors(newErrors);
-          return false;
-        } else if (num < -90 || num > 90) {
-          newErrors.lat = 'Must be between -90 and 90';
-          setErrors(newErrors);
-          return false;
-        } else {
-          delete newErrors.lat;
-          setErrors(newErrors);
-          return true;
-        }
+        delete newErrors.lat;
+        setErrors(newErrors);
+        return true;
       }
     } else if (field === 'lng') {
-      if (value === '') {
-        newErrors.lng = 'Longitude is required';
+      const validationError = validateLongitude(value);
+      if (validationError) {
+        newErrors.lng = validationError.message;
         setErrors(newErrors);
         return false;
       } else {
-        const num = parseFloat(value);
-        if (isNaN(num)) {
-          newErrors.lng = 'Must be a valid number';
-          setErrors(newErrors);
-          return false;
-        } else if (num < -180 || num > 180) {
-          newErrors.lng = 'Must be between -180 and 180';
-          setErrors(newErrors);
-          return false;
-        } else {
-          delete newErrors.lng;
-          setErrors(newErrors);
-          return true;
-        }
+        delete newErrors.lng;
+        setErrors(newErrors);
+        return true;
       }
     }
 

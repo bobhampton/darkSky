@@ -87,7 +87,7 @@ function observeLCP() {
   
   try {
     observer.observe({ type: 'largest-contentful-paint', buffered: true });
-  } catch (e) {
+  } catch {
     // Browser doesn't support this metric
   }
 }
@@ -114,7 +114,7 @@ function observeFID() {
   
   try {
     observer.observe({ type: 'first-input', buffered: true });
-  } catch (e) {
+  } catch {
     // Browser doesn't support this metric
   }
 }
@@ -124,8 +124,6 @@ function observeCLS() {
   if (!('PerformanceObserver' in window)) return;
   
   let clsValue = 0;
-  let sessionValue = 0;
-  let sessionEntries: PerformanceEntry[] = [];
   
   const observer = new PerformanceObserver((list) => {
     const entries = list.getEntries();
@@ -135,16 +133,14 @@ function observeCLS() {
       // Only count layout shifts without recent user input
       if (!layoutShift.hadRecentInput) {
         const value = layoutShift.value || 0;
-        sessionValue += value;
         clsValue += value;
-        sessionEntries.push(entry);
       }
     });
   });
   
   try {
     observer.observe({ type: 'layout-shift', buffered: true });
-  } catch (e) {
+  } catch {
     // Browser doesn't support this metric
   }
   
@@ -192,7 +188,7 @@ function observeFCP() {
   
   try {
     observer.observe({ type: 'paint', buffered: true });
-  } catch (e) {
+  } catch {
     // Browser doesn't support this metric
   }
 }

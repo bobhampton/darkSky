@@ -92,7 +92,9 @@ export function LocationMap({
 
   // Center map when hasAddress or coordinates change
   useEffect(() => {
-    setShouldCenter(true);
+    // Using a timeout to defer the state update after render completes
+    const timer = setTimeout(() => setShouldCenter(true), 0);
+    return () => clearTimeout(timer);
   }, [coordinates.lat, coordinates.lng, hasAddress, showMarker]);
 
   const handleCentered = useCallback(() => {

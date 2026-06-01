@@ -1,8 +1,8 @@
-import { useState, lazy, Suspense, useCallback, useEffect } from 'react';
+import { lazy, Suspense, useCallback, useEffect } from 'react';
 import { Save, Search, MapPin } from 'lucide-react';
 import { LocationSearch } from './LocationSearch';
 import { SavedLocationsTab } from './SavedLocationsTab';
-import { useNominatim, useSavedLocations } from '@/hooks';
+import { useNominatim, useSavedLocations, useLocationPickerState, type TabType } from '@/hooks';
 import { getTimezoneFromCoordinates } from '@/utils/timezones';
 import type { LocationData, Coordinates } from '@/types';
 import type { SavedLocation } from '@/types/savedLocation.types';
@@ -21,8 +21,6 @@ interface LocationPickerProps {
   showSavedTabError?: boolean; // Highlight saved tab with red border when validation fails
 }
 
-type TabType = 'search' | 'saved';
-
 /**
  * Comprehensive location picker with multiple input methods
  * Features: search (text or coordinates), interactive map with GPS, saved locations
@@ -36,13 +34,7 @@ export function LocationPicker({
   disabled = false,
   showSavedTabError = false,
 }: LocationPickerProps) {
-  const [activeTab, setActiveTab] = useState<TabType>('search');
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const [locationSource, setLocationSource] = useState<TabType | null>(null); // Track which tab set the location
-  const [pendingLocation, setPendingLocation] = useState<LocationData | null>(null);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [saveNickname, setSaveNickname] = useState('');
-  const [selectedSavedLocationId, setSelectedSavedLocationId] = useState<string | undefined>();
+  const { state, actions } = useLocationPickerState();
   const { reverseGeocode } = useNominatim();
   const {
     savedLocations,
@@ -52,25 +44,25 @@ export function LocationPicker({
   } = useSavedLocations();
 
   // Use pending location if available, otherwise use prop
-  const currentLocation = pendingLocation || location;
+  const currentLocation = state.pendingLocation || location;
 
   // Clear pending location when prop updates to match it
   useEffect(() => {
-    if (pendingLocation && 
-        location.lat === pendingLocation.lat && 
-        location.lng === pendingLocation.lng &&
-        location.address === pendingLocation.address) {
-      setPendingLocation(null);
+    if (state.pendingLocation && 
+        location.lat === state.pendingLocation.lat && 
+        location.lng === state.pendingLocation.lng &&
+        location.address === state.pendingLocation.address) {
+      actions.clearPendingLocation();
     }
-  }, [location, pendingLocation]);
+  }, [location, state.pendingLocation, actions]);
 
   // Notify parent of selection state changes
   useEffect(() => {
     if (onSelectionStateChange) {
-      const hasSelection = activeTab !== 'saved' || selectedSavedLocationId !== undefined;
-      onSelectionStateChange(hasSelection, activeTab, locationSource, selectedSavedLocationId);
+      const hasSelection = state.activeTab !== 'saved' || state.selectedSavedLocationId !== undefined;
+      onSelectionStateChange(hasSelection, state.activeTab, state.locationSource, state.selectedSavedLocationId);
     }
-  }, [selectedSavedLocationId, activeTab, locationSource, onSelectionStateChange]);
+  }, [state.selectedSavedLocationId, state.activeTab, state.locationSource, onSelectionStateChange]);
 
   // Update location with optional reverse geocoding and timezone lookup
   // Clear current location
@@ -80,11 +72,7 @@ export function LocationPicker({
       lng: 0,
       address: '',
     });
-    setPendingLocation(null);
-    setShowSaveDialog(false);
-    setLocationSource(null);
-    setHasInteracted(false);
-    setSelectedSavedLocationId(undefined);
+    actions.clearAll();
   };
 
   const updateLocation = useCallback(
@@ -108,7 +96,7 @@ export function LocationPicker({
         elevation: undefined, // Reset elevation when location changes
       };
 
-      setPendingLocation(newLocation); // Track pending location to prevent race conditions
+      actions.setPendingLocation(newLocation); // Track pending location to prevent race conditions
       onLocationChange(newLocation);
       
       // Look up timezone from coordinates if callback provided
@@ -119,42 +107,36 @@ export function LocationPicker({
         }
       }
     },
-    [onLocationChange, onTimezoneChange, reverseGeocode]
+    [actions, onLocationChange, onTimezoneChange, reverseGeocode]
   );
 
   // Handle GPS button click
   const handleGPSLocation = useCallback(
     async (coords: Coordinates) => {
-      setHasInteracted(true);
-      setLocationSource('search'); // GPS belongs to search tab
-      setSelectedSavedLocationId(undefined); // Clear saved location selection
+      actions.handleSearchInteraction();
       await updateLocation(coords);
       // Stay on GPS tab to show the map
     },
-    [updateLocation]
+    [updateLocation, actions]
   );
 
   // Handle search result selection
   const handleSearchSelection = useCallback(
     async (coords: Coordinates, address: string) => {
-      setHasInteracted(true);
-      setLocationSource('search'); // Mark that search set this location
-      setSelectedSavedLocationId(undefined); // Clear saved location selection
+      actions.handleSearchInteraction();
       await updateLocation(coords, address);
       // Stay on search tab to show the map
     },
-    [updateLocation]
+    [updateLocation, actions]
   );
 
   // Handle map marker drag or click
   const handleMapChange = useCallback(
     async (coords: Coordinates) => {
-      setHasInteracted(true);
-      setLocationSource('search'); // Map interactions belong to search tab
-      setSelectedSavedLocationId(undefined); // Clear saved location selection
+      actions.handleSearchInteraction();
       await updateLocation(coords);
     },
-    [updateLocation]
+    [updateLocation, actions]
   );
 
   // Handle saving current location
@@ -163,7 +145,7 @@ export function LocationPicker({
       return; // Can't save without an address
     }
 
-    const nickname = saveNickname.trim() || currentLocation.address.split(',')[0];
+    const nickname = state.saveNickname.trim() || currentLocation.address.split(',')[0];
     
     saveLocation({
       nickname,
@@ -174,35 +156,30 @@ export function LocationPicker({
       timezone: undefined, // Could optionally store timezone
     });
 
-    setSaveNickname('');
-    setShowSaveDialog(false);
-  }, [currentLocation, saveNickname, saveLocation]);
+    actions.completeSave();
+  }, [currentLocation, state.saveNickname, saveLocation, actions]);
 
   // Handle loading a saved location
   const handleLoadSavedLocation = useCallback(
     async (savedLoc: SavedLocation) => {
-      setHasInteracted(true);
-      setLocationSource('saved'); // Mark that saved tab set this location
-      setSelectedSavedLocationId(savedLoc.id);
+      actions.handleSavedInteraction(savedLoc.id);
       await updateLocation(
         { lat: savedLoc.lat, lng: savedLoc.lng },
         savedLoc.address
       );
       // Stay on saved tab - user will click "Calculate Dark Times" when ready
     },
-    [updateLocation]
+    [updateLocation, actions]
   );
 
   // Handle deleting a saved location
   const handleDeleteSavedLocation = useCallback(
     (id: string) => {
       // Clear selection if deleting the selected location
-      if (selectedSavedLocationId === id) {
-        setSelectedSavedLocationId(undefined);
-      }
+      actions.clearSavedSelection(id);
       removeLocation(id);
     },
-    [selectedSavedLocationId, removeLocation]
+    [actions, removeLocation]
   );
 
   const tabs = [
@@ -231,14 +208,14 @@ export function LocationPicker({
             key={tab.id}
             type="button"
             role="tab"
-            aria-selected={activeTab === tab.id}
+            aria-selected={state.activeTab === tab.id}
             aria-controls={`${tab.id}-panel`}
             id={`${tab.id}-tab`}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => actions.setActiveTab(tab.id)}
             disabled={disabled}
             title={tab.tooltip}
             className={`px-4 py-2 min-h-[44px] rounded-lg font-medium transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 ${
-              activeTab === tab.id
+              state.activeTab === tab.id
                 ? 'bg-purple-600 text-white shadow-lg focus:ring-purple-400'
                 : 'bg-purple-900/20 border-2 border-purple-700/40 text-purple-300 hover:bg-purple-800/30 hover:border-purple-600/50 hover:text-purple-200 focus:ring-purple-500 disabled:bg-gray-800 disabled:border-gray-700 disabled:text-gray-600 disabled:cursor-not-allowed'
             }`}
@@ -252,7 +229,7 @@ export function LocationPicker({
       {/* Tab Panels */}
       <div className="min-h-[200px]">
         {/* Search Panel */}
-        {activeTab === 'search' && (
+        {state.activeTab === 'search' && (
           <div
             id="search-panel"
             role="tabpanel"
@@ -306,7 +283,7 @@ export function LocationPicker({
                   onClearLocation={handleClearLocation}
                   height="400px"
                   hasAddress={!!currentLocation.address}
-                  showMarker={hasInteracted && (locationSource === 'search' || locationSource === 'saved')}
+                  showMarker={state.hasInteracted && (state.locationSource === 'search' || state.locationSource === 'saved')}
                   address={currentLocation.address}
                   isLocationSaved={isLocationSaved(currentLocation.lat, currentLocation.lng)}
                   disabled={disabled}
@@ -317,10 +294,10 @@ export function LocationPicker({
             {/* Save Location Button - Below Map */}
             {currentLocation.address && !isLocationSaved(currentLocation.lat, currentLocation.lng) && (
               <div>
-                {!showSaveDialog ? (
+                {!state.showSaveDialog ? (
                   <button
                     type="button"
-                    onClick={() => setShowSaveDialog(true)}
+                    onClick={() => actions.showSaveDialog()}
                     disabled={disabled}
                     title="Save this location for quick access later"
                     className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -336,8 +313,8 @@ export function LocationPicker({
                       </span>
                       <input
                         type="text"
-                        value={saveNickname}
-                        onChange={(e) => setSaveNickname(e.target.value)}
+                        value={state.saveNickname}
+                        onChange={(e) => actions.setSaveNickname(e.target.value)}
                         placeholder={currentLocation.address?.split(',')[0]}
                         className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded text-white focus:outline-none focus:border-purple-500"
                         disabled={disabled}
@@ -356,8 +333,7 @@ export function LocationPicker({
                       <button
                         type="button"
                         onClick={() => {
-                          setShowSaveDialog(false);
-                          setSaveNickname('');
+                          actions.cancelSaveDialog();
                         }}
                         disabled={disabled}
                         title="Cancel and close this dialog"
@@ -374,7 +350,7 @@ export function LocationPicker({
         )}
 
         {/* Saved Panel */}
-        {activeTab === 'saved' && (
+        {state.activeTab === 'saved' && (
           <div
             id="saved-panel"
             role="tabpanel"
@@ -385,7 +361,7 @@ export function LocationPicker({
               savedLocations={savedLocations}
               onSelectLocation={handleLoadSavedLocation}
               onDeleteLocation={handleDeleteSavedLocation}
-              selectedLocationId={selectedSavedLocationId}
+              selectedLocationId={state.selectedSavedLocationId}
               disabled={disabled}
               showError={showSavedTabError}
             />

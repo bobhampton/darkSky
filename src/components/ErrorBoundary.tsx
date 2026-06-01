@@ -3,7 +3,7 @@ import type { ReactNode, ErrorInfo } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
-  navigate: (to: string, options?: { replace?: boolean; state?: any }) => void;
+  navigate: (to: string, options?: { replace?: boolean; state?: unknown }) => void;
 }
 
 interface ErrorBoundaryState {

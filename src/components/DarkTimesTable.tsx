@@ -1,29 +1,19 @@
 import { useState } from 'react';
 import { getActualDarkWindows } from '@/utils/filterUtils';
+import { formatDuration } from '@/utils/dateUtils';
 import { FilterSummaryBar } from './DarkTimesTable/FilterSummaryBar';
 import { FilterControlsPanel } from './DarkTimesTable/FilterControlsPanel';
 import { AstronomicalEventsDisplay } from './DarkTimesTable/AstronomicalEventsDisplay';
 import { WindowRow } from './DarkTimesTable/WindowRow';
 import { DarkTimesCard } from './DarkTimesTable/DarkTimesCard';
-import type { DarkTimesData, DarkTimeWindow, DarkTimeMetadata, TimeRangeFilter } from '@/types';
+import type { DarkTimesData, DarkTimeWindow, DarkTimeMetadata } from '@/types';
+import type { UseFiltersReturn } from '@/hooks';
 
 interface DarkTimesTableProps {
   darkTimesData: DarkTimesData;
   timezone: string;
   onShowChart?: (date: string) => void;
-  
-  // Filter props (controlled by parent)
-  minDurationInput: string;
-  minDurationHours: number | undefined;
-  availableTypes: Set<DarkTimeWindow['type']>;
-  selectedTypes: Set<DarkTimeWindow['type']>;
-  hideEmptyDays: boolean;
-  timeRangeFilter: TimeRangeFilter;
-  onMinDurationChange: (value: string) => void;
-  onTypeToggle: (type: DarkTimeWindow['type']) => void;
-  onHideEmptyDaysChange: (checked: boolean) => void;
-  onTimeRangeChange: (filter: TimeRangeFilter) => void;
-  onClearFilters: () => void;
+  filters: UseFiltersReturn;
 }
 
 /**
@@ -38,41 +28,32 @@ function getMetadata(windows: DarkTimeWindow[]): DarkTimeMetadata | null {
 }
 
 /**
- * Calculate duration in hours and minutes
- */
-function calculateDuration(start: Date, end: Date): string {
-  const diffMs = end.getTime() - start.getTime();
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  return `${minutes}m`;
-}
-
-/**
  * Table displaying dark time windows for each date
  */
 export function DarkTimesTable({
   darkTimesData,
   timezone,
   onShowChart,
-  minDurationInput,
-  minDurationHours,
-  availableTypes,
-  selectedTypes,
-  hideEmptyDays,
-  timeRangeFilter,
-  onMinDurationChange,
-  onTypeToggle,
-  onHideEmptyDaysChange,
-  onTimeRangeChange,
-  onClearFilters,
+  filters,
 }: DarkTimesTableProps) {
   const [collapsedRows, setCollapsedRows] = useState<Set<string>>(new Set());
   const [expandedAstro, setExpandedAstro] = useState<Set<string>>(new Set());
   const [filtersExpanded, setFiltersExpanded] = useState<boolean>(true);
+
+  // Destructure filter state and handlers from filters object
+  const {
+    minDurationInput,
+    minDurationHours,
+    availableTypes,
+    selectedTypes,
+    hideEmptyDays,
+    timeRangeFilter,
+    onMinDurationChange,
+    onTypeToggle,
+    onHideEmptyDaysChange,
+    onTimeRangeChange,
+    onClearFilters,
+  } = filters;
 
   const toggleRow = (date: string) => {
     setCollapsedRows((prev) => {
@@ -232,7 +213,7 @@ export function DarkTimesTable({
                               <div className="mt-2 space-y-2">
                                 {windows.map((window, idx) => (
                                   <div key={idx} className="min-h-[3.25rem] flex items-center">
-                                    {calculateDuration(window.start, window.end)}
+                                    {formatDuration(window.start, window.end)}
                                   </div>
                                 ))}
                               </div>

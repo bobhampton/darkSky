@@ -66,6 +66,7 @@ export function ObserverProvider({ children }: ObserverProviderProps) {
  * Hook to access observer context
  * Must be used within ObserverProvider
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useObserver() {
   const context = useContext(ObserverContext);
   if (context === undefined) {

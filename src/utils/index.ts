@@ -11,6 +11,7 @@ export {
   formatISODate,
   formatDateSafe,
   formatNumber,
+  formatDuration,
 } from './dateUtils';
 
 // Validation utilities

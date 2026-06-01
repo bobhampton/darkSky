@@ -11,6 +11,7 @@ import { describe, test, expect } from 'vitest';
 import * as Astronomy from 'astronomy-engine';
 import { DateTime } from 'luxon';
 import { getTimes } from '../utils/astronomy';
+import type { DarkTimesData, DarkTimeWindow } from '../types/astronomy.types';
 import {
   fetchSunriseSunsetAPI,
   fetchUSNOAPI,
@@ -56,9 +57,9 @@ function runGetTimesForDate(observer: Astronomy.Observer, dateISO: string) {
 /**
  * Helper: Find metadata window from dark times result
  */
-function findMetaWindow(darkTimes: any, date: string) {
+function findMetaWindow(darkTimes: DarkTimesData, date: string) {
   const windows = darkTimes[date];
-  return windows?.find((w: any) => w.meta);
+  return windows?.find((w: DarkTimeWindow) => w.meta);
 }
 
 /**
@@ -304,8 +305,8 @@ describe('Astronomy Validation - External API Tests', () => {
       expect(metaWindow?.meta.moonSets.length).toBe(1);
       
       // Verify all events are chronologically ordered
-      assertChronologicalOrder(metaWindow?.meta.moonRises, 'moonRises');
-      assertChronologicalOrder(metaWindow?.meta.moonSets, 'moonSets');
+      assertChronologicalOrder(metaWindow!.meta.moonRises, 'moonRises');
+      assertChronologicalOrder(metaWindow!.meta.moonSets, 'moonSets');
     });
 
     test('handles 3 moon crossings (1 rise, 2 sets) in one day at Arctic latitude 76.5°N', () => {
@@ -331,8 +332,8 @@ describe('Astronomy Validation - External API Tests', () => {
       expect(metaWindow?.meta.moonSets.length).toBe(2);
       
       // Verify all events are chronologically ordered
-      assertChronologicalOrder(metaWindow?.meta.moonSets, 'moonSets');
-      assertChronologicalOrder(metaWindow?.meta.moonRises, 'moonRises');
+      assertChronologicalOrder(metaWindow!.meta.moonSets, 'moonSets');
+      assertChronologicalOrder(metaWindow!.meta.moonRises, 'moonRises');
     });
 
     test('handles multiple sun crossings of -18° threshold at Arctic latitude 76.5°N', () => {
@@ -356,8 +357,8 @@ describe('Astronomy Validation - External API Tests', () => {
       expect(totalCrossings).toBeGreaterThanOrEqual(2);
       
       // Verify all crossings are chronologically ordered
-      assertChronologicalOrder(metaWindow?.meta.astronomicalNightStarts, 'astronomicalNightStarts');
-      assertChronologicalOrder(metaWindow?.meta.astronomicalNightEnds, 'astronomicalNightEnds');
+      assertChronologicalOrder(metaWindow!.meta.astronomicalNightStarts, 'astronomicalNightStarts');
+      assertChronologicalOrder(metaWindow!.meta.astronomicalNightEnds, 'astronomicalNightEnds');
     });
 
     test('all polar edge case arrays are properly ordered chronologically', () => {

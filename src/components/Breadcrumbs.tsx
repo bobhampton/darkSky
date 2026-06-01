@@ -23,11 +23,6 @@ const routeLabels: Record<string, string> = {
 export function Breadcrumbs() {
   const location = useLocation();
 
-  // Don't show breadcrumbs on homepage
-  if (location.pathname === '/') {
-    return null;
-  }
-
   // Build breadcrumb items
   const breadcrumbs: BreadcrumbItem[] = [
     { label: 'Home', path: '/' },
@@ -41,8 +36,9 @@ export function Breadcrumbs() {
     breadcrumbs.push({ label: currentLabel, path: currentPath });
   }
 
+  // Add BreadcrumbList structured data to the page
+  // Must be called before any conditional returns (React Hooks rule)
   useEffect(() => {
-    // Add BreadcrumbList structured data to the page
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'breadcrumb-schema';
@@ -64,7 +60,14 @@ export function Breadcrumbs() {
         document.head.removeChild(existingScript);
       }
     };
-  }, [location.pathname, breadcrumbs]);
+    // breadcrumbs is derived entirely from location.pathname, so we only need to depend on that
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  // Don't show breadcrumbs on homepage
+  if (location.pathname === '/') {
+    return null;
+  }
 
   return (
     <nav aria-label="Breadcrumb" className="mb-6">

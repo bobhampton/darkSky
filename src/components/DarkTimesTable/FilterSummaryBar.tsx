@@ -1,4 +1,5 @@
 import { formatTime12Hour } from '@/utils/dateUtils';
+import { hasActiveFilters } from '@/utils/filterUtils';
 import type { DarkTimeWindow, TimeRangeFilter } from '@/types';
 
 interface FilterSummaryBarProps {
@@ -29,13 +30,15 @@ export function FilterSummaryBar({
   onClearHideEmptyDays,
   onClearAllFilters,
 }: FilterSummaryBarProps) {
-  const hasActiveFilters =
-    (minDurationHours && minDurationHours > 0) ||
-    selectedTypes.size < availableTypes.size ||
-    hideEmptyDays ||
-    timeRangeFilter.enabled;
+  const filtersActive = hasActiveFilters(
+    minDurationHours,
+    selectedTypes,
+    availableTypes,
+    hideEmptyDays,
+    timeRangeFilter
+  );
 
-  if (!hasActiveFilters) {
+  if (!filtersActive) {
     return null;
   }
 

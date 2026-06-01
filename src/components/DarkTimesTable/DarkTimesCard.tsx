@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getActualDarkWindows } from '@/utils/filterUtils';
+import { formatDuration } from '@/utils/dateUtils';
 import { AstronomicalEventsDisplay } from './AstronomicalEventsDisplay';
 import type { DarkTimeWindow, DarkTimeMetadata } from '@/types';
 
@@ -9,20 +10,6 @@ interface DarkTimesCardProps {
   metadata: DarkTimeMetadata | null;
   timezone: string;
   onShowChart?: (date: string) => void;
-}
-
-/**
- * Calculate duration in hours and minutes
- */
-function calculateDuration(start: Date, end: Date): string {
-  const diffMs = end.getTime() - start.getTime();
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  return `${minutes}m`;
 }
 
 /**
@@ -36,7 +23,8 @@ function formatTime(date: Date, timezone: string): string {
       minute: '2-digit',
       hour12: true,
     });
-  } catch (error) {
+  } catch {
+    // Fallback to UTC if timezone is invalid
     return date.toLocaleString('en-US', {
       timeZone: 'UTC',
       hour: '2-digit',
@@ -54,15 +42,9 @@ export function DarkTimesCard({ date, windows, metadata, timezone, onShowChart }
   const hasWindows = actualWindows.length > 0;
   
   // Expand dark windows by default when they exist
+  // User can toggle, but each new date starts expanded if it has windows
   const [isExpanded, setIsExpanded] = useState(hasWindows);
   const [showAstro, setShowAstro] = useState(false);
-  
-  // Sync isExpanded when hasWindows changes (e.g., when data loads)
-  useEffect(() => {
-    if (hasWindows && !isExpanded) {
-      setIsExpanded(true);
-    }
-  }, [hasWindows, isExpanded, date]);
 
   return (
     <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 space-y-3">
@@ -133,7 +115,7 @@ export function DarkTimesCard({ date, windows, metadata, timezone, onShowChart }
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-gray-400 w-16">Duration:</span>
-                          <span className="text-white">{calculateDuration(window.start, window.end)}</span>
+                          <span className="text-white">{formatDuration(window.start, window.end)}</span>
                         </div>
                       </div>
                     </div>

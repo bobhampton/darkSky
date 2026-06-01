@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { filterTimezones } from '@/utils/timezones';
 
 interface UseTimezonesReturn {
@@ -18,13 +18,11 @@ export function useTimezones(): UseTimezonesReturn {
     return Intl.supportedValuesOf('timeZone');
   });
 
-  const [filteredTimezones, setFilteredTimezones] = useState<string[]>(allTimezones);
   const [filterText, setFilterText] = useState<string>('');
 
-  // Filter timezones when filter text changes
-  useEffect(() => {
-    const filtered = filterTimezones(filterText);
-    setFilteredTimezones(filtered);
+  // Filter timezones when filter text changes - use useMemo for derived state
+  const filteredTimezones = useMemo(() => {
+    return filterTimezones(filterText);
   }, [filterText]);
 
   return {
