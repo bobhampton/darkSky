@@ -24,7 +24,6 @@ export default defineConfig({
         'src/tests/',
         '*.config.ts',
         '*.config.js',
-        'legacy/',
       ],
     },
   },
