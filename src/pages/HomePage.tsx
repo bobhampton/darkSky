@@ -1,9 +1,8 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useObserver } from '@/context';
-import { useAstronomy, usePageMetadata } from '@/hooks';
+import { useAstronomy, usePageMetadata, useFilters } from '@/hooks';
 import { getValidTimezone } from '@/utils/timezones';
-import { filterDarkTimesData, getAvailableWindowTypes } from '@/utils/filterUtils';
 import {
   Header,
   ObserverForm,
@@ -13,8 +12,7 @@ import {
   LazyChartModal,
   ErrorDisplay,
 } from '@/components';
-import type { ObserverFormData, TimeRangeFilter } from '@/types';
-import type { DarkTimeWindow } from '@/types/astronomy.types';
+import type { ObserverFormData } from '@/types';
 
 /**
  * Home page - Main dark times calculator
@@ -27,34 +25,13 @@ export function HomePage() {
 
   const { observerData, updateObserverData } = useObserver();
   const { darkTimesData, isCalculating, error, progress, calculateDarkTimes } = useAstronomy();
+  const filters = useFilters({
+    darkTimesData,
+    timezone: getValidTimezone(observerData.timezone),
+  });
   const [showChart, setShowChart] = useState<string | null>(null);
   const [lastCalculationParams, setLastCalculationParams] = useState<typeof observerData | null>(null);
   const shouldScrollToResults = useRef(false);
-  
-  // Filter state
-  const [minDurationInput, setMinDurationInput] = useState<string>('');
-  const [minDurationHours, setMinDurationHours] = useState<number | undefined>(undefined);
-  const [availableTypes, setAvailableTypes] = useState<Set<DarkTimeWindow['type']>>(new Set());
-  const [selectedTypes, setSelectedTypes] = useState<Set<DarkTimeWindow['type']>>(new Set());
-  const [hideEmptyDays, setHideEmptyDays] = useState<boolean>(false);
-  const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRangeFilter>({
-    startTime: '21:00', // 9:00 PM
-    endTime: '22:00',   // 10:00 PM
-    enabled: false,
-  });
-
-  // Detect available window types when data changes
-  useEffect(() => {
-    if (darkTimesData && Object.keys(darkTimesData).length > 0) {
-      const types = getAvailableWindowTypes(darkTimesData);
-      setAvailableTypes(types);
-      // Initialize selected types to all available types
-      setSelectedTypes(types);
-    } else {
-      setAvailableTypes(new Set());
-      setSelectedTypes(new Set());
-    }
-  }, [darkTimesData]);
 
   // Scroll to results after calculation completes
   useEffect(() => {
@@ -76,19 +53,6 @@ export function HomePage() {
       }, 100);
     }
   }, [isCalculating, darkTimesData]);
-
-  // Apply filters to create filtered dataset
-  const filteredDarkTimesData = useMemo(() => {
-    if (!darkTimesData) return {};
-    
-    return filterDarkTimesData(darkTimesData, {
-      minDurationHours,
-      selectedTypes,
-      hideEmptyDays,
-      timeRange: timeRangeFilter,
-      timezone: getValidTimezone(observerData.timezone),
-    });
-  }, [darkTimesData, minDurationHours, selectedTypes, hideEmptyDays, timeRangeFilter, observerData.timezone]);
 
   const handleFormSubmit = (formData: ObserverFormData) => {
     // Update observer context
@@ -123,46 +87,6 @@ export function HomePage() {
 
   const handleCloseChart = () => {
     setShowChart(null);
-  };
-
-  const handleMinDurationChange = (value: string) => {
-    setMinDurationInput(value);
-    
-    if (!value || value.trim() === '') {
-      setMinDurationHours(undefined);
-    } else {
-      const parsed = parseFloat(value);
-      if (!isNaN(parsed) && parsed >= 0) {
-        setMinDurationHours(parsed);
-      } else {
-        setMinDurationHours(undefined);
-      }
-    }
-  };
-
-  const handleTypeToggle = (type: DarkTimeWindow['type']) => {
-    setSelectedTypes(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(type)) {
-        newSet.delete(type);
-      } else {
-        newSet.add(type);
-      }
-      return newSet;
-    });
-  };
-
-  const handleClearFilters = () => {
-    setMinDurationInput('');
-    setMinDurationHours(undefined);
-    // Reset to all available types (dynamic, not hardcoded)
-    setSelectedTypes(new Set(availableTypes));
-    setHideEmptyDays(false);
-    setTimeRangeFilter({
-      startTime: '21:00',
-      endTime: '22:00',
-      enabled: false,
-    });
   };
 
   const hasResults = darkTimesData && Object.keys(darkTimesData).length > 0;
@@ -203,7 +127,7 @@ export function HomePage() {
                 <div className="flex items-center justify-between mb-4">
                   <h2 id="results-heading" className="text-xl font-semibold">Dark Times Results</h2>
                   <ExportControls
-                    darkTimesData={filteredDarkTimesData}
+                    darkTimesData={filters.filteredData}
                     timezone={getValidTimezone(observerData.timezone)}
                     formData={{
                       latitude: observerData.latitude,
@@ -213,28 +137,18 @@ export function HomePage() {
                       dateEnd: observerData.dateEnd,
                     }}
                     filterInfo={{
-                      minDurationHours,
-                      selectedTypes,
-                      hideEmptyDays,
-                      timeRangeFilter,
+                      minDurationHours: filters.minDurationHours,
+                      selectedTypes: filters.selectedTypes,
+                      hideEmptyDays: filters.hideEmptyDays,
+                      timeRangeFilter: filters.timeRangeFilter,
                     }}
                   />
                 </div>
                 <DarkTimesTable
-                  darkTimesData={filteredDarkTimesData}
+                  darkTimesData={filters.filteredData}
                   timezone={getValidTimezone(observerData.timezone)}
                   onShowChart={handleShowChart}
-                  minDurationInput={minDurationInput}
-                  minDurationHours={minDurationHours}
-                  availableTypes={availableTypes}
-                  selectedTypes={selectedTypes}
-                  hideEmptyDays={hideEmptyDays}
-                  timeRangeFilter={timeRangeFilter}
-                  onMinDurationChange={handleMinDurationChange}
-                  onTypeToggle={handleTypeToggle}
-                  onHideEmptyDaysChange={setHideEmptyDays}
-                  onTimeRangeChange={setTimeRangeFilter}
-                  onClearFilters={handleClearFilters}
+                  filters={filters}
                 />
               </section>
             </>

@@ -5,25 +5,14 @@ import { FilterControlsPanel } from './DarkTimesTable/FilterControlsPanel';
 import { AstronomicalEventsDisplay } from './DarkTimesTable/AstronomicalEventsDisplay';
 import { WindowRow } from './DarkTimesTable/WindowRow';
 import { DarkTimesCard } from './DarkTimesTable/DarkTimesCard';
-import type { DarkTimesData, DarkTimeWindow, DarkTimeMetadata, TimeRangeFilter } from '@/types';
+import type { DarkTimesData, DarkTimeWindow, DarkTimeMetadata } from '@/types';
+import type { UseFiltersReturn } from '@/hooks';
 
 interface DarkTimesTableProps {
   darkTimesData: DarkTimesData;
   timezone: string;
   onShowChart?: (date: string) => void;
-  
-  // Filter props (controlled by parent)
-  minDurationInput: string;
-  minDurationHours: number | undefined;
-  availableTypes: Set<DarkTimeWindow['type']>;
-  selectedTypes: Set<DarkTimeWindow['type']>;
-  hideEmptyDays: boolean;
-  timeRangeFilter: TimeRangeFilter;
-  onMinDurationChange: (value: string) => void;
-  onTypeToggle: (type: DarkTimeWindow['type']) => void;
-  onHideEmptyDaysChange: (checked: boolean) => void;
-  onTimeRangeChange: (filter: TimeRangeFilter) => void;
-  onClearFilters: () => void;
+  filters: UseFiltersReturn;
 }
 
 /**
@@ -58,21 +47,26 @@ export function DarkTimesTable({
   darkTimesData,
   timezone,
   onShowChart,
-  minDurationInput,
-  minDurationHours,
-  availableTypes,
-  selectedTypes,
-  hideEmptyDays,
-  timeRangeFilter,
-  onMinDurationChange,
-  onTypeToggle,
-  onHideEmptyDaysChange,
-  onTimeRangeChange,
-  onClearFilters,
+  filters,
 }: DarkTimesTableProps) {
   const [collapsedRows, setCollapsedRows] = useState<Set<string>>(new Set());
   const [expandedAstro, setExpandedAstro] = useState<Set<string>>(new Set());
   const [filtersExpanded, setFiltersExpanded] = useState<boolean>(true);
+
+  // Destructure filter state and handlers from filters object
+  const {
+    minDurationInput,
+    minDurationHours,
+    availableTypes,
+    selectedTypes,
+    hideEmptyDays,
+    timeRangeFilter,
+    onMinDurationChange,
+    onTypeToggle,
+    onHideEmptyDaysChange,
+    onTimeRangeChange,
+    onClearFilters,
+  } = filters;
 
   const toggleRow = (date: string) => {
     setCollapsedRows((prev) => {

@@ -12,3 +12,7 @@ export { useGeolocation } from './useGeolocation';
 export { useNominatim } from './useNominatim';
 export { usePageMetadata } from './usePageMetadata';
 export { useSavedLocations } from './useSavedLocations';
+export { useFilters } from './useFilters';
+export type { UseFiltersReturn } from './useFilters';
+export { useLocationPickerState } from './useLocationPickerState';
+export type { TabType } from './useLocationPickerState';

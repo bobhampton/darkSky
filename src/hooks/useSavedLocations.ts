@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import type { SavedLocation, SavedLocationsData } from '@/types/savedLocation.types';
 
@@ -10,6 +10,7 @@ const defaultSavedLocations: SavedLocationsData = {
 
 /**
  * Custom hook for managing saved locations
+ * Handles CRUD operations for saved locations in localStorage
  * @returns Saved locations and methods to add/remove/load them
  */
 export function useSavedLocations() {
@@ -17,9 +18,6 @@ export function useSavedLocations() {
     STORAGE_KEY,
     defaultSavedLocations
   );
-
-  const [nicknameInput, setNicknameInput] = useState('');
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   // Get all saved locations
   const savedLocations = storedData.locations || [];
@@ -36,9 +34,6 @@ export function useSavedLocations() {
       setStoredData((prev) => ({
         locations: [...prev.locations, newLocation],
       }));
-
-      setNicknameInput('');
-      setShowSaveDialog(false);
     },
     [setStoredData]
   );
@@ -74,9 +69,5 @@ export function useSavedLocations() {
     removeLocation,
     isLocationSaved,
     clearAllLocations,
-    nicknameInput,
-    setNicknameInput,
-    showSaveDialog,
-    setShowSaveDialog,
   };
 }
