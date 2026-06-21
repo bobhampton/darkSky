@@ -20,7 +20,7 @@ export function PartnersPage() {
 
       <main className="space-y-8">
         {/* Featured Contributor */}
-        <section className="bg-gradient-to-br backdrop-blur-[2px] border-2 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] rounded-lg p-8">
+        {/* <section className="bg-gradient-to-br backdrop-blur-[2px] border-2 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] rounded-lg p-8">
           <div className="flex items-start space-x-3 mb-4">
             <Award className="w-8 h-8 text-nebula-purple flex-shrink-0" />
             <div>
@@ -29,34 +29,34 @@ export function PartnersPage() {
               </h2>
             </div>
           </div>
-          
+
           <h3 className="text-3xl font-bold text-star-white mb-2">Lia Rabellino</h3>
           <p className="text-xl mb-4">Light Pollution Research</p>
-          
+
           <p className="text-gray-300 leading-relaxed mb-6">
-            Lia Rabellino is a conservation advocate and community scientist whose work is helping build 
-            a long-term understanding of artificial light at night around the Great Salt Lake region. 
-            As part of her senior capstone project at Utah Valley University, Lia partnered with Great 
-            Salt Lake Audubon and local dark sky initiatives to design an accessible protocol for measuring 
-            light pollution using handheld sky quality meters, collected data at the Audubon’s Gillmor Sanctuary, 
-            and helped establish a growing database to track trends over time. Her efforts not only produced 
-            real scientific measurements, but also laid the foundation for a new community science program 
-            that invites volunteers across the Salt Lake Valley to monitor nighttime light and its impacts 
+            Lia Rabellino is a conservation advocate and community scientist whose work is helping build
+            a long-term understanding of artificial light at night around the Great Salt Lake region.
+            As part of her senior capstone project at Utah Valley University, Lia partnered with Great
+            Salt Lake Audubon and local dark sky initiatives to design an accessible protocol for measuring
+            light pollution using handheld sky quality meters, collected data at the Audubon’s Gillmor Sanctuary,
+            and helped establish a growing database to track trends over time. Her efforts not only produced
+            real scientific measurements, but also laid the foundation for a new community science program
+            that invites volunteers across the Salt Lake Valley to monitor nighttime light and its impacts
             on birds and habitat, while highlighting the importance of dark skies in conservation work.
           </p>
-          
+
           <a
             href="https://www.audubon.org/rockies/news/measuring-light-pollution-great-salt-lake"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-nebula-purple/20 hover:bg-nebula-purple/30 
-                     border border-nebula-purple/50 rounded-lg hover:text-star-white 
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-nebula-purple/20 hover:bg-nebula-purple/30
+                     border border-nebula-purple/50 rounded-lg hover:text-star-white
                      transition-all duration-200 shadow-star-glow hover:shadow-nebula-glow"
           >
             <span>Learn more about her work</span>
             <ExternalLink className="w-4 h-4" />
           </a>
-        </section>
+        </section> */}
 
         {/* Partner Organizations */}
         <section className="bg-white/2 backdrop-blur-[2px] border-2 border-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.15)] rounded-lg p-8">

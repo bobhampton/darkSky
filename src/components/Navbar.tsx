@@ -67,7 +67,7 @@ export function Navbar() {
             >
               FAQ
             </Link>
-            {/* <Link
+            <Link
               to="/partners"
               className={`text-sm transition-colors pb-1 border-b-2 ${
                 isActive('/partners')
@@ -78,7 +78,7 @@ export function Navbar() {
               aria-current={isActive('/partners') ? 'page' : undefined}
             >
               Partners & Resources
-            </Link> */}
+            </Link>
           </div>
         </div>
       </div>
