@@ -1,4 +1,4 @@
-import { ExternalLink, Award } from 'lucide-react';
+import { ExternalLink} from 'lucide-react';
 import { ASTRONOMICAL_TWILIGHT_THRESHOLD } from '@/utils/constants';
 
 /**
