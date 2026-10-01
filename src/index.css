@@ -25,3 +25,12 @@
     filter: brightness(0) invert(1) opacity(0.8);
   }
 }
+
+/* Dark map theme: invert OSM tiles only, so markers and controls keep their colors */
+.map-dark .leaflet-container {
+  background: #1a1a1a;
+}
+
+.map-dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}

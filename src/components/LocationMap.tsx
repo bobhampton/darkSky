@@ -115,15 +115,9 @@ export function LocationMap({
     }
   };
 
-  // Tile layer URLs
-  const tileUrls = {
-    light: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  };
-
-  const tileAttribution = isDarkTheme
-    ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  // OSM tiles for both themes; dark theme is a CSS filter (see .map-dark in index.css)
+  const tileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
   return (
     <div className="space-y-2">
@@ -294,7 +288,7 @@ export function LocationMap({
       </div>
 
       <div
-        className="rounded-lg overflow-hidden border border-gray-700"
+        className={`rounded-lg overflow-hidden border border-gray-700${isDarkTheme ? ' map-dark' : ''}`}
         style={{ height }}
       >
         <MapContainer
@@ -305,7 +299,7 @@ export function LocationMap({
           ref={mapRef}
         >
           <TileLayer
-            url={isDarkTheme ? tileUrls.dark : tileUrls.light}
+            url={tileUrl}
             attribution={tileAttribution}
           />
           
