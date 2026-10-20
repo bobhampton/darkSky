@@ -4,6 +4,7 @@ export { Breadcrumbs } from './Breadcrumbs';
 export { Header } from './Header';
 export { Footer } from './Footer';
 export { ExportControls } from './ExportControls';
+export { ShareLinkButton } from './ShareLinkButton';
 export { FAQSection } from './FAQSection';
 export { ObserverForm } from './ObserverForm';
 export { DarkTimesTable, TypeBadge } from './DarkTimesTable';

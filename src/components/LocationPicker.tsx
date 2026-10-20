@@ -183,6 +183,9 @@ export function LocationPicker({
     [actions, removeLocation]
   );
 
+  // Location can also arrive from outside the picker (a shared link, or returning to the page)
+  const hasCoordinates = currentLocation.lat !== 0 || currentLocation.lng !== 0;
+
   const mapPlaceholder = (
     <div className="flex items-center justify-center h-[400px] bg-gray-800 rounded-lg border border-gray-700">
       <div className="text-center">
@@ -286,7 +289,10 @@ export function LocationPicker({
                     onClearLocation={handleClearLocation}
                     height="400px"
                     hasAddress={!!currentLocation.address}
-                    showMarker={state.hasInteracted && (state.locationSource === 'search' || state.locationSource === 'saved')}
+                    showMarker={
+                      (state.hasInteracted && (state.locationSource === 'search' || state.locationSource === 'saved')) ||
+                      hasCoordinates
+                    }
                     address={currentLocation.address}
                     isLocationSaved={isLocationSaved(currentLocation.lat, currentLocation.lng)}
                     disabled={disabled}

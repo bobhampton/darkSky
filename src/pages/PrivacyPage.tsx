@@ -10,7 +10,7 @@ import { Breadcrumbs } from '@/components';
 export function PrivacyPage() {
   usePageMetadata(PAGES.privacy);
 
-  const lastUpdated = 'May 27, 2026';
+  const lastUpdated = 'October 20, 2026';
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -23,7 +23,7 @@ export function PrivacyPage() {
           <h1 className="text-4xl font-bold text-white">Privacy Policy</h1>
         </div>
         <p className="text-gray-400">
-          Last updated: <time dateTime="2026-05-27">{lastUpdated}</time>
+          Last updated: <time dateTime="2026-10-20">{lastUpdated}</time>
         </p>
       </header>
 
@@ -76,6 +76,14 @@ export function PrivacyPage() {
             This data <strong>never leaves your device</strong> and is not transmitted to our servers or
             any third party. You can clear this data at any time using your browser's developer tools
             or by clearing your browser's local storage.
+          </p>
+
+          <h3 className="text-xl font-semibold text-white mb-3 mt-6">Shared Links</h3>
+          <p className="leading-relaxed">
+            The <strong className="text-purple-400">Copy Link</strong> button creates a link containing the
+            location (coordinates and name), elevation, timezone and dates of your results, so anyone who
+            opens it sees the same calculation. Only share links for locations you're comfortable sharing.
+            These values are removed from page addresses before they're sent to Google Analytics.
           </p>
         </section>
 
