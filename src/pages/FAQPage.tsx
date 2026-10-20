@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import { usePageMetadata } from '@/hooks';
+import { PAGES } from '@/seo/routes';
 import { FAQSection, Breadcrumbs } from '@/components';
 
 /**
  * FAQ Page - Frequently Asked Questions about darkSky Calculator
  */
 export function FAQPage() {
-  usePageMetadata({
-    title: 'FAQ - darkSky Calculator',
-    description: 'Frequently asked questions about the darkSky calculator. Learn about astronomical twilight, moon phases, light pollution monitoring, astrophotography planning, and how to use the calculator effectively.',
-  });
+  usePageMetadata(PAGES.faq);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">

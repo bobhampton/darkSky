@@ -1,11 +1,41 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import fs from 'fs'
 import path from 'path'
+import { PAGE_ROUTES } from './src/seo/routes'
+import { pageFileName, renderPageHtml, renderSitemap } from './src/seo/staticPages'
+
+/**
+ * Writes a static HTML file per public route and generates sitemap.xml.
+ * Without this, GitHub Pages answers /faq etc. with 404.html (HTTP 404).
+ */
+function staticPages(): Plugin {
+  let outDir = 'dist'
+
+  return {
+    name: 'darksky-static-pages',
+    apply: 'build',
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir)
+    },
+    closeBundle() {
+      const indexHtml = fs.readFileSync(path.join(outDir, 'index.html'), 'utf-8')
+
+      for (const route of PAGE_ROUTES) {
+        if (route.path === '/') continue
+        fs.writeFileSync(path.join(outDir, pageFileName(route.path)), renderPageHtml(indexHtml, route))
+      }
+
+      const lastmod = new Date().toISOString().slice(0, 10)
+      fs.writeFileSync(path.join(outDir, 'sitemap.xml'), renderSitemap(PAGE_ROUTES, lastmod))
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
   base: '/',
-  plugins: [react()],
+  plugins: [react(), staticPages()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
