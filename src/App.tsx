@@ -1,7 +1,8 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Navbar, Footer, ScrollToTop, ScrollToTopOnNav, ErrorBoundaryWrapper, Starfield, SkipToContent, LoadingSpinner } from '@/components';
 import { HomePage } from '@/pages';
+import { ObserverProvider } from '@/context';
 
 // Lazy load non-critical pages for better initial load performance
 const FAQPage = lazy(() => import('@/pages/FAQPage').then(m => ({ default: m.FAQPage })));
@@ -14,10 +15,13 @@ const NotFoundRedirect = lazy(() => import('@/pages/NotFoundRedirect').then(m =>
 /**
  * Main App component with routing configuration
  * Uses lazy loading for non-critical routes to improve initial load time
+ *
+ * The router is supplied by the caller: BrowserRouter in main.tsx,
+ * StaticRouter in entry-server.tsx when prerendering at build time.
  */
 function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <ObserverProvider>
       <ErrorBoundaryWrapper>
         <SkipToContent />
         <ScrollToTopOnNav />
@@ -55,7 +59,7 @@ function App() {
           <ScrollToTop />
         </div>
       </ErrorBoundaryWrapper>
-    </BrowserRouter>
+    </ObserverProvider>
   );
 }
 

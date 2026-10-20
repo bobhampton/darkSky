@@ -11,6 +11,7 @@ export { useChartData } from './useChartData';
 export { useGeolocation } from './useGeolocation';
 export { useNominatim } from './useNominatim';
 export { usePageMetadata } from './usePageMetadata';
+export { useIsClient } from './useIsClient';
 export { useSavedLocations } from './useSavedLocations';
 export { useFilters } from './useFilters';
 export type { UseFiltersReturn } from './useFilters';

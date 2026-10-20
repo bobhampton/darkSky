@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { JsonLd } from './JsonLd';
 
 interface FAQItem {
   question: string;
@@ -70,6 +71,20 @@ const faqData: FAQItem[] = [
   },
 ];
 
+// FAQPage structured data for Google rich snippets
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: typeof faq.answer === 'string' ? faq.answer : '',
+    },
+  })),
+};
+
 /**
  * FAQ Section Component with Schema.org structured data for Google rich snippets
  * Displays collapsible FAQ items with SEO-optimized markup
@@ -77,35 +92,13 @@ const faqData: FAQItem[] = [
 export function FAQSection() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    // Add FAQPage structured data to the page
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqData.map((faq) => ({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: typeof faq.answer === 'string' ? faq.answer : '',
-        },
-      })),
-    });
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
   const toggleQuestion = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
   return (
     <section className="bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
+      <JsonLd data={faqSchema} />
       <div className="flex items-center gap-3 mb-6">
         <HelpCircle className="w-7 h-7 text-blue-400" />
         <h2 className="text-3xl font-bold text-white">Frequently Asked Questions</h2>
@@ -131,15 +124,15 @@ export function FAQSection() {
               )}
             </button>
 
-            {expandedIndex === index && (
-              <div
-                id={`faq-answer-${index}`}
-                className="px-6 pb-4 text-gray-300 leading-relaxed"
-                role="region"
-              >
-                {faq.answer}
-              </div>
-            )}
+            {/* Always rendered (hidden when collapsed) so answers are in the prerendered HTML */}
+            <div
+              id={`faq-answer-${index}`}
+              className="px-6 pb-4 text-gray-300 leading-relaxed"
+              role="region"
+              hidden={expandedIndex !== index}
+            >
+              {faq.answer}
+            </div>
           </div>
         ))}
       </div>

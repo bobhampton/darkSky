@@ -12,6 +12,7 @@ export {
   formatDateSafe,
   formatNumber,
   formatDuration,
+  getDefaultDateRange,
 } from './dateUtils';
 
 // Validation utilities

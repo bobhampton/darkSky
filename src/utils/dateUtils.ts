@@ -155,3 +155,15 @@ export function formatTime12Hour(time24: string): string {
 export function extractTimeFromDate(date: Date, timezone: string): string {
   return DateTime.fromJSDate(date).setZone(timezone).toFormat('HH:mm');
 }
+
+/**
+ * Default calculator date range: today through 7 days from now (YYYY-MM-DD)
+ * @param now - Reference time (defaults to the current time)
+ * @returns Start and end dates for the observer form
+ */
+export function getDefaultDateRange(now: Date = new Date()): { dateStart: string; dateEnd: string } {
+  return {
+    dateStart: now.toISOString().split('T')[0],
+    dateEnd: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  };
+}

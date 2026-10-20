@@ -17,7 +17,8 @@ function replaceOnce(html: string, pattern: RegExp, replacement: string, label: 
   if (!pattern.test(html)) {
     throw new Error(`staticPages: could not find ${label} in index.html`);
   }
-  return html.replace(pattern, replacement);
+  // Function form so "$&" etc. in the replacement are inserted literally
+  return html.replace(pattern, () => replacement);
 }
 
 function setMeta(html: string, attr: 'name' | 'property', key: string, content: string): string {
@@ -44,6 +45,19 @@ export function renderPageHtml(indexHtml: string, route: PageRoute): string {
   html = setMeta(html, 'name', 'twitter:description', route.description);
 
   return html;
+}
+
+/**
+ * Puts prerendered app markup inside the empty root div, tagged with the path it was
+ * rendered for so main.tsx only hydrates when the URL matches.
+ */
+export function injectAppHtml(html: string, path: string, appHtml: string): string {
+  return replaceOnce(
+    html,
+    /<div id="root"><\/div>/,
+    `<div id="root" data-prerendered-path="${escapeAttr(path)}">${appHtml}</div>`,
+    'root div'
+  );
 }
 
 /**

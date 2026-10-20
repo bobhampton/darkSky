@@ -1,29 +1,48 @@
-import { defineConfig, type Plugin } from 'vite'
+import { createServer, defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import fs from 'fs'
 import path from 'path'
 import { PAGE_ROUTES } from './src/seo/routes'
-import { pageFileName, renderPageHtml, renderSitemap } from './src/seo/staticPages'
+import { injectAppHtml, pageFileName, renderPageHtml, renderSitemap } from './src/seo/staticPages'
 
 /**
- * Writes a static HTML file per public route and generates sitemap.xml.
- * Without this, GitHub Pages answers /faq etc. with 404.html (HTTP 404).
+ * Writes a prerendered HTML file per public route and generates sitemap.xml.
+ * Without the per-route files, GitHub Pages answers /faq etc. with 404.html (HTTP 404);
+ * without prerendering, crawlers that don't run JavaScript see an empty page.
  */
 function staticPages(): Plugin {
+  let root = process.cwd()
   let outDir = 'dist'
 
   return {
     name: 'darksky-static-pages',
     apply: 'build',
     configResolved(config) {
+      root = config.root
       outDir = path.resolve(config.root, config.build.outDir)
     },
-    closeBundle() {
+    async closeBundle() {
       const indexHtml = fs.readFileSync(path.join(outDir, 'index.html'), 'utf-8')
 
-      for (const route of PAGE_ROUTES) {
-        if (route.path === '/') continue
-        fs.writeFileSync(path.join(outDir, pageFileName(route.path)), renderPageHtml(indexHtml, route))
+      // Load the app through Vite's SSR loader so aliases and JSX work in Node
+      const server = await createServer({
+        root,
+        mode: 'production',
+        logLevel: 'error',
+        appType: 'custom',
+        server: { middlewareMode: true, hmr: false },
+      })
+
+      try {
+        const { render } = await server.ssrLoadModule('/src/entry-server.tsx')
+
+        for (const route of PAGE_ROUTES) {
+          const pageHtml = route.path === '/' ? indexHtml : renderPageHtml(indexHtml, route)
+          const appHtml: string = await render(route.path)
+          fs.writeFileSync(path.join(outDir, pageFileName(route.path)), injectAppHtml(pageHtml, route.path, appHtml))
+        }
+      } finally {
+        await server.close()
       }
 
       const lastmod = new Date().toISOString().slice(0, 10)
