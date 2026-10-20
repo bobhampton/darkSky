@@ -32,6 +32,28 @@ function staticPages(): Plugin {
   }
 }
 
+const VENDOR_CHUNKS: Record<string, string[]> = {
+  astronomy: ['astronomy-engine'],
+  charts: ['chart.js', '@kurkle/color', 'react-chartjs-2'],
+  luxon: ['luxon'],
+  'react-vendor': ['react', 'react-dom', 'scheduler', 'react-router', 'react-router-dom'],
+  leaflet: ['leaflet', 'react-leaflet', '@react-leaflet/core'],
+}
+
+/**
+ * Assigns vendor modules to chunks by package name. Matching every file in a package
+ * (not just its entry) keeps internals like react/jsx-runtime out of lazy chunks,
+ * which would otherwise force the entry to preload them.
+ */
+function vendorChunk(id: string): string | undefined {
+  const modulePath = id.split('node_modules/').pop()
+  if (modulePath === id || !modulePath) return undefined
+
+  const segments = modulePath.split('/')
+  const packageName = segments[0].startsWith('@') ? `${segments[0]}/${segments[1]}` : segments[0]
+  return Object.keys(VENDOR_CHUNKS).find((chunk) => VENDOR_CHUNKS[chunk].includes(packageName))
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   base: '/',
@@ -57,13 +79,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Manual chunking for better caching
-        manualChunks: {
-          'astronomy': ['astronomy-engine'],
-          'charts': ['chart.js', 'react-chartjs-2'],
-          'luxon': ['luxon'],
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'leaflet': ['leaflet', 'react-leaflet'],
-        },
+        manualChunks: vendorChunk,
         // Add hashed filenames for better caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',

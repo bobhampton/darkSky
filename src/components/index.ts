@@ -23,6 +23,5 @@ export { SkipToContent } from './SkipToContent';
 export { LocationPicker } from './LocationPicker';
 export { GPSButton } from './GPSButton';
 export { LocationSearch } from './LocationSearch';
-export { LocationMap } from './LocationMap';
 export { ManualInputs } from './ManualInputs';
 export { SavedLocationsTab } from './SavedLocationsTab';
