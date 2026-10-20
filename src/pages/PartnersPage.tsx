@@ -1,10 +1,14 @@
 import { ExternalLink} from 'lucide-react';
 import { ASTRONOMICAL_TWILIGHT_THRESHOLD } from '@/utils/constants';
+import { usePageMetadata } from '@/hooks';
+import { PAGES } from '@/seo/routes';
 
 /**
  * Partners page component
  */
 export function PartnersPage() {
+  usePageMetadata(PAGES.partners);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="bg-gradient-to-br backdrop-blur-[2px] border-2 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] rounded-lg mb-8">

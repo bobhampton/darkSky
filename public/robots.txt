@@ -4,9 +4,8 @@
 User-agent: *
 Allow: /
 
-# Disallow utility pages and pages not ready for public
+# Disallow utility pages
 Disallow: /error
-Disallow: /partners
 
-# Sitemap location
+# Sitemap location (generated at build time from src/seo/routes.ts)
 Sitemap: https://darkskycalculator.com/sitemap.xml
