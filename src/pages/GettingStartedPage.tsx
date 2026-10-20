@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Home, MapPin, Download, LineChart, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usePageMetadata } from '@/hooks';
+import { PAGES } from '@/seo/routes';
 import { Breadcrumbs } from '@/components';
 import {
   ASTRONOMICAL_TWILIGHT_THRESHOLD,
@@ -11,10 +12,7 @@ import {
  * Getting Started page - Comprehensive guide for using Dark Sky Calculator
  */
 export function GettingStartedPage() {
-  usePageMetadata({
-    title: 'Getting Started - darkSky Calculator',
-    description: 'Learn how to use the darkSky calculator to find optimal dark sky observation times. Step-by-step guide for location input, date selection, understanding results, and exporting data for light pollution monitoring and astronomy.',
-  });
+  usePageMetadata(PAGES.gettingStarted);
 
   const [activeSection, setActiveSection] = useState<string>('what-is');
 

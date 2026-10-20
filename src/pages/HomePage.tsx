@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useObserver } from '@/context';
 import { useAstronomy, usePageMetadata, useFilters } from '@/hooks';
+import { PAGES } from '@/seo/routes';
 import { getValidTimezone } from '@/utils/timezones';
 import {
   Header,
@@ -18,10 +19,7 @@ import type { ObserverFormData } from '@/types';
  * Home page - Main dark times calculator
  */
 export function HomePage() {
-  usePageMetadata({
-    title: 'darkSky Calculator - Dark Sky Times for Light Pollution Monitoring & Astronomy',
-    description: 'Free dark sky calculator for light pollution monitoring, astronomy, and astrophotography. Calculate when the sun is 18° below the horizon (astronomical twilight) with no moon in the sky. Support citizen science initiatives for long-term night sky monitoring.',
-  });
+  usePageMetadata(PAGES.home);
 
   const { observerData, updateObserverData } = useObserver();
   const { darkTimesData, isCalculating, error, progress, calculateDarkTimes } = useAstronomy();

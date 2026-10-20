@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Shield, Home } from 'lucide-react';
 import { usePageMetadata } from '@/hooks';
+import { PAGES } from '@/seo/routes';
 import { Breadcrumbs } from '@/components';
 
 /**
  * Privacy Policy page - Explains data collection and usage
  */
 export function PrivacyPage() {
-  usePageMetadata({
-    title: 'Privacy Policy - darkSky Calculator',
-    description: 'darkSky Calculator privacy policy. Learn about our data collection practices, use of Google Analytics, local storage, and your privacy rights. We do not collect personally identifiable information.',
-  });
+  usePageMetadata(PAGES.privacy);
 
   const lastUpdated = 'May 27, 2026';
 
