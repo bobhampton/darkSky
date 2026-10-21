@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect } from 'react';
 import { Save, Search, MapPin } from 'lucide-react';
 import { LocationSearch } from './LocationSearch';
 import { SavedLocationsTab } from './SavedLocationsTab';
-import { useNominatim, useSavedLocations, useLocationPickerState, type TabType } from '@/hooks';
+import { useNominatim, useSavedLocations, useLocationPickerState, useIsClient, type TabType } from '@/hooks';
 import { getTimezoneFromCoordinates } from '@/utils/timezones';
 import type { LocationData, Coordinates } from '@/types';
 import type { SavedLocation } from '@/types/savedLocation.types';
@@ -36,6 +36,7 @@ export function LocationPicker({
 }: LocationPickerProps) {
   const { state, actions } = useLocationPickerState();
   const { reverseGeocode } = useNominatim();
+  const isClient = useIsClient();
   const {
     savedLocations,
     saveLocation,
@@ -182,6 +183,38 @@ export function LocationPicker({
     [actions, removeLocation]
   );
 
+  // Location can also arrive from outside the picker (a shared link, or returning to the page)
+  const hasCoordinates = currentLocation.lat !== 0 || currentLocation.lng !== 0;
+
+  const mapPlaceholder = (
+    <div className="flex items-center justify-center h-[400px] bg-gray-800 rounded-lg border border-gray-700">
+      <div className="text-center">
+        <svg
+          className="animate-spin h-8 w-8 text-purple-500 mx-auto mb-3"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
+        <p className="text-sm text-gray-400">Loading map...</p>
+      </div>
+    </div>
+  );
+
   const tabs = [
     { id: 'search' as TabType, label: 'Search', icon: Search, tooltip: 'Search by location name, city, address, or coordinates' },
     { id: 'saved' as TabType, label: 'Saved', icon: MapPin, tooltip: 'Select from your saved locations' },
@@ -246,49 +279,28 @@ export function LocationPicker({
 
             {/* Always show map on search tab */}
             <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-6">
-              <Suspense
-                fallback={
-                  <div className="flex items-center justify-center h-[400px] bg-gray-800 rounded-lg border border-gray-700">
-                    <div className="text-center">
-                      <svg
-                        className="animate-spin h-8 w-8 text-purple-500 mx-auto mb-3"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                      <p className="text-sm text-gray-400">Loading map...</p>
-                    </div>
-                  </div>
-                }
-              >
-                <LocationMap
-                  coordinates={{ lat: currentLocation.lat, lng: currentLocation.lng }}
-                  onCoordinatesChange={handleMapChange}
-                  onGPSClick={handleGPSLocation}
-                  onClearLocation={handleClearLocation}
-                  height="400px"
-                  hasAddress={!!currentLocation.address}
-                  showMarker={state.hasInteracted && (state.locationSource === 'search' || state.locationSource === 'saved')}
-                  address={currentLocation.address}
-                  isLocationSaved={isLocationSaved(currentLocation.lat, currentLocation.lng)}
-                  disabled={disabled}
-                />
-              </Suspense>
+              {/* Leaflet needs a browser, so prerendered HTML shows the placeholder */}
+              {isClient ? (
+                <Suspense fallback={mapPlaceholder}>
+                  <LocationMap
+                    coordinates={{ lat: currentLocation.lat, lng: currentLocation.lng }}
+                    onCoordinatesChange={handleMapChange}
+                    onGPSClick={handleGPSLocation}
+                    onClearLocation={handleClearLocation}
+                    height="400px"
+                    hasAddress={!!currentLocation.address}
+                    showMarker={
+                      (state.hasInteracted && (state.locationSource === 'search' || state.locationSource === 'saved')) ||
+                      hasCoordinates
+                    }
+                    address={currentLocation.address}
+                    isLocationSaved={isLocationSaved(currentLocation.lat, currentLocation.lng)}
+                    disabled={disabled}
+                  />
+                </Suspense>
+              ) : (
+                mapPlaceholder
+              )}
             </div>
 
             {/* Save Location Button - Below Map */}

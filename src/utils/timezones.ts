@@ -129,7 +129,7 @@ export async function getTimezoneFromCoordinates(
       return null;
     }
 
-    const data = await response.json();
+    const data: { timeZone?: string } = await response.json();
     
     // TimeAPI returns { timeZone: "America/New_York" }
     const timezone = data.timeZone;

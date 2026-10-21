@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
-import { useEffect } from 'react';
+import { canonicalUrl } from '@/seo/routes';
+import { JsonLd } from './JsonLd';
 
 interface BreadcrumbItem {
   label: string;
@@ -36,41 +37,26 @@ export function Breadcrumbs() {
     breadcrumbs.push({ label: currentLabel, path: currentPath });
   }
 
-  // Add BreadcrumbList structured data to the page
-  // Must be called before any conditional returns (React Hooks rule)
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'breadcrumb-schema';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: breadcrumbs.map((crumb, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        name: crumb.label,
-        item: `https://darkskycalculator.com${crumb.path}`,
-      })),
-    });
-    document.head.appendChild(script);
-
-    return () => {
-      const existingScript = document.getElementById('breadcrumb-schema');
-      if (existingScript) {
-        document.head.removeChild(existingScript);
-      }
-    };
-    // breadcrumbs is derived entirely from location.pathname, so we only need to depend on that
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
-
   // Don't show breadcrumbs on homepage
   if (location.pathname === '/') {
     return null;
   }
 
+  // BreadcrumbList structured data for search results
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.label,
+      item: canonicalUrl(crumb.path),
+    })),
+  };
+
   return (
     <nav aria-label="Breadcrumb" className="mb-6">
+      <JsonLd data={breadcrumbSchema} />
       <ol className="flex items-center space-x-2 text-sm text-gray-400">
         {breadcrumbs.map((crumb, index) => {
           const isLast = index === breadcrumbs.length - 1;

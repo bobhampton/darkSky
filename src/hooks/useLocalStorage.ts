@@ -16,8 +16,13 @@ export function useLocalStorage<T>(
   // Get initial value from localStorage or use provided initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
+      // No window while prerendering at build time
+      if (typeof window === 'undefined') {
+        return initialValue;
+      }
+
       // Check if localStorage is available
-      if (typeof window === 'undefined' || !window.localStorage) {
+      if (!window.localStorage) {
         console.warn('localStorage is not available');
         return initialValue;
       }

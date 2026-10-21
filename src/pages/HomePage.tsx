@@ -1,15 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useEffectEvent, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useObserver } from '@/context';
 import { useAstronomy, usePageMetadata, useFilters } from '@/hooks';
 import { PAGES } from '@/seo/routes';
-import { getValidTimezone } from '@/utils/timezones';
+import { DEFAULT_TIMEZONE, getTimezoneFromCoordinates, getValidTimezone } from '@/utils/timezones';
+import { getDefaultDateRange } from '@/utils/dateUtils';
+import { parseShareParams } from '@/utils/shareLink';
+import { validateFormData } from '@/utils/validation';
 import {
   Header,
   ObserverForm,
   LoadingSpinner,
   DarkTimesTable,
   ExportControls,
+  ShareLinkButton,
   LazyChartModal,
   ErrorDisplay,
 } from '@/components';
@@ -30,6 +34,8 @@ export function HomePage() {
   const [showChart, setShowChart] = useState<string | null>(null);
   const [lastCalculationParams, setLastCalculationParams] = useState<typeof observerData | null>(null);
   const shouldScrollToResults = useRef(false);
+  const appliedShareLink = useRef(false);
+  const { search } = useLocation();
 
   // Scroll to results after calculation completes
   useEffect(() => {
@@ -72,6 +78,41 @@ export function HomePage() {
       dateEnd: formData.dateEnd,
     });
   };
+
+  // Open a shared results link (e.g. /?lat=40.76&lon=-111.89&...)
+  const openSharedLink = useEffectEvent(async () => {
+    const shared = parseShareParams(search);
+    if (!shared) return;
+
+    const timezone =
+      shared.timezone ??
+      (await getTimezoneFromCoordinates(parseFloat(shared.latitude), parseFloat(shared.longitude))) ??
+      DEFAULT_TIMEZONE;
+    const defaultDates = getDefaultDateRange();
+    const formData: ObserverFormData = {
+      latitude: shared.latitude,
+      longitude: shared.longitude,
+      elevation: shared.elevation ?? '0',
+      dateStart: shared.dateStart ?? defaultDates.dateStart,
+      dateEnd: shared.dateEnd ?? defaultDates.dateEnd,
+      timezone,
+      address: shared.address ?? '',
+    };
+
+    // Fill in the form either way, but only calculate if the link is fully valid
+    if (validateFormData(formData).length === 0) {
+      handleFormSubmit(formData);
+    } else {
+      updateObserverData(formData);
+    }
+  });
+
+  // Only on load; the ref stops StrictMode's double effect from calculating twice
+  useEffect(() => {
+    if (appliedShareLink.current) return;
+    appliedShareLink.current = true;
+    openSharedLink();
+  }, []);
 
   const handleRetry = () => {
     if (lastCalculationParams) {
@@ -122,25 +163,28 @@ export function HomePage() {
           {hasResults && !isCalculating && (
             <>
               <section className="bg-gray-800 rounded-lg shadow-lg p-6" aria-labelledby="results-heading">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                   <h2 id="results-heading" className="text-xl font-semibold">Dark Times Results</h2>
-                  <ExportControls
-                    darkTimesData={filters.filteredData}
-                    timezone={getValidTimezone(observerData.timezone)}
-                    formData={{
-                      latitude: observerData.latitude,
-                      longitude: observerData.longitude,
-                      elevation: observerData.elevation,
-                      dateStart: observerData.dateStart,
-                      dateEnd: observerData.dateEnd,
-                    }}
-                    filterInfo={{
-                      minDurationHours: filters.minDurationHours,
-                      selectedTypes: filters.selectedTypes,
-                      hideEmptyDays: filters.hideEmptyDays,
-                      timeRangeFilter: filters.timeRangeFilter,
-                    }}
-                  />
+                  <div className="flex flex-wrap gap-4">
+                    {lastCalculationParams && <ShareLinkButton formData={lastCalculationParams} />}
+                    <ExportControls
+                      darkTimesData={filters.filteredData}
+                      timezone={getValidTimezone(observerData.timezone)}
+                      formData={{
+                        latitude: observerData.latitude,
+                        longitude: observerData.longitude,
+                        elevation: observerData.elevation,
+                        dateStart: observerData.dateStart,
+                        dateEnd: observerData.dateEnd,
+                      }}
+                      filterInfo={{
+                        minDurationHours: filters.minDurationHours,
+                        selectedTypes: filters.selectedTypes,
+                        hideEmptyDays: filters.hideEmptyDays,
+                        timeRangeFilter: filters.timeRangeFilter,
+                      }}
+                    />
+                  </div>
                 </div>
                 <DarkTimesTable
                   darkTimesData={filters.filteredData}

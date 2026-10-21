@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { DEFAULT_TIMEZONE } from '@/utils/timezones';
+import { getDefaultDateRange } from '@/utils/dateUtils';
 import type { ObserverFormData } from '@/types';
 
 interface ObserverContextType {
@@ -11,13 +12,15 @@ interface ObserverContextType {
 
 const ObserverContext = createContext<ObserverContextType | undefined>(undefined);
 
-// Default observer data - starts empty except for dates and timezone
+// Default observer data - starts empty except for timezone.
+// Dates are filled in after mount: pages are prerendered at build time, so "today"
+// in the initial render would be the build date and wouldn't match after hydration.
 const defaultObserverData: ObserverFormData = {
   latitude: '',
   longitude: '',
   elevation: '0',
-  dateStart: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
-  dateEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+  dateStart: '',
+  dateEnd: '',
   timezone: DEFAULT_TIMEZONE, // UTC until location is chosen
 };
 
@@ -31,6 +34,15 @@ interface ObserverProviderProps {
  */
 export function ObserverProvider({ children }: ObserverProviderProps) {
   const [observerData, setObserverData] = useState<ObserverFormData>(defaultObserverData);
+
+  // Default to the next 7 days unless dates were already set (e.g. from a shared link).
+  // This must run after hydration because it depends on the visitor's clock.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setObserverData((prev) =>
+      prev.dateStart || prev.dateEnd ? prev : { ...prev, ...getDefaultDateRange() }
+    );
+  }, []);
 
   // Clean up old localStorage entry from previous version (run once on mount)
   useEffect(() => {
@@ -46,7 +58,7 @@ export function ObserverProvider({ children }: ObserverProviderProps) {
   };
 
   const resetObserverData = () => {
-    setObserverData(defaultObserverData);
+    setObserverData({ ...defaultObserverData, ...getDefaultDateRange() });
   };
 
   return (

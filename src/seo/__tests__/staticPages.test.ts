@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { PAGES, PAGE_ROUTES, canonicalUrl } from '../routes';
-import { pageFileName, renderPageHtml, renderSitemap } from '../staticPages';
+import { injectAppHtml, pageFileName, renderPageHtml, renderSitemap } from '../staticPages';
 
 const root = path.resolve(__dirname, '../../..');
 const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf-8');
@@ -54,6 +54,21 @@ describe('renderPageHtml', () => {
 
   it('throws if index.html is missing an expected tag', () => {
     expect(() => renderPageHtml('<html></html>', PAGES.faq)).toThrow(/could not find/);
+  });
+});
+
+describe('injectAppHtml', () => {
+  it('puts the app markup in the root div, tagged with its path', () => {
+    const html = injectAppHtml(indexHtml, '/faq', '<h1>FAQ</h1>');
+    expect(html).toContain('<div id="root" data-prerendered-path="/faq"><h1>FAQ</h1></div>');
+  });
+
+  it('inserts markup literally, including $ replacement patterns', () => {
+    expect(injectAppHtml(indexHtml, '/', '<p>$& $1</p>')).toContain('><p>$& $1</p></div>');
+  });
+
+  it('throws if the root div is missing', () => {
+    expect(() => injectAppHtml('<html></html>', '/', '')).toThrow(/could not find root div/);
   });
 });
 
