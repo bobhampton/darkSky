@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { getNodeText } from '@/utils/nodeText';
 import { JsonLd } from './JsonLd';
 
 interface FAQItem {
@@ -80,7 +81,7 @@ const faqSchema = {
     name: faq.question,
     acceptedAnswer: {
       '@type': 'Answer',
-      text: typeof faq.answer === 'string' ? faq.answer : '',
+      text: getNodeText(faq.answer),
     },
   })),
 };
